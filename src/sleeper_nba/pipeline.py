@@ -125,6 +125,15 @@ def capture(root, config, dry_run=False, http=None, now=None):
                     "instance_id": observed_game["instance_id"],
                 }
             )
+    source_hashes = {
+        str(p.relative_to(Path(root))): digest(p.read_text())
+        for p in sorted((Path(root) / "src" / "sleeper_nba").glob("*.py"))
+    }
+    implementation = {
+        "version": "1.19.0",
+        "source_tree_hash": digest(source_hashes),
+        "source_hashes": source_hashes,
+    }
     forecast_count = 0
     for game, source_event in games:
         instance = game["instance_id"]
@@ -202,6 +211,7 @@ def capture(root, config, dry_run=False, http=None, now=None):
                 "captured_at": captured_at,
                 "created_at": iso(),
                 "provenance": "native",
+                "implementation": implementation,
                 "game": game,
                 "lead_hours": (dt(game["tip_utc"]) - dt(captured_at)).total_seconds() / 3600,
                 "raw": raw,
