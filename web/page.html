@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Independent NBA forecasts from Sleeper player projections. Fixed benchmarks, adaptive calibration, and transparent forward results.">
+<meta name="color-scheme" content="dark light"><title>Sleeper NBA · {{ page|capitalize }}</title>
+<link rel="stylesheet" href="style.css"><script src="app.js" defer></script>
+</head>
+<body data-page="{{ page }}">
+<aside class="sidebar">
+<a class="brand" href="index.html" aria-label="Sleeper NBA home"><span class="brand-mark">S<span>•</span></span><span>SLEEPER<span class="brand-sub">NBA LAB</span></span></a>
+<div class="nav-label">THE MODEL</div>
+<nav aria-label="Main navigation">
+<a href="index.html" {% if page == 'index' %}aria-current="page"{% endif %}><span>◈</span> Today's slate</a>
+<a href="results.html" {% if page == 'results' %}aria-current="page"{% endif %}><span>▤</span> Results</a>
+<a href="performance.html" {% if page == 'performance' %}aria-current="page"{% endif %}><span>↗</span> Performance</a>
+<a href="methodology.html" {% if page == 'methodology' %}aria-current="page"{% endif %}><span>◎</span> Methodology</a>
+</nav>
+<div class="sidebar-note"><span class="pulse"></span> INDEPENDENT MODEL<p>Player projections.<br>Measured against results.</p><a href="https://github.com/Dave356w/NBA-Sleeper-Model" target="_blank" rel="noopener">View the source ↗</a></div>
+<button id="theme" class="theme-button" aria-label="Switch light or dark theme">◐ &nbsp; Change appearance</button>
+</aside>
+<div class="workspace">
+<header class="topbar"><span>NBA <span class="slash">/</span> <span id="section-title">Research dashboard</span></span><div><span class="version">MODEL 1.19</span><span class="updated" id="updated">Updated {{ updated_at }}</span></div></header>
+<main id="content" aria-live="polite"><div class="loading">Loading the recorded slate…</div></main>
+<footer><span>Sleeper scoring · Independent calibration · Public forward tracking</span><a href="predictions.csv" download>Download forecasts ↓</a><a href="MODEL.md">Build specification ↗</a></footer>
+</div>
+<noscript>This dashboard requires JavaScript. Download the forecast CSV for the recorded predictions.</noscript>
+</body></html>

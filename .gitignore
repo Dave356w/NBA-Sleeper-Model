@@ -1,0 +1,11 @@
+.venv/
+__pycache__/
+.pytest_cache/
+.ruff_cache/
+*.egg-info/
+site/
+.env
+*.log
+.cache/
+playwright-report/
+test-results/

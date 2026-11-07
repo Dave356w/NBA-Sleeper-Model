@@ -1,0 +1,27 @@
+methodology: sleeper_only_v1_19
+sleeper_company: rotowire
+wp_initial: 10.0
+ats_bias_initial: 0.0
+ats_sigma_initial: 14.0
+totals_bias_initial: 0.0
+totals_sigma_initial: 19.0
+half_life: 75
+prior_strength: 100
+minimum_games: 30
+wp_bounds: [6.0, 20.0]
+ats_bias_bounds: [-15.0, 15.0]
+ats_sigma_bounds: [5.0, 35.0]
+totals_bias_bounds: [-25.0, 25.0]
+totals_sigma_bounds: [7.0, 45.0]
+daily_scale_movement: 0.10
+daily_bias_movement: 1.0
+team_minutes_bounds: [200.0, 280.0]
+lock_hours: 5
+lock_tolerance_minutes: 15
+market_max_age_minutes: 15
+market_pair_minutes: 5
+market_clock_tolerance_seconds: 60
+price_bounds: [-135, 115]
+ats_subset_points: 3.0
+value_probability_edge: 0.05
+book: draftkings

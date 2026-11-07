@@ -1,0 +1,13 @@
+{
+  "id": "defaults:first",
+  "params": {
+    "wp_a": 10.0,
+    "ats_bias": 0.0,
+    "ats_sigma": 14.0,
+    "totals_bias": 0.0,
+    "totals_sigma": 19.0
+  },
+  "training_count": 0,
+  "training_cutoff": null,
+  "n_eff": 0.0
+}

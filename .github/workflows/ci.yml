@@ -1,0 +1,28 @@
+name: Test and verify
+on:
+  push:
+    branches: [main]
+    paths-ignore: ['data/**', 'model/active_*.json', 'research/output/**']
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - run: pip install -r requirements.txt
+      - run: ruff check src tests
+      - run: ruff format --check src tests
+      - run: pytest -q
+      - run: python -m sleeper_nba validate
+      - run: python -m sleeper_nba build-site
+      - uses: actions/upload-artifact@v4
+        with:
+          name: verified-site
+          path: site
