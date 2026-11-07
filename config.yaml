@@ -1,4 +1,4 @@
-methodology: sleeper_only_v1_19
+methodology: sleeper_only_v1_20
 sleeper_company: rotowire
 wp_initial: 10.0
 ats_bias_initial: 0.0
@@ -25,3 +25,18 @@ price_bounds: [-135, 115]
 ats_subset_points: 3.0
 value_probability_edge: 0.05
 book: draftkings
+
+# Team residual decay is calendar time, distinct from confidence calibration.
+learn_scalar_biases: false
+matchup:
+  enabled: true
+  half_life_days: 25.0
+  minimum_games: 30
+  defense_prior: 5.0
+  offense_prior: 20.0
+  global_prior: 100.0
+  venue_prior: 100.0
+  coefficient_bound: 30.0
+  seed_season: 2026
+  seed_file: data/calibration_seeds/legacy_first_2026-27.json
+  seed_sha256: 9d3a8e56998a4a7e738020614b3546e1afbc658d97370abe7cffe53714348705

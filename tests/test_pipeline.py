@@ -258,6 +258,8 @@ def test_daily_refit_manifest_and_future_application(root, config):
                     "captured_at": iso(captured),
                     "game": {**game, "status": "pre"},
                     "raw": {"margin": 4, "total": 230},
+                    "config": {"methodology": config["methodology"]},
+                    "variants": {"adaptive": {"scoring": {"margin": 4, "total": 230}}},
                 },
                 {
                     "id": "result:" + instance,

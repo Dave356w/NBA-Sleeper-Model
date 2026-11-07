@@ -232,6 +232,7 @@ def test_weight_age_and_persistent_prior():
 
 
 def test_regularization_caps_and_independent_components(config):
+    config = {**config, "learn_scalar_biases": True}  # Retain v1.19 failure semantics.
     accepted, statuses, diag = fit_parameters(observations(), DEFAULTS, config)
     assert statuses == {"wp": "accepted", "ats": "accepted", "totals": "accepted"}
     assert 9 <= accepted["wp_a"] <= 11

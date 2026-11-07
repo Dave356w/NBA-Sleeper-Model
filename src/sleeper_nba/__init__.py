@@ -1,3 +1,3 @@
 """Sleeper-only NBA model. No features or parameters from other models."""
 
-__version__ = "1.19.0"
+__version__ = "1.20.0"

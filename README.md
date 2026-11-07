@@ -5,7 +5,7 @@
 
 **[Open the dashboard](https://dave356w.github.io/NBA-Sleeper-Model/)** · [Build specification](MODEL.md) · [Actions](https://github.com/Dave356w/NBA-Sleeper-Model/actions)
 
-A new independent NBA forecasting system. Raw home/away scores are the sums of every valid Sleeper projected player's points. No Four Factors, efficiency, BPM, production-model outputs, or independent injury adjustments are used.
+An independent NBA forecasting system. Raw home/away scores are the sums of every valid Sleeper projected player's points. Version 1.20 adds a learned opponent-defense correction to adaptive scoring. No Four Factors, efficiency, BPM, production-model outputs, or independent injury adjustments are used.
 
 ## What runs
 
@@ -13,12 +13,14 @@ A new independent NBA forecasting system. Raw home/away scores are the sums of e
 - ESPN regular-season schedule, UTC tips, statuses and overtime-inclusive finals.
 - **ESPN DraftKings odds only, timestamped when fetched. No Odds API or paid-feed secret.** The sportsbook's own update time is unknown; fetch time establishes quote eligibility by the owner's registered policy.
 - Immutable first snapshots and T−5h locks with a 15-minute capture tolerance.
-- A fixed WP-10 / ATS-14 / totals-19 control and separately calibrated adaptive model.
+- A fixed WP-10 / ATS-14 / totals-19 control and versioned adaptive scoring.
+- **25-calendar-day residual-defense decay**, separate zero-centered ridge priors: defense 5 games, offense nuisance control 20, global/venue 100. Offensive coefficients help estimate defense but are not applied to scores.
+- Raw and adjusted scores, component corrections, and an untracked Latest view alongside immutable first/lock tabs.
 - Winner probabilities, margin/total corrections, ATS/totals probabilities, no-vig edges, offered-price EV, research selections, grades and public results.
 - Stage-specific weighted calibration with 75-game half-life, 30-game minimum, shrinkage, daily caps, rejection safeguards and complete training manifests.
 - An atomic, hash-verified transaction ledger; CSV and public JSON are derived exports.
 
-The native experiment starts at defaults, without historical seeding. Historical reference claims in the original specification are not imported as forward performance. No actual wagers are executed.
+Version 1.19 started without historical seeding. For v1.20, the first-stage team correction is explicitly initialized from 117 audited current-season legacy first snapshots, stored with a pinned hash in `data/calibration_seeds`. They are training history, never native forward results. Lock-stage corrections and new-version confidence calibration start at defaults. Historical reference claims are not imported as forward performance. No actual wagers are executed.
 
 ## Local setup
 
@@ -69,7 +71,7 @@ Near-tip quote observations support **observed closing** comparisons only when a
 
 ## Data integrity and operations
 
-`data/transactions/*.json` is authoritative. Every transaction contains complete immutable records and a SHA-256 payload checksum. Forecast records contain normalized player rows, raw source rows, capture provenance, exact parameters, configuration hash and stage. Calibration versions retain code/dependency versions and the exact observation/result revisions and weights used. Both variants are stored in one stage forecast to prevent double-counting training games.
+`data/transactions/*.json` and the pinned `data/calibration_seeds` input are authoritative. Every transaction contains complete immutable records and a SHA-256 payload checksum. Forecast records contain normalized player rows, raw source rows, capture provenance, exact parameters, configuration hash and stage. Calibration versions retain code/dependency versions and the exact observation/result revisions and weights used. Both variants are stored in one stage forecast to prevent double-counting training games.
 
 An empty Sleeper `stats: {}` row is a preserved **unprojected** roster placeholder, not an imputed zero. Missing or contradictory fields in a populated projection invalidate that game snapshot. All teams must independently pass minute coverage. Exact duplicates collapse with a count; conflicting duplicates invalidate the snapshot.
 
@@ -78,7 +80,7 @@ Major tip changes (>15 minutes), date changes and postponements retire the origi
 ### Recovery
 
 - An API outage is recorded in quality events; already accepted forecasts survive. Retry the workflow after the source recovers.
-- Restore the complete `data/transactions` directory from Git history or an audit artifact into an isolated checkout. Run `validate`, then `build-site`; compare IDs/checksums/counts before replacing a production copy. Never edit an existing transaction to repair a result.
+- Restore the complete `data/transactions` and `data/calibration_seeds` directories from Git history or an audit artifact into an isolated checkout. Run `validate`, then `build-site`; compare IDs/checksums/counts before replacing a production copy. Never edit an existing transaction to repair a result.
 - Export corruption is repairable by rebuilding from transactions. A transaction checksum failure stops processing and must be investigated/restored from backup.
 - For a failed git push, preserve runner artifacts and retry against the current branch. Do not force-push or overwrite competing records. Workflows pull with rebase before pushing their new immutable transaction files.
 - For a failed Pages deployment, rerun **Publish reporting site**. Forecast persistence is independent of the deployment step.
@@ -98,3 +100,11 @@ Tests cover numeric equations, aliases, zero/missing handling, incomplete covera
 For an optional browser smoke test, install `pip install -e '.[browser]'`, then `python -m playwright install chromium`, serve `site`, and run `python tests/browser_smoke.py`. It checks all pages, stage/model controls, desktop/mobile layout and JavaScript errors. Browser testing uses a real generated site; no fabricated performance sample is published.
 
 See [MODEL.md](MODEL.md) for registered methodology and implementation clarifications. The original `Dave356w/nba-matchups` repository is unchanged.
+
+## v1.20 calibration transition
+
+The selected residual-defense component uses 25 **calendar days**, with `w=2**(-age_days/25)`. The ridge prior is separate from decay: 5 fresh-game prior strength for defense and 20 for the offensive estimation control. Global and venue corrections are learned separately. Full selection evidence and caveats are in [docs/defense_selection_2025-26.md](docs/defense_selection_2025-26.md). Selection used point errors, not betting profit; the candidate did not outperform the old adaptive WP log loss.
+
+First-stage team ratings can learn from the audited current-season legacy-first seed and prior native first snapshots. Locks use lock history only. Probability calibration uses **only new v1.20 frozen native forecasts**, with its original 75-game scale weighting and defaults until 30 eligible outcomes. Extra scalar margin/total biases remain zero to avoid double-counting the new global correction.
+
+Existing frozen v1.19 forecasts are not rewritten. The Today page’s Latest view shows untracked v1.20 previews with first-stage parameters; it never creates historical bets or grades. Public performance keeps methodology versions separate.

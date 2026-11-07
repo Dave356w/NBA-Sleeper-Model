@@ -19,6 +19,9 @@ def main():
             assert page.locator("h1").inner_text()
             assert page.evaluate("document.documentElement.scrollWidth <= window.innerWidth")
         page.goto("http://localhost:8000/index.html", wait_until="networkidle")
+        latest = page.get_by_role("button", name="Latest · untracked", exact=True)
+        latest.click()
+        assert latest.get_attribute("aria-pressed") == "true"
         page.get_by_role("button", name="Fixed", exact=True).click()
         assert page.get_by_role("button", name="Fixed", exact=True).get_attribute("aria-pressed") == "true"
         page.get_by_role("button", name="5-hour lock", exact=True).click()
@@ -27,6 +30,7 @@ def main():
         )
         page.get_by_role("button", name="First snapshot", exact=True).click()
         page.get_by_role("button", name="Adaptive", exact=True).click()
+        page.get_by_role("button", name="Latest · untracked", exact=True).click()
         (ROOT / ".cache").mkdir(exist_ok=True)
         page.screenshot(path=str(ROOT / ".cache" / "dashboard-desktop.png"), full_page=True)
         page.set_viewport_size({"width": 390, "height": 844})
@@ -36,6 +40,12 @@ def main():
             assert page.evaluate("document.documentElement.scrollWidth <= window.innerWidth"), name
         page.goto("http://localhost:8000/index.html", wait_until="networkidle")
         page.screenshot(path=str(ROOT / ".cache" / "dashboard-mobile.png"), full_page=True)
+        page.goto("http://localhost:8000/performance.html", wait_until="networkidle")
+        version = page.get_by_role("combobox", name="Methodology version")
+        version.select_option("sleeper_only_v1_19")
+        assert page.get_by_role("heading", name="Residual defense adjustments").count() == 0
+        version.select_option("sleeper_only_v1_20")
+        assert page.get_by_role("heading", name="Residual defense adjustments").count() == 1
         assert not errors, errors
         browser.close()
     print("Four pages, desktop/mobile layout, stage/model controls and JavaScript errors: PASS")

@@ -10,7 +10,8 @@ from pathlib import Path
 import numpy
 import scipy
 
-from .common import ET, digest, dt, iso, utcnow
+from . import __version__, matchup
+from .common import ET, digest, dt, iso, load_config, utcnow
 from .markets import evaluate, settle
 from .models import (
     DEFAULTS,
@@ -82,11 +83,48 @@ def assign_instance(game, records):
     return game, additions
 
 
+def build_variants(raw, game, records, config, captured_at, stage, quotes, preview=False):
+    calibration = active_calibration(records, stage, captured_at, config.get("methodology"))
+    variants = {}
+    for variant, params in [("fixed", DEFAULTS), ("adaptive", calibration["params"])]:
+        scoring = {k: raw[k] for k in ["home_score", "away_score", "margin", "total"]}
+        defense = None
+        adjustment = None
+        if variant == "adaptive" and matchup.enabled(config):
+            defense = matchup.active(records, stage, captured_at, matchup.season_of(game), config)
+            scoring, adjustment = matchup.apply(raw, game, defense)
+        output = probabilities(scoring, params)
+        markets, selections = evaluate(output, params, quotes, captured_at, game, config, stage)
+        variants[variant] = {
+            **output,
+            "params": dict(params),
+            "scoring": scoring,
+            "markets": markets,
+            "selections": [] if preview else selections,
+            "model_tag": config.get("methodology", "sleeper_only_v1_19")
+            if variant == "adaptive"
+            else "fixed:v1.19",
+            "calibration_id": "fixed:v1.19" if variant == "fixed" else calibration["id"],
+            "training_count": 0 if variant == "fixed" else calibration["training_count"],
+            "training_cutoff": None if variant == "fixed" else calibration["training_cutoff"],
+            "matchup_id": defense["id"] if defense else None,
+            "matchup_training_count": defense["training_count"] if defense else 0,
+            "matchup_adjustment": adjustment,
+        }
+    return variants
+
+
 def capture(root, config, dry_run=False, http=None, now=None):
     ledger = Ledger(root)
     http = http or HTTP()
+    supplied_clock = now is not None
     now = now or utcnow()
     records, additions, games = ledger.records(), [], []
+    prepared = matchup.prepare_versions(records, root, config, iso(now))
+    if prepared and not dry_run:
+        ledger.append(prepared)
+    records = records + prepared
+    previews = []
     for date in dates_around(now):
         try:
             found, _ = schedule(http, date)
@@ -130,7 +168,7 @@ def capture(root, config, dry_run=False, http=None, now=None):
         for p in sorted((Path(root) / "src" / "sleeper_nba").glob("*.py"))
     }
     implementation = {
-        "version": "1.19.0",
+        "version": __version__,
         "source_tree_hash": digest(source_hashes),
         "source_hashes": source_hashes,
     }
@@ -176,7 +214,7 @@ def capture(root, config, dry_run=False, http=None, now=None):
         ]
         captured_at = max((e["captured_at"] for e in relevant), default=iso(now))
         stages = eligible_stages(game, captured_at, existing, config)
-        if not stages:
+        if not stages and not matchup.enabled(config):
             continue
         try:
             raw = aggregate(game, rows, captured_at, config)
@@ -185,27 +223,33 @@ def capture(root, config, dry_run=False, http=None, now=None):
             additions.append(event("invalid_projection", instance, reason=str(exc)))
             continue
         quotes = live_quotes.get(game["game_id"]) or espn_quotes(game, source_event)
-        if utcnow() >= dt(game["tip_utc"]):
+        if (now if supplied_clock else utcnow()) >= dt(game["tip_utc"]):
             additions.append(event("capture_finished_after_tip", instance))
             continue
-        for stage in stages:
-            calibration = active_calibration(all_records, stage, captured_at)
-            variants = {}
-            for variant, params in [("fixed", DEFAULTS), ("adaptive", calibration["params"])]:
-                output = probabilities(raw, params)
-                markets, selections = evaluate(output, params, quotes, captured_at, game, config, stage)
-                variants[variant] = {
-                    **output,
-                    "params": dict(params),
-                    "markets": markets,
-                    "selections": selections,
-                    "calibration_id": "fixed:v1.19" if variant == "fixed" else calibration["id"],
-                    "training_count": 0 if variant == "fixed" else calibration["training_count"],
-                    "training_cutoff": None if variant == "fixed" else calibration["training_cutoff"],
+        if matchup.enabled(config):
+            previews.append(
+                {
+                    "id": "preview:" + instance,
+                    "kind": "preview",
+                    "instance_id": instance,
+                    "stage": "latest",
+                    "matchup_stage": "first",
+                    "game": game,
+                    "captured_at": captured_at,
+                    "methodology": config["methodology"],
+                    "lead_hours": (dt(game["tip_utc"]) - dt(captured_at)).total_seconds() / 3600,
+                    "raw": {k: raw[k] for k in ["home_score", "away_score", "margin", "total"]},
+                    "variants": build_variants(
+                        raw, game, all_records, config, captured_at, "first", quotes, True
+                    ),
                 }
+            )
+        for stage in stages:
+            variants = build_variants(raw, game, all_records, config, captured_at, stage, quotes)
             forecast = {
                 "id": f"forecast:{instance}:{stage}",
                 "kind": "forecast",
+                "methodology": config.get("methodology", "sleeper_only_v1_19"),
                 "instance_id": instance,
                 "stage": stage,
                 "captured_at": captured_at,
@@ -234,6 +278,18 @@ def capture(root, config, dry_run=False, http=None, now=None):
     additions = [r for r in additions if r["id"] not in ids]
     if not dry_run:
         ledger.append(additions)
+        if matchup.enabled(config):
+            Ledger._atomic(
+                Path(root) / "data" / "live_previews.json",
+                json.dumps(
+                    {
+                        "updated_at": iso(now),
+                        "purpose": "Untracked previews using first-stage parameters; no registered bets, grades or training observations",
+                        "forecasts": previews,
+                    },
+                    allow_nan=False,
+                ),
+            )
     return {"forecasts": forecast_count, "records": len(additions), "dry_run": dry_run, "status": "ok"}
 
 
@@ -342,6 +398,9 @@ def grade(root, config, http=None):
 def refit(root, config, now=None):
     ledger, now = Ledger(root), now or utcnow()
     records, additions = ledger.records(), []
+    prepared = matchup.prepare_versions(records, root, config, iso(now))
+    ledger.append(prepared)
+    records = records + prepared
     # Only fully resolved slates enter daily calibration. Postponed/cancelled
     # games are removed; unfinished games keep their slate pending.
     schedules = latest_schedules(records)
@@ -371,16 +430,19 @@ def refit(root, config, now=None):
     for stage in ["first", "lock"]:
         observations = [
             o
-            for o in training_observations(records, stage, iso(now))
+            for o in training_observations(records, stage, iso(now), config.get("methodology"))
             if o["instance_id"] in allowed_instances
         ]
-        previous = active_calibration(records, stage, iso(now))
+        previous = active_calibration(records, stage, iso(now), config.get("methodology"))
         manifest_hash = digest(observations)
         if previous.get("manifest_hash") == manifest_hash:
             continue
         # One accepted version per UTC day. Rejections preserve prior components.
         if any(
-            r["kind"] == "calibration" and r["stage"] == stage and dt(r["created_at"]).date() == now.date()
+            r["kind"] == "calibration"
+            and r["stage"] == stage
+            and dt(r["created_at"]).date() == now.date()
+            and r.get("methodology", r.get("config", {}).get("methodology")) == config.get("methodology")
             for r in records
         ):
             continue
@@ -393,6 +455,7 @@ def refit(root, config, now=None):
         ]
         record = {
             "kind": "calibration",
+            "methodology": config.get("methodology", "sleeper_only_v1_19"),
             "stage": stage,
             "created_at": iso(now),
             "training_cutoff": iso(now),
@@ -420,6 +483,9 @@ def refit(root, config, now=None):
 
 
 def validate(root):
+    config = load_config(root)
+    if matchup.enabled(config) and config["matchup"].get("seed_file"):
+        matchup.seed_observations(root, config, "first", config["matchup"]["seed_season"], iso())
     records = Ledger(root).records()
     ids = [r["id"] for r in records]
     if len(ids) != len(set(ids)):
@@ -446,7 +512,23 @@ def validate(root):
                 ):
                     raise ValueError("Outside-window lock")
             for variant, output in r["variants"].items():
-                if probabilities(r["raw"], output["params"])["wp_home"] != output["wp_home"]:
+                scoring = output.get("scoring", r["raw"])
+                if variant == "fixed" and any(
+                    scoring[k] != r["raw"][k] for k in ["home_score", "away_score", "margin", "total"]
+                ):
+                    raise ValueError("Fixed control scoring changed")
+                if output.get("matchup_id"):
+                    versions = [v for v in records if v["id"] == output["matchup_id"]]
+                    if versions:
+                        v = versions[0]
+                        if dt(v["created_at"]) > dt(r["captured_at"]) or v["stage"] != r["stage"]:
+                            raise ValueError("Matchup chronology or stage mismatch")
+                        reproduced, _ = matchup.apply(r["raw"], r["game"], v)
+                        if reproduced != scoring:
+                            raise ValueError("Matchup score not reproducible")
+                    elif not output["matchup_id"].startswith("matchup-defaults:"):
+                        raise ValueError("Missing matchup version")
+                if probabilities(scoring, output["params"])["wp_home"] != output["wp_home"]:
                     raise ValueError("Probability not reproducible")
                 if (
                     variant == "adaptive"
@@ -454,6 +536,32 @@ def validate(root):
                     and dt(output["training_cutoff"]) > dt(r["captured_at"])
                 ):
                     raise ValueError("Calibration lookahead")
+        elif r["kind"] == "matchup_calibration":
+            if digest(r["manifest"]) != r["manifest_hash"] or digest(r["settings"]) != r["settings_hash"]:
+                raise ValueError("Matchup manifest or settings hash mismatch")
+            if dt(r["training_cutoff"]) > dt(r["created_at"]):
+                raise ValueError("Matchup cutoff after creation")
+            for o in r["manifest"]:
+                if (
+                    not dt(o["snapshot_utc"])
+                    < dt(o["tip_utc"])
+                    <= dt(o["verified_at"])
+                    <= dt(r["training_cutoff"])
+                ):
+                    raise ValueError("Matchup observation lookahead")
+            fitted = matchup.fit(r["manifest"], r["settings"], r["training_cutoff"])["params"]
+            for key in ["global", "venue", "offense_control", "defense"]:
+                a = list(fitted[key].values()) if isinstance(fitted[key], dict) else [fitted[key]]
+                b = (
+                    list(r["params"][key].values())
+                    if isinstance(r["params"][key], dict)
+                    else [r["params"][key]]
+                )
+                if isinstance(fitted[key], dict):
+                    a = [fitted[key][t] for t in matchup.TEAMS_SORTED]
+                    b = [r["params"][key][t] for t in matchup.TEAMS_SORTED]
+                if not numpy.allclose(a, b, rtol=1e-10, atol=1e-10):
+                    raise ValueError("Matchup fit not reproducible")
         elif r["kind"] == "calibration":
             if digest(r["config"]) != r["config_hash"] or dt(r["training_cutoff"]) > dt(r["created_at"]):
                 raise ValueError("Invalid calibration provenance")
@@ -467,5 +575,13 @@ def export_active(root):
     root = Path(root)
     records = Ledger(root).records()
     for stage in ["first", "lock"]:
-        value = active_calibration(records, stage, iso())
+        config = load_config(root)
+        value = active_calibration(records, stage, iso(), config.get("methodology"))
         Ledger._atomic(root / "model" / f"active_{stage}.json", json.dumps(value, indent=2) + "\n")
+        if matchup.enabled(config):
+            seasons = [r["season"] for r in records if r["kind"] == "matchup_calibration"]
+            if seasons:
+                defense = matchup.active(records, stage, iso(), max(seasons), config)
+                Ledger._atomic(
+                    root / "model" / f"active_defense_{stage}.json", json.dumps(defense, indent=2) + "\n"
+                )

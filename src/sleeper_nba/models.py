@@ -77,7 +77,9 @@ def fit_parameters(observations, previous, config):
         statuses["wp"] = "accepted"
     for component, initial_sigma in [("ats", 14.0), ("totals", 19.0)]:
         residual = np.array([o[component + "_residual"] for o in observations], dtype=float)
-        bias_target = alpha * float(np.average(residual, weights=w))
+        bias_target = (
+            alpha * float(np.average(residual, weights=w)) if config.get("learn_scalar_biases", True) else 0.0
+        )
         bmin, bmax = config[component + "_bias_bounds"]
         diagnostics[component + "_bias_target"] = bias_target
         if not math.isfinite(bias_target) or not bmin <= bias_target <= bmax:
@@ -90,6 +92,8 @@ def fit_parameters(observations, previous, config):
                 previous[component + "_bias"] + config["daily_bias_movement"],
             )
         )
+        if not config.get("learn_scalar_biases", True):
+            bias = 0.0  # Global/venue mean correction is already in matchup scoring.
         sigma_target = math.sqrt(
             (config["prior_strength"] * initial_sigma**2 + float(np.sum(w * (residual - bias) ** 2)))
             / (config["prior_strength"] + float(w.sum()))
@@ -112,7 +116,7 @@ def fit_parameters(observations, previous, config):
     return accepted, statuses, diagnostics
 
 
-def training_observations(records, stage, cutoff):
+def training_observations(records, stage, cutoff, methodology=None):
     results = {}
     retired = {r["instance_id"] for r in records if r["kind"] == "retired"}
     for r in records:
@@ -128,6 +132,11 @@ def training_observations(records, stage, cutoff):
             or forecast.get("provenance") != "native"
         ):
             continue
+        if methodology and forecast.get("config", {}).get("methodology", "sleeper_only_v1_19") != methodology:
+            continue
+        scoring = forecast.get("variants", {}).get("adaptive", {}).get("scoring", forecast["raw"])
+        if not methodology:
+            scoring = forecast["raw"]
         instance = forecast["instance_id"]
         if instance in retired or instance not in results:
             continue
@@ -145,15 +154,15 @@ def training_observations(records, stage, cutoff):
             "result_hash": digest(result),
             "verified_at": result["verified_at"],
             "game_id": forecast["game"]["game_id"],
-            "margin": forecast["raw"]["margin"],
+            "margin": scoring["margin"],
             "home_won": result["home_score"] > result["away_score"],
-            "ats_residual": result["home_score"] - result["away_score"] - forecast["raw"]["margin"],
-            "totals_residual": result["home_score"] + result["away_score"] - forecast["raw"]["total"],
+            "ats_residual": result["home_score"] - result["away_score"] - scoring["margin"],
+            "totals_residual": result["home_score"] + result["away_score"] - scoring["total"],
         }
     return sorted(observations.values(), key=lambda x: (dt(x["verified_at"]), x["game_id"]))
 
 
-def active_calibration(records, stage, at):
+def active_calibration(records, stage, at, methodology=None):
     eligible = [
         r
         for r in records
@@ -161,6 +170,11 @@ def active_calibration(records, stage, at):
         and r["stage"] == stage
         and dt(r["created_at"]) <= dt(at)
         and dt(r["training_cutoff"]) <= dt(at)
+        and (
+            not methodology
+            or r.get("methodology", r.get("config", {}).get("methodology", "sleeper_only_v1_19"))
+            == methodology
+        )
     ]
     return (
         max(eligible, key=lambda x: dt(x["created_at"]))

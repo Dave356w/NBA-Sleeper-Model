@@ -1,11 +1,55 @@
 # Sleeper-Only NBA Prediction Model
 
-Implementation specification · v1.19 · 7 November 2026
+Implementation specification · v1.20 · 7 November 2026
 
 Suggested repository: `sleeper-nba-model`  
 Runtime: Python 3.12  
 Deployment: GitHub Actions and GitHub Pages  
 Status: Build specification for a new, independent model. No existing production repository is to be changed.
+
+## Active methodology — v1.20 residual defense update
+
+The owner requested a residual defense correction with a **25-calendar-day half-life**, followed by a last-season iteration comparison. This section overrides conflicting v1.19 adaptive scoring/bias rules below. Raw Sleeper aggregation and the permanently fixed control remain unchanged. Previously frozen records are never rewritten.
+
+### Selected scoring component
+
+Fit historical team-point residuals as `actual_points - frozen_raw_Sleeper_points = global + venue + offense_control(scoring_team) + defense(opponent) + noise`. Use centered team effects and weighted ridge regression. Offensive effects are nuisance controls during estimation; they are **not** applied to projected scores. The selected family applies global, venue and opponent-defense corrections only:
+
+```text
+H_adjusted = H_raw + global + venue/2 + defense(away)
+A_adjusted = A_raw + global - venue/2 + defense(home)
+M_adjusted = H_adjusted - A_adjusted
+T_adjusted = H_adjusted + A_adjusted
+w_i = 2 ** (-(fit_cutoff_utc - historical_tip_utc).total_seconds() / 86400 / 25)
+```
+
+Recency weighting and zero-centered shrinkage are separate. Defensive ridge strength is **5 fresh team-game observations**, offensive control strength **20**, and global/venue strengths **100** each. Require 30 eligible stage-specific games. Reject nonfinite or unstable coefficients; preserve accepted coefficients on fit failure. Refit at most once per UTC day per stage and season. Age is measured from historical tip, while result verification determines eligibility. Decay is not measured from the import timestamp. Both team residuals share their game's weight.
+
+### Selection evidence and limitations
+
+The historical comparison held the 25-day half-life fixed. It tested three effect families and priors 0/5/10/20/40/80/160, with raw, global-only and existing adaptive baselines: 24 alternatives including controls. October–January was warm-up, February–March selected the family/prior using `0.5*(margin_MAE/14 + total_MAE/19)`, and April was a separated final check. The chosen family uses a defense prior of 5 and offense nuisance control of 20. No betting-profit search was performed.
+
+April margin MAE was 11.430 versus raw 12.354; total MAE was 15.282 versus raw 15.553. Existing adaptive WP log loss was better (0.4185 versus the candidate's fixed-scale 0.4351). This is a point-forecast selection, not proof of a superior complete probability or betting model. The archive's pregame availability is unverified, and both seasons had already been explored. April is not pristine untouched evidence. See `docs/defense_selection_2025-26.md` and the archived selection summary.
+
+### Historical initialization and prospective integrity
+
+For the requested incorporation, **only first-stage team residual fitting** is initialized from the 117 audited 2026–27 legacy-first snapshots already analyzed. The normalized seed has source hashes, frozen projection times, independently retrieved ESPN final scores and their verification times, and a pinned payload hash. Game 401909904 is excluded for Indiana's 198 projected minutes. The source legacy CSV lacks original raw stat objects, as disclosed in the research report. This seed is parameter-training history, never native forward performance, and is never inserted as native forecasts, bets or grades.
+
+The lock stage cannot use first-stage seed observations. It starts at zero team corrections and waits for 30 native lock outcomes. Stage histories, season resets and duplicate game IDs are explicit; native observations supersede duplicate legacy observations. Results must be verified before the fit cutoff, and the fitted version must predate each forecast capture.
+
+### Confidence calibration and scoring versions
+
+New adaptive forecasts are tagged `sleeper_only_v1_20`, store raw and adjusted H/A/M/T, component corrections, exact parameters and matchup-version IDs. WP uses the corrected margin; ATS and totals use corrected margin/total. Old v1.19 probability calibration is not reused on the changed scoring geometry.
+
+Confidence calibration starts at a=10, ATS sigma=14 and totals sigma=19 and learns only from completed, frozen **v1.20 native** forecasts. Its existing 75-completed-game weighting and scale regularization remain unchanged; the new **team-residual component** uses 25 calendar days. Additional scalar ATS/totals biases are held at zero because global/venue mean corrections are already applied by the matchup component. Uncertainty fits use errors against the exact corrected forecasts recorded before each game; no in-sample reapplication of today's ratings to historical targets.
+
+The fixed control always retains raw Sleeper scores and a=10/ATS14/total19. Existing first and lock records keep their original methodology and grades. Public performance offers a methodology selector to avoid pooling v1.19 and v1.20 results.
+
+### Latest previews and public display
+
+The Today page also offers a **Latest · untracked** view, using current Sleeper inputs and the latest first-stage parameters. It shows adjusted adaptive scores, raw scores and correction amounts. These previews are derived, replaceable informational output; they never register selections, receive grades or enter training. First and lock tabs continue to render immutable forecasts, with their original model version. Captures at or after tip are rejected. ESPN is still the only odds source, timestamped when fetched.
+
+The seed and matchup-calibration records are durable and auditable. Public defense tables distinguish legacy training counts from native training and forward evaluation counts. Recovery must restore `data/calibration_seeds` along with transactions. Never silently change the seed or its pinned hash.
 
 ## Revision and scope
 
