@@ -1,6 +1,6 @@
 {
-  "created_at": "2026-11-07T21:44:06.926593+00:00",
-  "id": "matchup:fee381795f1afb38addcdc96ced070c6477c403a6793557e617e5a1c122444a5",
+  "created_at": "2026-11-08T00:38:30.603039+00:00",
+  "id": "matchup:e2a3500134c7bf9848538369ff900f4b089a3ba00bc547565b38c222d92de9ea",
   "implementation_sha256": "8f001a8e86d17cdaac1f74097dc16c5e529fb1f570c2ea2c933b2fdc87df15a1",
   "kind": "matchup_calibration",
   "manifest": [],
@@ -127,7 +127,7 @@
     "WAS": 0
   },
   "training_count": 0,
-  "training_cutoff": "2026-11-07T21:44:06.926593+00:00",
+  "training_cutoff": "2026-11-08T00:38:30.603039+00:00",
   "weight_sum": 0.0,
   "weights": []
 }
