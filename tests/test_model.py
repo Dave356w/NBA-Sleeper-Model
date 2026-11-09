@@ -92,6 +92,7 @@ def test_missing_team_and_ambiguous_game(game, rows, config):
     ],
 )
 def test_snapshot_window(game, config, at, expected):
+    config.pop("lock_policy", None)  # Historical forecasts retain the narrow window.
     assert eligible_stages(game, "2026-11-07T" + at + "+00:00", set(), config) == expected
     assert not eligible_stages(game, "2026-11-07T" + at + "+00:00", {"first", "lock"}, config)
 
@@ -306,3 +307,19 @@ def test_atomic_immutable_storage(root):
 def test_canonical_hash():
     assert digest({"b": 1, "a": 2}) == digest({"a": 2, "b": 1})
     assert math.isfinite(expected_value(0.5, -110))
+
+
+@pytest.mark.parametrize(
+    "at,locked",
+    [
+        ("16:59:59", False),
+        ("17:00:00", True),
+        ("17:15:01", True),
+        ("21:59:59", True),
+        ("22:00:00", False),
+        ("22:00:01", False),
+    ],
+)
+def test_full_pregame_lock_window(game, config, at, locked):
+    stages = eligible_stages(game, "2026-11-07T" + at + "+00:00", set(), config)
+    assert ("lock" in stages) == locked

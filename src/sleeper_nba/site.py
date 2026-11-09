@@ -104,7 +104,7 @@ def build_site(root):
             p
             for p in matchup.load_previews(root)["forecasts"]
             if methodology_of(p) == PUBLIC_METHOD
-            and dt(p["game"]["tip_utc"]) > utcnow()
+            and dt(p["captured_at"]) < dt(p["game"]["tip_utc"])
             and p["instance_id"] not in retired
         ],
         "matchup_calibrations": {

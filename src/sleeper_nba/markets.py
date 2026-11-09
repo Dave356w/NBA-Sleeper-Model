@@ -4,7 +4,7 @@ import math
 
 from scipy.special import ndtr
 
-from .common import dt
+from .common import dt, lock_window_end
 
 
 def valid_odds(value):
@@ -74,11 +74,7 @@ def evaluate(output, params, quotes, captured_at, game, config, stage):
             from datetime import timedelta
 
             target = dt(game["tip_utc"]) - timedelta(hours=config["lock_hours"])
-            if (
-                not target
-                <= dt(quote["captured_at"])
-                <= target + timedelta(minutes=config["lock_tolerance_minutes"])
-            ):
+            if not target <= dt(quote["captured_at"]) <= lock_window_end(game, config):
                 reason = "outside_lock_window_quote"
         prices = quote.get("prices", {})
         sides = ("home", "away") if market in ("moneyline", "ats") else ("over", "under")

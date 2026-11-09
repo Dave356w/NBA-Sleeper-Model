@@ -439,3 +439,21 @@ Build a functioning tested system from this specification. Preserve its statisti
 The target repository is `Dave356w/NBA-Sleeper-Model`. ESPN odds are the sole market feed and are timestamped on HTTP response completion. Unknown sportsbook update time is disclosed but does not disqualify a freshly fetched quote. Market requests must be within five minutes of the paired Sleeper capture, and lock quotes must finish inside the lock window. Closing comparisons are observed pre-tip quotes, not certified sportsbook closing prices. No Odds API service or secret is used.
 
 Sleeper's explicitly empty `stats: {}` rows are unprojected roster placeholders. Preserve their numerical fields as missing, retain raw rows, and exclude them from projected scoring and minutes without imputing zero. A partially populated projection, missing stats object, or inconsistent numeric projection invalidates the snapshot. Both teams must still pass the projected-minute completeness bounds.
+
+
+## Prospective capture policy v1.20.1
+
+New captures with `lock_policy: five_hours_to_tip_v1` accept the first valid
+lock from five hours before tip until strictly before tip. Once accepted it
+remains immutable. Historical forecasts retain their own configuration and
+original 15-minute validation window. The scoring methodology remains v1.20.
+
+The default Picks view prefers an accepted lock, otherwise the latest valid
+saved pregame preview, otherwise the first snapshot. Preview refreshes retain
+previous valid snapshots across failed captures and after tip. Fallbacks display
+capture time and actual lead time, remain untracked, and never create bets, grades
+or training observations. Post-tip feed data never supplies a pregame fallback.
+Preview recommendations use the existing market eligibility rules and only
+positive offered-price model EV is displayed; historical records are unchanged.
+The scheduled ten-minute workflow is best effort and cannot guarantee execution
+or profitable outcomes.

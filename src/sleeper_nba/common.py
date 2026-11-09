@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import hashlib
 import json
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
@@ -61,3 +61,11 @@ def team(value):
     if result not in TEAMS:
         raise ValueError(f"Unknown NBA team: {value!r}")
     return result
+
+
+def lock_window_end(game, config):
+    """Honor each frozen forecast's policy, including historical narrow windows."""
+    tip = dt(game["tip_utc"])
+    if config.get("lock_policy") == "five_hours_to_tip_v1":
+        return tip
+    return tip - timedelta(hours=config["lock_hours"]) + timedelta(minutes=config["lock_tolerance_minutes"])
