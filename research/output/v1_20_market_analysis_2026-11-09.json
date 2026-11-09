@@ -1,0 +1,1686 @@
+{
+  "schema_version": 1,
+  "analysis_date": "2026-11-09",
+  "provenance": "historical_replay",
+  "stage": "first",
+  "methodology": "sleeper_only_v1_20",
+  "model_definition_commit": "eab43b23a40bec0eee6d05887fbbcb4b603c3d53",
+  "market_source": {
+    "repository": "Dave356w/nba-matchups",
+    "commit": "8ac68a718013ce78855a66a5a1a2b7543d3450be",
+    "path": "data/nba_ledger.csv",
+    "git_blob_sha": "9b9148f3ef226674e3acf6ad4c3feffcd4fa6d2e",
+    "file_sha256": "1577fd8d3da9ac028529fa71af8586aae3b3c2d0edd5ffe819c52c37efb72b14",
+    "url": "https://github.com/Dave356w/nba-matchups/blob/8ac68a718013ce78855a66a5a1a2b7543d3450be/data/nba_ledger.csv"
+  },
+  "input_payload_sha256": "4f9ed6ddee8e6789db5ad76814b8c01be90d1b20cf152be782cd2dad869bcdc8",
+  "seed_payload_sha256": "9d3a8e56998a4a7e738020614b3546e1afbc658d97370abe7cffe53714348705",
+  "implementation_sha256": {
+    "src/sleeper_nba/common.py": "2ecfcdcb69506cdf76f84c02ca21c4f5dd28cf0198624074d3a7668ec3aa2d06",
+    "src/sleeper_nba/matchup.py": "dd5df04e7c9eb6935c4d1ea6ff9202e735b7b40f5e4ca1e60e29df729fd9da7b",
+    "src/sleeper_nba/models.py": "b89f6a7f5fbd2535024d08bd0ccda8cfe06f5e0d993fae7176a8aade0474c9a6",
+    "src/sleeper_nba/markets.py": "bec766873bf16939aa8a64729359c905b5214f1ab85d3b9ca4c326b492504f04",
+    "src/sleeper_nba/evaluation.py": "1b2c545267383d68a38be62b675b52661da56137b0fb6e8abca2660c337a7bc2"
+  },
+  "script_sha256": "8798daead3d5e1c26d716e9f66affac291547c510ea83d6ec7ef87132f92bf12",
+  "config_sha256": "48f309228a3cdb7b252340def670d53039d3e7edc54e578d64ccea26e565cf4c",
+  "dependency_versions": {
+    "numpy": "2.5.4",
+    "scipy": "1.18.1",
+    "PyYAML": "6.0.3"
+  },
+  "research_timing": {
+    "result_availability": "12:00 UTC on the day after the Eastern tip date; assumed",
+    "fit_cutoff": "Latest 12:00 UTC at or before the saved Sleeper capture",
+    "quote_evidence": "Legacy first_snapshot_utc or first_ou_snapshot_utc paired to the archived Sleeper snapshot; original HTTP response-completion and sportsbook update timestamps are unavailable.",
+    "bootstrap": "Resample entire Eastern slate dates; seed 120; 10000 draws for market comparisons and 20000 for favorite reversals"
+  },
+  "full_replay": {
+    "n": 117,
+    "correct": 86,
+    "margin": {
+      "mae": 10.826235964381452,
+      "rmse": 14.122165468093185,
+      "bias": -0.5809042164760523
+    },
+    "total": {
+      "mae": 14.716602064048017,
+      "rmse": 18.90541870029406,
+      "bias": -2.6671611728275835
+    },
+    "log_loss": 0.5848435820795961,
+    "brier": 0.1998333083120813,
+    "wp_scale_range": [
+      8.950542340456977,
+      10.663729221259612
+    ]
+  },
+  "availability": {
+    "moneyline": {
+      "missing": 1,
+      "unpaired_quote": 1,
+      "eligible": 115
+    },
+    "ats": {
+      "missing": 1,
+      "unpaired_quote": 1,
+      "eligible": 115
+    },
+    "totals": {
+      "missing": 54,
+      "unpaired_quote": 3,
+      "eligible": 60
+    }
+  },
+  "comparison": {
+    "moneyline": {
+      "n": 115,
+      "slates": 14,
+      "model": {
+        "log_loss": 0.58612846535282,
+        "brier": 0.20046467734007758,
+        "directional_n": 112,
+        "correct": 82,
+        "accuracy": 0.7321428571428571
+      },
+      "market": {
+        "log_loss": 0.5610276934729176,
+        "brier": 0.1904972916614295,
+        "directional_n": 112,
+        "correct": 80,
+        "accuracy": 0.7142857142857143
+      },
+      "paired_log_loss": {
+        "n": 115,
+        "slates": 14,
+        "mean": 0.025100771879902516,
+        "ci95": [
+          -0.011106830601450578,
+          0.05878240799730358
+        ],
+        "replicates": 10000,
+        "seed": 120,
+        "exploratory": true
+      },
+      "ties": {
+        "model": 0,
+        "market": 3
+      },
+      "agreement": {
+        "agree_n": 102,
+        "disagree_n": 10,
+        "model_wins_when_disagree": 6
+      },
+      "probability_bins": [
+        {
+          "band": [
+            0.5,
+            0.6
+          ],
+          "n": 32,
+          "expected_accuracy": 0.5514940683372929,
+          "accuracy": 0.71875
+        },
+        {
+          "band": [
+            0.6,
+            0.7
+          ],
+          "n": 33,
+          "expected_accuracy": 0.6579362560062803,
+          "accuracy": 0.696969696969697
+        },
+        {
+          "band": [
+            0.7,
+            0.8
+          ],
+          "n": 26,
+          "expected_accuracy": 0.7477665053869971,
+          "accuracy": 0.6538461538461539
+        },
+        {
+          "band": [
+            0.8,
+            0.9
+          ],
+          "n": 15,
+          "expected_accuracy": 0.8496778955779064,
+          "accuracy": 0.8666666666666667
+        },
+        {
+          "band": [
+            0.9,
+            1
+          ],
+          "n": 9,
+          "expected_accuracy": 0.9361487601290442,
+          "accuracy": 0.8888888888888888
+        }
+      ],
+      "flat_stake_same_decisive_quotes": {
+        "model": {
+          "n": 112,
+          "wins": 82,
+          "losses": 30,
+          "pushes": 0,
+          "units": 9.494618649789633,
+          "roi": 0.08477338080169315,
+          "mean_model_probability": 0.6982079088726031,
+          "mean_model_ev": 0.03772390288456821,
+          "mean_probability_edge": 0.04338117052371071
+        },
+        "market_favorite": {
+          "n": 112,
+          "wins": 80,
+          "losses": 32,
+          "pushes": 0,
+          "units": 2.674783916096117,
+          "roi": 0.023881999250858186,
+          "mean_model_probability": 0.6661392002957088,
+          "mean_model_ev": -0.0407881915092142,
+          "mean_probability_edge": 0.0
+        },
+        "paired_roi_difference": {
+          "n": 112,
+          "slates": 14,
+          "mean": 0.060891381550834955,
+          "ci95": [
+            -0.0559309236011091,
+            0.1812605557026975
+          ],
+          "replicates": 10000,
+          "seed": 120,
+          "exploratory": true
+        }
+      }
+    },
+    "ats": {
+      "n": 115,
+      "slates": 14,
+      "model": {
+        "log_loss": 0.711804266769294,
+        "brier": 0.2588501961873723,
+        "point_error": {
+          "mae": 10.890083546370695,
+          "rmse": 14.2128968159081,
+          "bias": -0.7154416811104185
+        }
+      },
+      "market": {
+        "log_loss": 0.6957630934511791,
+        "brier": 0.2513076916504954,
+        "point_error": {
+          "mae": 10.38695652173913,
+          "rmse": 13.504508103979012,
+          "bias": -1.891304347826087
+        }
+      },
+      "paired_log_loss": {
+        "n": 115,
+        "slates": 14,
+        "mean": 0.016041173318114808,
+        "ci95": [
+          -0.0075867375192496065,
+          0.04159095266895643
+        ],
+        "replicates": 10000,
+        "seed": 120,
+        "exploratory": true
+      },
+      "paired_absolute_error": {
+        "n": 115,
+        "slates": 14,
+        "mean": 0.5031270246315628,
+        "ci95": [
+          -0.021697091893754197,
+          1.0828774827179506
+        ],
+        "replicates": 10000,
+        "seed": 120,
+        "exploratory": true
+      }
+    },
+    "totals": {
+      "n": 60,
+      "slates": 7,
+      "model": {
+        "log_loss": 0.7125007206585907,
+        "brier": 0.2594305880809818,
+        "point_error": {
+          "mae": 13.907362944180639,
+          "rmse": 18.326773772848256,
+          "bias": -2.464234445147485
+        }
+      },
+      "market": {
+        "log_loss": 0.69481710678119,
+        "brier": 0.2508347806538142,
+        "point_error": {
+          "mae": 13.566666666666666,
+          "rmse": 17.60445019495544,
+          "bias": -2.783333333333333
+        }
+      },
+      "paired_log_loss": {
+        "n": 60,
+        "slates": 7,
+        "mean": 0.01768361387740079,
+        "ci95": [
+          0.001901883190176176,
+          0.0418957786944004
+        ],
+        "replicates": 10000,
+        "seed": 120,
+        "exploratory": true
+      },
+      "paired_absolute_error": {
+        "n": 60,
+        "slates": 7,
+        "mean": 0.3406962775139718,
+        "ci95": [
+          -0.12356303236692373,
+          0.968792854822589
+        ],
+        "replicates": 10000,
+        "seed": 120,
+        "exploratory": true
+      }
+    }
+  },
+  "betting": {
+    "moneyline:directional": {
+      "n": 115,
+      "wins": 84,
+      "losses": 31,
+      "pushes": 0,
+      "units": 10.31280046797145,
+      "roi": 0.08967652580844739,
+      "mean_model_probability": 0.695409939564283,
+      "mean_model_ev": 0.040083676468908036,
+      "mean_probability_edge": 0.044622159607100705,
+      "favorite": {
+        "n": 102,
+        "wins": 76,
+        "losses": 26,
+        "pushes": 0,
+        "units": 5.686311771482754,
+        "roi": 0.05574815462237994,
+        "mean_model_probability": 0.7069929228337709,
+        "mean_model_ev": 0.00667254638008049,
+        "mean_probability_edge": 0.030776329068107428
+      },
+      "underdog": {
+        "n": 10,
+        "wins": 6,
+        "losses": 4,
+        "pushes": 0,
+        "units": 3.808306878306878,
+        "roi": 0.3808306878306878,
+        "mean_model_probability": 0.6086007664686923,
+        "mean_model_ev": 0.35444773923034295,
+        "mean_probability_edge": 0.17195055337086412
+      },
+      "pickem": {
+        "n": 3,
+        "wins": 2,
+        "losses": 1,
+        "pushes": 0,
+        "units": 0.8181818181818181,
+        "roi": 0.2727272727272727,
+        "mean_model_probability": 0.5909524187203273,
+        "mean_model_ev": 0.12818189028426127,
+        "mean_probability_edge": 0.09095241872032733
+      },
+      "roi_slate_bootstrap": {
+        "n": 115,
+        "slates": 14,
+        "mean": 0.08967652580844737,
+        "ci95": [
+          -0.035409158472796624,
+          0.21924432716299946
+        ],
+        "replicates": 10000,
+        "seed": 120,
+        "exploratory": true
+      }
+    },
+    "ats:directional": {
+      "n": 115,
+      "wins": 57,
+      "losses": 58,
+      "pushes": 0,
+      "units": -6.238021220966881,
+      "roi": -0.054243662791016355,
+      "mean_model_probability": 0.5791655780171151,
+      "mean_model_ev": 0.1022971534893976,
+      "mean_probability_edge": 0.07733846321029317,
+      "point_edge_bands": [
+        {
+          "edge_band": [
+            0,
+            3
+          ],
+          "n": 69,
+          "wins": 35,
+          "losses": 34,
+          "pushes": 0,
+          "units": -2.121855216054073,
+          "roi": -0.030751524870348882,
+          "mean_model_probability": 0.5421976539585224,
+          "mean_model_ev": 0.03260148320994319,
+          "mean_probability_edge": 0.040627858847979995
+        },
+        {
+          "edge_band": [
+            3,
+            6
+          ],
+          "n": 39,
+          "wins": 18,
+          "losses": 21,
+          "pushes": 0,
+          "units": -4.760058344457322,
+          "roi": -0.12205277806300827,
+          "mean_model_probability": 0.6192419205350559,
+          "mean_model_ev": 0.17793643694115163,
+          "mean_probability_edge": 0.11718720597648144
+        },
+        {
+          "edge_band": [
+            6,
+            10
+          ],
+          "n": 5,
+          "wins": 3,
+          "losses": 2,
+          "pushes": 0,
+          "units": 0.691511387163561,
+          "roi": 0.1383022774327122,
+          "mean_model_probability": 0.6993861959817473,
+          "mean_model_ev": 0.3245119992790611,
+          "mean_probability_edge": 0.19505250150720777
+        },
+        {
+          "edge_band": [
+            10,
+            null
+          ],
+          "n": 2,
+          "wins": 1,
+          "losses": 1,
+          "pushes": 0,
+          "units": -0.04761904761904767,
+          "roi": -0.023809523809523836,
+          "mean_model_probability": 0.77251873402714,
+          "mean_model_ev": 0.47629463634721303,
+          "mean_probability_edge": 0.2725187340271401
+        }
+      ],
+      "roi_slate_bootstrap": {
+        "n": 115,
+        "slates": 14,
+        "mean": -0.05424366279101636,
+        "ci95": [
+          -0.19102791859530113,
+          0.0761354733893485
+        ],
+        "replicates": 10000,
+        "seed": 120,
+        "exploratory": true
+      }
+    },
+    "moneyline:value": {
+      "n": 64,
+      "wins": 35,
+      "losses": 29,
+      "pushes": 0,
+      "units": -4.6513556070348745,
+      "roi": -0.07267743135991991,
+      "mean_model_probability": 0.6552225731665519,
+      "mean_model_ev": 0.2080036679110003,
+      "mean_probability_edge": 0.12357565213542518,
+      "favorite": {
+        "n": 36,
+        "wins": 26,
+        "losses": 10,
+        "pushes": 0,
+        "units": 1.238081622402356,
+        "roi": 0.034391156177843225,
+        "mean_model_probability": 0.7938798095229197,
+        "mean_model_ev": 0.14720431157330843,
+        "mean_probability_edge": 0.12676724226872982
+      },
+      "underdog": {
+        "n": 26,
+        "wins": 7,
+        "losses": 19,
+        "pushes": 0,
+        "units": -7.7076190476190485,
+        "roi": -0.2964468864468865,
+        "mean_model_probability": 0.4660909716875686,
+        "mean_model_ev": 0.294340360248979,
+        "mean_probability_edge": 0.11957748996290404
+      },
+      "pickem": {
+        "n": 2,
+        "wins": 2,
+        "losses": 0,
+        "pushes": 0,
+        "units": 1.8181818181818181,
+        "roi": 0.9090909090909091,
+        "mean_model_probability": 0.6181031379787159,
+        "mean_model_ev": 0.18001508159573038,
+        "mean_probability_edge": 0.11810313797871591
+      },
+      "roi_slate_bootstrap": {
+        "n": 64,
+        "slates": 13,
+        "mean": -0.07267743135991991,
+        "ci95": [
+          -0.280040638384575,
+          0.19469308532703297
+        ],
+        "replicates": 10000,
+        "seed": 120,
+        "exploratory": true
+      }
+    },
+    "ats:edge_3plus": {
+      "n": 46,
+      "wins": 22,
+      "losses": 24,
+      "pushes": 0,
+      "units": -4.116166004912809,
+      "roi": -0.08948186967201757,
+      "mean_model_probability": 0.6346174641050044,
+      "mean_model_ev": 0.2068406589085793,
+      "mean_probability_edge": 0.1324043697537629,
+      "roi_slate_bootstrap": {
+        "n": 46,
+        "slates": 14,
+        "mean": -0.08948186967201757,
+        "ci95": [
+          -0.33195860977790326,
+          0.113670560594169
+        ],
+        "replicates": 10000,
+        "seed": 120,
+        "exploratory": true
+      }
+    },
+    "totals:directional": {
+      "n": 60,
+      "wins": 29,
+      "losses": 31,
+      "pushes": 0,
+      "units": -4.720058425597911,
+      "roi": -0.07866764042663184,
+      "mean_model_probability": 0.5451809298795186,
+      "mean_model_ev": 0.03769555210624828,
+      "mean_probability_edge": 0.04352240082524971,
+      "point_edge_bands": [
+        {
+          "edge_band": [
+            0,
+            3
+          ],
+          "n": 45,
+          "wins": 23,
+          "losses": 22,
+          "pushes": 0,
+          "units": -1.1891981052639058,
+          "roi": -0.02642662456142013,
+          "mean_model_probability": 0.527371028877135,
+          "mean_model_ev": 0.0029531688669048673,
+          "mean_probability_edge": 0.025352065229020563
+        },
+        {
+          "edge_band": [
+            3,
+            6
+          ],
+          "n": 12,
+          "wins": 5,
+          "losses": 7,
+          "pushes": 0,
+          "units": -2.439951229424914,
+          "roi": -0.20332926911874283,
+          "mean_model_probability": 0.5838398170908604,
+          "mean_model_ev": 0.1135040177924388,
+          "mean_probability_edge": 0.08311828549994511
+        },
+        {
+          "edge_band": [
+            6,
+            10
+          ],
+          "n": 3,
+          "wins": 1,
+          "losses": 2,
+          "pushes": 0,
+          "units": -1.0909090909090908,
+          "roi": -0.3636363636363636,
+          "mean_model_probability": 0.6576938960699054,
+          "mean_model_ev": 0.25559743795163753,
+          "mean_probability_edge": 0.15769389606990536
+        },
+        {
+          "edge_band": [
+            10,
+            null
+          ],
+          "n": 0
+        }
+      ],
+      "roi_slate_bootstrap": {
+        "n": 60,
+        "slates": 7,
+        "mean": -0.07866764042663182,
+        "ci95": [
+          -0.34731586196897196,
+          0.07060775377658239
+        ],
+        "replicates": 10000,
+        "seed": 120,
+        "exploratory": true
+      }
+    },
+    "totals:value": {
+      "n": 19,
+      "wins": 8,
+      "losses": 11,
+      "pushes": 0,
+      "units": -3.7445764287869556,
+      "roi": -0.19708296993615557,
+      "mean_model_probability": 0.5905488561751525,
+      "mean_model_ev": 0.12536185569777386,
+      "mean_probability_edge": 0.08940882525073936,
+      "roi_slate_bootstrap": {
+        "n": 19,
+        "slates": 6,
+        "mean": -0.19708296993615554,
+        "ci95": [
+          -0.32673930816345675,
+          -0.0879912311491259
+        ],
+        "replicates": 10000,
+        "seed": 120,
+        "exploratory": true
+      }
+    }
+  },
+  "favorite_reversal": {
+    "status": "retrospective exploratory hypothesis; not an active selection rule",
+    "groups": {
+      "all_value_underdogs": {
+        "favorite_moneyline": {
+          "n": 26,
+          "wins": 19,
+          "losses": 7,
+          "pushes": 0,
+          "units": 1.8543774012566259,
+          "roi": 0.07132220774063945,
+          "roi_slate_bootstrap": {
+            "n": 26,
+            "slates": 12,
+            "mean": 0.07132220774063944,
+            "ci95": [
+              -0.25045398578427536,
+              0.31664295629373423
+            ],
+            "replicates": 20000,
+            "seed": 120,
+            "exploratory": true
+          },
+          "mean_market_probability": 0.6534865182753354,
+          "market_expected_wins": 16.990649475158722,
+          "mean_breakeven_probability": 0.6812646465664183,
+          "mean_model_probability": 0.5339090283124315,
+          "median_odds": -211.0
+        },
+        "favorite_ats": {
+          "n": 26,
+          "wins": 14,
+          "losses": 12,
+          "pushes": 0,
+          "units": 0.8575953032474768,
+          "roi": 0.03298443474028757,
+          "roi_slate_bootstrap": {
+            "n": 26,
+            "slates": 12,
+            "mean": 0.03298443474028758,
+            "ci95": [
+              -0.30146859805820697,
+              0.3954983381243254
+            ],
+            "replicates": 20000,
+            "seed": 120,
+            "exploratory": true
+          }
+        }
+      },
+      "model_dog_below_50": {
+        "favorite_moneyline": {
+          "n": 17,
+          "wins": 15,
+          "losses": 2,
+          "pushes": 0,
+          "units": 3.865905256643263,
+          "roi": 0.22740619156725075,
+          "roi_slate_bootstrap": {
+            "n": 17,
+            "slates": 8,
+            "mean": 0.22740619156725078,
+            "ci95": [
+              0.03688666892574481,
+              0.3955031442837404
+            ],
+            "replicates": 20000,
+            "seed": 120,
+            "exploratory": true
+          },
+          "mean_market_probability": 0.6977341976592337,
+          "market_expected_wins": 11.861481360206973,
+          "mean_breakeven_probability": 0.7271396974814867,
+          "mean_model_probability": 0.6151805120684771,
+          "median_odds": -265.0
+        },
+        "favorite_ats": {
+          "n": 17,
+          "wins": 10,
+          "losses": 7,
+          "pushes": 0,
+          "units": 2.15088534653752,
+          "roi": 0.12652266744338353,
+          "roi_slate_bootstrap": {
+            "n": 17,
+            "slates": 8,
+            "mean": 0.12652266744338353,
+            "ci95": [
+              -0.24636201857373882,
+              0.6374391653894759
+            ],
+            "replicates": 20000,
+            "seed": 120,
+            "exploratory": true
+          }
+        }
+      },
+      "model_dog_at_least_50": {
+        "favorite_moneyline": {
+          "n": 9,
+          "wins": 4,
+          "losses": 5,
+          "pushes": 0,
+          "units": -2.011527855386637,
+          "roi": -0.22350309504295968,
+          "roi_slate_bootstrap": {
+            "n": 9,
+            "slates": 8,
+            "mean": -0.22350309504295968,
+            "ci95": [
+              -0.810641627543036,
+              0.48442486948067043
+            ],
+            "replicates": 20000,
+            "seed": 120,
+            "exploratory": true
+          },
+          "mean_market_probability": 0.5699075683279722,
+          "market_expected_wins": 5.129168114951749,
+          "mean_breakeven_probability": 0.5946117726157338,
+          "mean_model_probability": 0.38039622566212317,
+          "median_odds": -135.0
+        },
+        "favorite_ats": {
+          "n": 9,
+          "wins": 4,
+          "losses": 5,
+          "pushes": 0,
+          "units": -1.2932900432900434,
+          "roi": -0.14369889369889371,
+          "roi_slate_bootstrap": {
+            "n": 9,
+            "slates": 8,
+            "mean": -0.14369889369889371,
+            "ci95": [
+              -0.7878787878787878,
+              0.6751893939393939
+            ],
+            "replicates": 20000,
+            "seed": 120,
+            "exploratory": true
+          }
+        }
+      }
+    },
+    "games": [
+      {
+        "game_id": "401909843",
+        "date": "2026-10-23",
+        "snapshot_utc": "2026-10-23T07:27:11Z",
+        "market_snapshot_utc": "2026-10-23T07:27:09Z",
+        "favorite": "ATL",
+        "underdog": "CHA",
+        "model_dog_probability": 0.5932836649127307,
+        "market_dog_probability": 0.43650793650793646,
+        "dog_odds": 120.0,
+        "dog_probability_edge": 0.1567757284047942,
+        "dog_ev": 0.3052240628080074,
+        "dog_units": -1.0,
+        "model_dog_below_50": false,
+        "favorite_moneyline": {
+          "market": "moneyline",
+          "side": "away",
+          "line": null,
+          "odds": -142.0,
+          "outcome": "win",
+          "units": 0.704225352112676,
+          "market_probability": 0.5634920634920635,
+          "model_probability": 0.40671633508726934,
+          "breakeven_probability": 0.5867768595041323
+        },
+        "favorite_ats": {
+          "market": "ats",
+          "side": "away",
+          "line": 3.5,
+          "odds": -105.0,
+          "outcome": "win",
+          "units": 0.9523809523809523,
+          "favorite_line": -3.5
+        }
+      },
+      {
+        "game_id": "401909844",
+        "date": "2026-10-23",
+        "snapshot_utc": "2026-10-23T07:27:11Z",
+        "market_snapshot_utc": "2026-10-23T07:27:09Z",
+        "favorite": "IND",
+        "underdog": "DAL",
+        "model_dog_probability": 0.40632839512879704,
+        "market_dog_probability": 0.33099297893681046,
+        "dog_odds": 190.0,
+        "dog_probability_edge": 0.07533541619198658,
+        "dog_ev": 0.17835234587351134,
+        "dog_units": 1.9,
+        "model_dog_below_50": true,
+        "favorite_moneyline": {
+          "market": "moneyline",
+          "side": "home",
+          "line": null,
+          "odds": -230.0,
+          "outcome": "loss",
+          "units": -1.0,
+          "market_probability": 0.6690070210631895,
+          "model_probability": 0.593671604871203,
+          "breakeven_probability": 0.696969696969697
+        },
+        "favorite_ats": {
+          "market": "ats",
+          "side": "home",
+          "line": -6.5,
+          "odds": -110.0,
+          "outcome": "loss",
+          "units": -1.0,
+          "favorite_line": -6.5
+        }
+      },
+      {
+        "game_id": "401909851",
+        "date": "2026-10-23",
+        "snapshot_utc": "2026-10-23T07:27:11Z",
+        "market_snapshot_utc": "2026-10-23T07:27:09Z",
+        "favorite": "LAL",
+        "underdog": "LAC",
+        "model_dog_probability": 0.3209657282971218,
+        "market_dog_probability": 0.24000000000000005,
+        "dog_odds": 300.0,
+        "dog_probability_edge": 0.08096572829712173,
+        "dog_ev": 0.2838629131884871,
+        "dog_units": -1.0,
+        "model_dog_below_50": true,
+        "favorite_moneyline": {
+          "market": "moneyline",
+          "side": "home",
+          "line": null,
+          "odds": -380.0,
+          "outcome": "win",
+          "units": 0.2631578947368421,
+          "market_probability": 0.7600000000000001,
+          "model_probability": 0.6790342717028782,
+          "breakeven_probability": 0.7916666666666666
+        },
+        "favorite_ats": {
+          "market": "ats",
+          "side": "home",
+          "line": -8.5,
+          "odds": -118.0,
+          "outcome": "loss",
+          "units": -1.0,
+          "favorite_line": -8.5
+        }
+      },
+      {
+        "game_id": "401909860",
+        "date": "2026-10-24",
+        "snapshot_utc": "2026-10-24T05:48:21Z",
+        "market_snapshot_utc": "2026-10-24T05:48:21Z",
+        "favorite": "PHX",
+        "underdog": "GSW",
+        "model_dog_probability": 0.3538302333272767,
+        "market_dog_probability": 0.2559309849029475,
+        "dog_odds": 275.0,
+        "dog_probability_edge": 0.09789924842432918,
+        "dog_ev": 0.32686337497728757,
+        "dog_units": -1.0,
+        "model_dog_below_50": true,
+        "favorite_moneyline": {
+          "market": "moneyline",
+          "side": "home",
+          "line": null,
+          "odds": -345.0,
+          "outcome": "win",
+          "units": 0.2898550724637681,
+          "market_probability": 0.7440690150970525,
+          "model_probability": 0.6461697666727233,
+          "breakeven_probability": 0.7752808988764045
+        },
+        "favorite_ats": {
+          "market": "ats",
+          "side": "home",
+          "line": -8.5,
+          "odds": -115.0,
+          "outcome": "win",
+          "units": 0.8695652173913043,
+          "favorite_line": -8.5
+        }
+      },
+      {
+        "game_id": "401909866",
+        "date": "2026-10-25",
+        "snapshot_utc": "2026-10-25T04:35:41Z",
+        "market_snapshot_utc": "2026-10-25T04:35:39Z",
+        "favorite": "PHI",
+        "underdog": "DET",
+        "model_dog_probability": 0.6616607961426293,
+        "market_dog_probability": 0.448558885283451,
+        "dog_odds": 114.0,
+        "dog_probability_edge": 0.2131019108591783,
+        "dog_ev": 0.41595410374522657,
+        "dog_units": 1.14,
+        "model_dog_below_50": false,
+        "favorite_moneyline": {
+          "market": "moneyline",
+          "side": "home",
+          "line": null,
+          "odds": -135.0,
+          "outcome": "loss",
+          "units": -1.0,
+          "market_probability": 0.551441114716549,
+          "model_probability": 0.33833920385737065,
+          "breakeven_probability": 0.574468085106383
+        },
+        "favorite_ats": {
+          "market": "ats",
+          "side": "home",
+          "line": -2.5,
+          "odds": -115.0,
+          "outcome": "loss",
+          "units": -1.0,
+          "favorite_line": -2.5
+        }
+      },
+      {
+        "game_id": "401909873",
+        "date": "2026-10-26",
+        "snapshot_utc": "2026-10-26T04:40:47Z",
+        "market_snapshot_utc": "2026-10-26T04:40:45Z",
+        "favorite": "OKC",
+        "underdog": "PHX",
+        "model_dog_probability": 0.31419293456065256,
+        "market_dog_probability": 0.23409789548356585,
+        "dog_odds": 310.0,
+        "dog_probability_edge": 0.0800950390770867,
+        "dog_ev": 0.28819103169867555,
+        "dog_units": -1.0,
+        "model_dog_below_50": true,
+        "favorite_moneyline": {
+          "market": "moneyline",
+          "side": "home",
+          "line": null,
+          "odds": -395.0,
+          "outcome": "win",
+          "units": 0.25316455696202533,
+          "market_probability": 0.7659021045164341,
+          "model_probability": 0.6858070654393474,
+          "breakeven_probability": 0.797979797979798
+        },
+        "favorite_ats": {
+          "market": "ats",
+          "side": "home",
+          "line": -9.5,
+          "odds": -115.0,
+          "outcome": "win",
+          "units": 0.8695652173913043,
+          "favorite_line": -9.5
+        }
+      },
+      {
+        "game_id": "401909875",
+        "date": "2026-10-26",
+        "snapshot_utc": "2026-10-26T04:40:47Z",
+        "market_snapshot_utc": "2026-10-26T04:40:45Z",
+        "favorite": "UTA",
+        "underdog": "MEM",
+        "model_dog_probability": 0.5473623221090456,
+        "market_dog_probability": 0.4891657638136511,
+        "dog_odds": -105.0,
+        "dog_probability_edge": 0.05819655829539444,
+        "dog_ev": 0.06865977173670801,
+        "dog_units": 0.9523809523809523,
+        "model_dog_below_50": false,
+        "favorite_moneyline": {
+          "market": "moneyline",
+          "side": "home",
+          "line": null,
+          "odds": -115.0,
+          "outcome": "loss",
+          "units": -1.0,
+          "market_probability": 0.5108342361863488,
+          "model_probability": 0.4526376778909545,
+          "breakeven_probability": 0.5348837209302325
+        },
+        "favorite_ats": {
+          "market": "ats",
+          "side": "home",
+          "line": -1.5,
+          "odds": -105.0,
+          "outcome": "loss",
+          "units": -1.0,
+          "favorite_line": -1.5
+        }
+      },
+      {
+        "game_id": "401909882",
+        "date": "2026-10-28",
+        "snapshot_utc": "2026-10-28T05:33:17Z",
+        "market_snapshot_utc": "2026-10-28T05:33:15Z",
+        "favorite": "CLE",
+        "underdog": "WAS",
+        "model_dog_probability": 0.3056954387296681,
+        "market_dog_probability": 0.23409789548356585,
+        "dog_odds": 310.0,
+        "dog_probability_edge": 0.07159754324610224,
+        "dog_ev": 0.2533512987916392,
+        "dog_units": -1.0,
+        "model_dog_below_50": true,
+        "favorite_moneyline": {
+          "market": "moneyline",
+          "side": "home",
+          "line": null,
+          "odds": -395.0,
+          "outcome": "win",
+          "units": 0.25316455696202533,
+          "market_probability": 0.7659021045164341,
+          "model_probability": 0.6943045612703319,
+          "breakeven_probability": 0.797979797979798
+        },
+        "favorite_ats": {
+          "market": "ats",
+          "side": "home",
+          "line": -10.5,
+          "odds": -105.0,
+          "outcome": "loss",
+          "units": -1.0,
+          "favorite_line": -10.5
+        }
+      },
+      {
+        "game_id": "401909885",
+        "date": "2026-10-28",
+        "snapshot_utc": "2026-10-28T05:33:17Z",
+        "market_snapshot_utc": "2026-10-28T05:33:15Z",
+        "favorite": "TOR",
+        "underdog": "ORL",
+        "model_dog_probability": 0.4428128032434637,
+        "market_dog_probability": 0.39076376554174075,
+        "dog_odds": 145.0,
+        "dog_probability_edge": 0.05204903770172298,
+        "dog_ev": 0.08489136794648611,
+        "dog_units": -1.0,
+        "model_dog_below_50": true,
+        "favorite_moneyline": {
+          "market": "moneyline",
+          "side": "home",
+          "line": null,
+          "odds": -175.0,
+          "outcome": "win",
+          "units": 0.5714285714285714,
+          "market_probability": 0.6092362344582594,
+          "model_probability": 0.5571871967565363,
+          "breakeven_probability": 0.6363636363636364
+        },
+        "favorite_ats": {
+          "market": "ats",
+          "side": "home",
+          "line": -4.5,
+          "odds": -110.0,
+          "outcome": "win",
+          "units": 0.9090909090909091,
+          "favorite_line": -4.5
+        }
+      },
+      {
+        "game_id": "401909892",
+        "date": "2026-10-28",
+        "snapshot_utc": "2026-10-28T05:33:17Z",
+        "market_snapshot_utc": "2026-10-28T05:33:15Z",
+        "favorite": "LAL",
+        "underdog": "LAC",
+        "model_dog_probability": 0.42698304670289017,
+        "market_dog_probability": 0.35527082119976705,
+        "dog_odds": 170.0,
+        "dog_probability_edge": 0.07171222550312312,
+        "dog_ev": 0.15285422609780341,
+        "dog_units": -1.0,
+        "model_dog_below_50": true,
+        "favorite_moneyline": {
+          "market": "moneyline",
+          "side": "away",
+          "line": null,
+          "odds": -205.0,
+          "outcome": "win",
+          "units": 0.4878048780487805,
+          "market_probability": 0.644729178800233,
+          "model_probability": 0.5730169532971099,
+          "breakeven_probability": 0.6721311475409836
+        },
+        "favorite_ats": {
+          "market": "ats",
+          "side": "away",
+          "line": 5.5,
+          "odds": -105.0,
+          "outcome": "win",
+          "units": 0.9523809523809523,
+          "favorite_line": -5.5
+        }
+      },
+      {
+        "game_id": "401909895",
+        "date": "2026-10-29",
+        "snapshot_utc": "2026-10-29T05:42:21Z",
+        "market_snapshot_utc": "2026-10-29T05:42:20Z",
+        "favorite": "POR",
+        "underdog": "MEM",
+        "model_dog_probability": 0.5455401933720384,
+        "market_dog_probability": 0.30423004792665137,
+        "dog_odds": 215.0,
+        "dog_probability_edge": 0.24131014544538704,
+        "dog_ev": 0.718451609121921,
+        "dog_units": 2.15,
+        "model_dog_below_50": false,
+        "favorite_moneyline": {
+          "market": "moneyline",
+          "side": "home",
+          "line": null,
+          "odds": -265.0,
+          "outcome": "loss",
+          "units": -1.0,
+          "market_probability": 0.6957699520733487,
+          "model_probability": 0.4544598066279616,
+          "breakeven_probability": 0.726027397260274
+        },
+        "favorite_ats": {
+          "market": "ats",
+          "side": "home",
+          "line": -7.5,
+          "odds": -105.0,
+          "outcome": "loss",
+          "units": -1.0,
+          "favorite_line": -7.5
+        }
+      },
+      {
+        "game_id": "401909277",
+        "date": "2026-10-30",
+        "snapshot_utc": "2026-10-30T05:41:37Z",
+        "market_snapshot_utc": "2026-10-30T05:41:35Z",
+        "favorite": "WAS",
+        "underdog": "CHA",
+        "model_dog_probability": 0.82659299447871,
+        "market_dog_probability": 0.4891657638136511,
+        "dog_odds": -105.0,
+        "dog_probability_edge": 0.3374272306650589,
+        "dog_ev": 0.6138244177917672,
+        "dog_units": -1.0,
+        "model_dog_below_50": false,
+        "favorite_moneyline": {
+          "market": "moneyline",
+          "side": "home",
+          "line": null,
+          "odds": -115.0,
+          "outcome": "win",
+          "units": 0.8695652173913043,
+          "market_probability": 0.5108342361863488,
+          "model_probability": 0.17340700552129001,
+          "breakeven_probability": 0.5348837209302325
+        },
+        "favorite_ats": {
+          "market": "ats",
+          "side": "home",
+          "line": -1.5,
+          "odds": -105.0,
+          "outcome": "win",
+          "units": 0.9523809523809523,
+          "favorite_line": -1.5
+        }
+      },
+      {
+        "game_id": "401909282",
+        "date": "2026-10-30",
+        "snapshot_utc": "2026-10-30T05:41:37Z",
+        "market_snapshot_utc": "2026-10-30T05:41:35Z",
+        "favorite": "MIA",
+        "underdog": "IND",
+        "model_dog_probability": 0.3767747401938184,
+        "market_dog_probability": 0.2949668357393679,
+        "dog_odds": 225.0,
+        "dog_probability_edge": 0.08180790445445052,
+        "dog_ev": 0.2245179056299098,
+        "dog_units": -1.0,
+        "model_dog_below_50": true,
+        "favorite_moneyline": {
+          "market": "moneyline",
+          "side": "home",
+          "line": null,
+          "odds": -278.0,
+          "outcome": "win",
+          "units": 0.3597122302158273,
+          "market_probability": 0.705033164260632,
+          "model_probability": 0.6232252598061816,
+          "breakeven_probability": 0.7354497354497355
+        },
+        "favorite_ats": {
+          "market": "ats",
+          "side": "home",
+          "line": -7.5,
+          "odds": -105.0,
+          "outcome": "win",
+          "units": 0.9523809523809523,
+          "favorite_line": -7.5
+        }
+      },
+      {
+        "game_id": "401909284",
+        "date": "2026-10-30",
+        "snapshot_utc": "2026-10-30T05:41:37Z",
+        "market_snapshot_utc": "2026-10-30T05:41:35Z",
+        "favorite": "MIN",
+        "underdog": "LAC",
+        "model_dog_probability": 0.4186775625366804,
+        "market_dog_probability": 0.30423004792665137,
+        "dog_odds": 215.0,
+        "dog_probability_edge": 0.11444751461002906,
+        "dog_ev": 0.3188343219905433,
+        "dog_units": -1.0,
+        "model_dog_below_50": true,
+        "favorite_moneyline": {
+          "market": "moneyline",
+          "side": "home",
+          "line": null,
+          "odds": -265.0,
+          "outcome": "win",
+          "units": 0.37735849056603776,
+          "market_probability": 0.6957699520733487,
+          "model_probability": 0.5813224374633196,
+          "breakeven_probability": 0.726027397260274
+        },
+        "favorite_ats": {
+          "market": "ats",
+          "side": "home",
+          "line": -7.5,
+          "odds": -110.0,
+          "outcome": "win",
+          "units": 0.9090909090909091,
+          "favorite_line": -7.5
+        }
+      },
+      {
+        "game_id": "401909896",
+        "date": "2026-10-31",
+        "snapshot_utc": "2026-10-31T05:32:13Z",
+        "market_snapshot_utc": "2026-10-31T05:32:12Z",
+        "favorite": "POR",
+        "underdog": "UTA",
+        "model_dog_probability": 0.43225578487194327,
+        "market_dog_probability": 0.33635187580853815,
+        "dog_odds": 185.0,
+        "dog_probability_edge": 0.09590390906340512,
+        "dog_ev": 0.23192898688503838,
+        "dog_units": -1.0,
+        "model_dog_below_50": true,
+        "favorite_moneyline": {
+          "market": "moneyline",
+          "side": "away",
+          "line": null,
+          "odds": -225.0,
+          "outcome": "win",
+          "units": 0.4444444444444444,
+          "market_probability": 0.6636481241914618,
+          "model_probability": 0.5677442151280567,
+          "breakeven_probability": 0.6923076923076923
+        },
+        "favorite_ats": {
+          "market": "ats",
+          "side": "away",
+          "line": 6.5,
+          "odds": -110.0,
+          "outcome": "win",
+          "units": 0.9090909090909091,
+          "favorite_line": -6.5
+        }
+      },
+      {
+        "game_id": "401909901",
+        "date": "2026-10-31",
+        "snapshot_utc": "2026-10-31T05:32:13Z",
+        "market_snapshot_utc": "2026-10-31T05:32:12Z",
+        "favorite": "SAS",
+        "underdog": "MIN",
+        "model_dog_probability": 0.29415420171426954,
+        "market_dog_probability": 0.18274111675126903,
+        "dog_odds": 425.0,
+        "dog_probability_edge": 0.11141308496300051,
+        "dog_ev": 0.544309558999915,
+        "dog_units": -1.0,
+        "model_dog_below_50": true,
+        "favorite_moneyline": {
+          "market": "moneyline",
+          "side": "home",
+          "line": null,
+          "odds": -575.0,
+          "outcome": "win",
+          "units": 0.17391304347826086,
+          "market_probability": 0.817258883248731,
+          "model_probability": 0.7058457982857305,
+          "breakeven_probability": 0.8518518518518519
+        },
+        "favorite_ats": {
+          "market": "ats",
+          "side": "home",
+          "line": -12.5,
+          "odds": -105.0,
+          "outcome": "loss",
+          "units": -1.0,
+          "favorite_line": -12.5
+        }
+      },
+      {
+        "game_id": "401909902",
+        "date": "2026-10-31",
+        "snapshot_utc": "2026-10-31T05:32:13Z",
+        "market_snapshot_utc": "2026-10-31T05:32:12Z",
+        "favorite": "HOU",
+        "underdog": "OKC",
+        "model_dog_probability": 0.6442350482409912,
+        "market_dog_probability": 0.3962430290578221,
+        "dog_odds": 142.0,
+        "dog_probability_edge": 0.2479920191831691,
+        "dog_ev": 0.5590488167431986,
+        "dog_units": -1.0,
+        "model_dog_below_50": false,
+        "favorite_moneyline": {
+          "market": "moneyline",
+          "side": "home",
+          "line": null,
+          "odds": -170.0,
+          "outcome": "win",
+          "units": 0.5882352941176471,
+          "market_probability": 0.6037569709421778,
+          "model_probability": 0.3557649517590088,
+          "breakeven_probability": 0.6296296296296297
+        },
+        "favorite_ats": {
+          "market": "ats",
+          "side": "home",
+          "line": -4.5,
+          "odds": -110.0,
+          "outcome": "win",
+          "units": 0.9090909090909091,
+          "favorite_line": -4.5
+        }
+      },
+      {
+        "game_id": "401909906",
+        "date": "2026-11-01",
+        "snapshot_utc": "2026-11-01T07:28:10Z",
+        "market_snapshot_utc": "2026-11-01T07:28:08Z",
+        "favorite": "LAL",
+        "underdog": "TOR",
+        "model_dog_probability": 0.4931900530378648,
+        "market_dog_probability": 0.3835616438356164,
+        "dog_odds": 150.0,
+        "dog_probability_edge": 0.10962840920224837,
+        "dog_ev": 0.23297513259466196,
+        "dog_units": -1.0,
+        "model_dog_below_50": true,
+        "favorite_moneyline": {
+          "market": "moneyline",
+          "side": "home",
+          "line": null,
+          "odds": -180.0,
+          "outcome": "win",
+          "units": 0.5555555555555556,
+          "market_probability": 0.6164383561643836,
+          "model_probability": 0.5068099469621352,
+          "breakeven_probability": 0.6428571428571429
+        },
+        "favorite_ats": {
+          "market": "ats",
+          "side": "home",
+          "line": -4.5,
+          "odds": -110.0,
+          "outcome": "win",
+          "units": 0.9090909090909091,
+          "favorite_line": -4.5
+        }
+      },
+      {
+        "game_id": "401909907",
+        "date": "2026-11-02",
+        "snapshot_utc": "2026-11-02T05:57:45Z",
+        "market_snapshot_utc": "2026-11-02T05:57:44Z",
+        "favorite": "CLE",
+        "underdog": "OKC",
+        "model_dog_probability": 0.5557821406462436,
+        "market_dog_probability": 0.3835616438356164,
+        "dog_odds": 150.0,
+        "dog_probability_edge": 0.17222049681062723,
+        "dog_ev": 0.38945535161560907,
+        "dog_units": 1.5,
+        "model_dog_below_50": false,
+        "favorite_moneyline": {
+          "market": "moneyline",
+          "side": "home",
+          "line": null,
+          "odds": -180.0,
+          "outcome": "loss",
+          "units": -1.0,
+          "market_probability": 0.6164383561643836,
+          "model_probability": 0.44421785935375635,
+          "breakeven_probability": 0.6428571428571429
+        },
+        "favorite_ats": {
+          "market": "ats",
+          "side": "home",
+          "line": -4.5,
+          "odds": -110.0,
+          "outcome": "loss",
+          "units": -1.0,
+          "favorite_line": -4.5
+        }
+      },
+      {
+        "game_id": "401909911",
+        "date": "2026-11-02",
+        "snapshot_utc": "2026-11-02T05:57:45Z",
+        "market_snapshot_utc": "2026-11-02T05:57:44Z",
+        "favorite": "ORL",
+        "underdog": "WAS",
+        "model_dog_probability": 0.537207605555315,
+        "market_dog_probability": 0.448558885283451,
+        "dog_odds": 114.0,
+        "dog_probability_edge": 0.08864872027186399,
+        "dog_ev": 0.14962427588837401,
+        "dog_units": 1.14,
+        "model_dog_below_50": false,
+        "favorite_moneyline": {
+          "market": "moneyline",
+          "side": "home",
+          "line": null,
+          "odds": -135.0,
+          "outcome": "loss",
+          "units": -1.0,
+          "market_probability": 0.551441114716549,
+          "model_probability": 0.46279239444468506,
+          "breakeven_probability": 0.574468085106383
+        },
+        "favorite_ats": {
+          "market": "ats",
+          "side": "home",
+          "line": -2.5,
+          "odds": -108.0,
+          "outcome": "loss",
+          "units": -1.0,
+          "favorite_line": -2.5
+        }
+      },
+      {
+        "game_id": "401909923",
+        "date": "2026-11-04",
+        "snapshot_utc": "2026-11-04T06:10:28Z",
+        "market_snapshot_utc": "2026-11-04T06:09:58Z",
+        "favorite": "ATL",
+        "underdog": "WAS",
+        "model_dog_probability": 0.4982655572505181,
+        "market_dog_probability": 0.43650793650793646,
+        "dog_odds": 120.0,
+        "dog_probability_edge": 0.06175762074258162,
+        "dog_ev": 0.09618422595113985,
+        "dog_units": -1.0,
+        "model_dog_below_50": true,
+        "favorite_moneyline": {
+          "market": "moneyline",
+          "side": "away",
+          "line": null,
+          "odds": -142.0,
+          "outcome": "win",
+          "units": 0.704225352112676,
+          "market_probability": 0.5634920634920635,
+          "model_probability": 0.5017344427494819,
+          "breakeven_probability": 0.5867768595041323
+        },
+        "favorite_ats": {
+          "market": "ats",
+          "side": "away",
+          "line": 2.5,
+          "odds": -104.0,
+          "outcome": "win",
+          "units": 0.9615384615384616,
+          "favorite_line": -2.5
+        }
+      },
+      {
+        "game_id": "401909928",
+        "date": "2026-11-04",
+        "snapshot_utc": "2026-11-04T06:10:28Z",
+        "market_snapshot_utc": "2026-11-04T06:09:58Z",
+        "favorite": "NOP",
+        "underdog": "UTA",
+        "model_dog_probability": 0.4348432330263007,
+        "market_dog_probability": 0.3428509625784123,
+        "dog_odds": 180.0,
+        "dog_probability_edge": 0.09199227044788838,
+        "dog_ev": 0.21756105247364188,
+        "dog_units": -1.0,
+        "model_dog_below_50": true,
+        "favorite_moneyline": {
+          "market": "moneyline",
+          "side": "home",
+          "line": null,
+          "odds": -217.0,
+          "outcome": "win",
+          "units": 0.4608294930875576,
+          "market_probability": 0.6571490374215877,
+          "model_probability": 0.5651567669736993,
+          "breakeven_probability": 0.6845425867507886
+        },
+        "favorite_ats": {
+          "market": "ats",
+          "side": "home",
+          "line": -5.5,
+          "odds": -110.0,
+          "outcome": "win",
+          "units": 0.9090909090909091,
+          "favorite_line": -5.5
+        }
+      },
+      {
+        "game_id": "401909930",
+        "date": "2026-11-04",
+        "snapshot_utc": "2026-11-04T06:10:28Z",
+        "market_snapshot_utc": "2026-11-04T06:09:58Z",
+        "favorite": "HOU",
+        "underdog": "MIN",
+        "model_dog_probability": 0.33555517484693864,
+        "market_dog_probability": 0.27367999465990256,
+        "dog_odds": 251.0,
+        "dog_probability_edge": 0.06187518018703608,
+        "dog_ev": 0.17779866371275455,
+        "dog_units": 2.51,
+        "model_dog_below_50": true,
+        "favorite_moneyline": {
+          "market": "moneyline",
+          "side": "home",
+          "line": null,
+          "odds": -310.0,
+          "outcome": "loss",
+          "units": -1.0,
+          "market_probability": 0.7263200053400974,
+          "model_probability": 0.6644448251530614,
+          "breakeven_probability": 0.7560975609756098
+        },
+        "favorite_ats": {
+          "market": "ats",
+          "side": "home",
+          "line": -8.5,
+          "odds": -108.0,
+          "outcome": "loss",
+          "units": -1.0,
+          "favorite_line": -8.5
+        }
+      },
+      {
+        "game_id": "401909933",
+        "date": "2026-11-04",
+        "snapshot_utc": "2026-11-04T06:10:28Z",
+        "market_snapshot_utc": "2026-11-04T06:09:58Z",
+        "favorite": "SAS",
+        "underdog": "DAL",
+        "model_dog_probability": 0.25601058125278264,
+        "market_dog_probability": 0.18804938847505065,
+        "dog_odds": 411.0,
+        "dog_probability_edge": 0.067961192777732,
+        "dog_ev": 0.3082140702017193,
+        "dog_units": -1.0,
+        "model_dog_below_50": true,
+        "favorite_moneyline": {
+          "market": "moneyline",
+          "side": "home",
+          "line": null,
+          "odds": -545.0,
+          "outcome": "win",
+          "units": 0.1834862385321101,
+          "market_probability": 0.8119506115249493,
+          "model_probability": 0.7439894187472174,
+          "breakeven_probability": 0.8449612403100775
+        },
+        "favorite_ats": {
+          "market": "ats",
+          "side": "home",
+          "line": -11.5,
+          "odds": -105.0,
+          "outcome": "loss",
+          "units": -1.0,
+          "favorite_line": -11.5
+        }
+      },
+      {
+        "game_id": "401909935",
+        "date": "2026-11-04",
+        "snapshot_utc": "2026-11-04T06:10:28Z",
+        "market_snapshot_utc": "2026-11-04T06:09:58Z",
+        "favorite": "MIA",
+        "underdog": "LAC",
+        "model_dog_probability": 0.4313958261149035,
+        "market_dog_probability": 0.35442449596188486,
+        "dog_odds": 171.0,
+        "dog_probability_edge": 0.07697133015301866,
+        "dog_ev": 0.16908268877138855,
+        "dog_units": -1.0,
+        "model_dog_below_50": true,
+        "favorite_moneyline": {
+          "market": "moneyline",
+          "side": "away",
+          "line": null,
+          "odds": -205.0,
+          "outcome": "win",
+          "units": 0.4878048780487805,
+          "market_probability": 0.6455755040381151,
+          "model_probability": 0.5686041738850964,
+          "breakeven_probability": 0.6721311475409836
+        },
+        "favorite_ats": {
+          "market": "ats",
+          "side": "away",
+          "line": 5.5,
+          "odds": -109.0,
+          "outcome": "loss",
+          "units": -1.0,
+          "favorite_line": -5.5
+        }
+      },
+      {
+        "game_id": "401909936",
+        "date": "2026-11-05",
+        "snapshot_utc": "2026-11-05T05:46:20Z",
+        "market_snapshot_utc": "2026-11-05T05:46:19Z",
+        "favorite": "PHX",
+        "underdog": "ORL",
+        "model_dog_probability": 0.6647692035831883,
+        "market_dog_probability": 0.4748399295260195,
+        "dog_odds": 102.0,
+        "dog_probability_edge": 0.18992927405716875,
+        "dog_ev": 0.34283379123804025,
+        "dog_units": -1.0,
+        "model_dog_below_50": false,
+        "favorite_moneyline": {
+          "market": "moneyline",
+          "side": "home",
+          "line": null,
+          "odds": -121.0,
+          "outcome": "win",
+          "units": 0.8264462809917356,
+          "market_probability": 0.5251600704739805,
+          "model_probability": 0.33523079641681175,
+          "breakeven_probability": 0.5475113122171946
+        },
+        "favorite_ats": {
+          "market": "ats",
+          "side": "home",
+          "line": -1.5,
+          "odds": -112.0,
+          "outcome": "win",
+          "units": 0.8928571428571429,
+          "favorite_line": -1.5
+        }
+      }
+    ]
+  },
+  "limitations": [
+    "Historical replay with assumed result availability; pregame-as-of integrity cannot be certified from the retained legacy objects.",
+    "Legacy quote timestamps are recorded first-snapshot times, not independently retained HTTP completion or sportsbook update timestamps.",
+    "The favorite-reversal rule and below-50-percent split were proposed after inspecting these outcomes; no prospective registration is created.",
+    "Small samples span only 14 moneyline/spread slates, 7 totals slates and 8 dates in the 17-game favorite subset.",
+    "Reported bootstrap intervals are exploratory and unadjusted for model/strategy selection and multiple comparisons.",
+    "Flat one-unit risk uses recorded offered-price payouts without execution, slippage or limit evidence. Series overlap and are never pooled.",
+    "No native forecast, bet, grade, parameter or public headline is created or changed by this script."
+  ],
+  "reference_check_absolute_differences": {
+    "log_loss": 2.0960411184489658e-10,
+    "brier": 3.804456749634255e-12,
+    "margin_mae": 3.552713678800501e-15,
+    "total_mae": 0.0
+  }
+}
