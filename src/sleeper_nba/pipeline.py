@@ -11,7 +11,7 @@ import numpy
 import scipy
 
 from . import __version__, matchup
-from .common import ET, digest, dt, iso, load_config, utcnow
+from .common import ET, digest, dt, iso, load_config, lock_window_end, utcnow
 from .markets import evaluate, settle
 from .models import (
     DEFAULTS,
@@ -101,6 +101,7 @@ def build_variants(raw, game, records, config, captured_at, stage, quotes, previ
             "scoring": scoring,
             "markets": markets,
             "selections": [] if preview else selections,
+            **({"recommendations": selections} if preview else {}),
             "model_tag": config.get("methodology", "sleeper_only_v1_19")
             if variant == "adaptive"
             else "fixed:v1.19",
@@ -124,7 +125,12 @@ def capture(root, config, dry_run=False, http=None, now=None):
     if prepared and not dry_run:
         ledger.append(prepared)
     records = records + prepared
-    previews = []
+    # Keep the last valid pregame snapshot even after tip or a failed refresh.
+    previews = {
+        p["instance_id"]: p
+        for p in matchup.load_previews(root)["forecasts"]
+        if dt(p["captured_at"]) < dt(p["game"]["tip_utc"])
+    }
     for date in dates_around(now):
         try:
             found, _ = schedule(http, date)
@@ -180,7 +186,7 @@ def capture(root, config, dry_run=False, http=None, now=None):
             r["stage"] for r in all_records if r["kind"] == "forecast" and r["instance_id"] == instance
         }
         target = dt(game["tip_utc"]) - timedelta(hours=config["lock_hours"])
-        lock_end = target + timedelta(minutes=config["lock_tolerance_minutes"])
+        lock_end = lock_window_end(game, config)
         if (
             now > lock_end
             and "lock" not in existing
@@ -227,23 +233,24 @@ def capture(root, config, dry_run=False, http=None, now=None):
             additions.append(event("capture_finished_after_tip", instance))
             continue
         if matchup.enabled(config):
-            previews.append(
-                {
-                    "id": "preview:" + instance,
-                    "kind": "preview",
-                    "instance_id": instance,
-                    "stage": "latest",
-                    "matchup_stage": "first",
-                    "game": game,
-                    "captured_at": captured_at,
-                    "methodology": config["methodology"],
-                    "lead_hours": (dt(game["tip_utc"]) - dt(captured_at)).total_seconds() / 3600,
-                    "raw": {k: raw[k] for k in ["home_score", "away_score", "margin", "total"]},
-                    "variants": build_variants(
-                        raw, game, all_records, config, captured_at, "first", quotes, True
-                    ),
-                }
-            )
+            preview = {
+                "id": "preview:" + instance,
+                "kind": "preview",
+                "instance_id": instance,
+                "stage": "latest",
+                "matchup_stage": "first",
+                "game": game,
+                "captured_at": captured_at,
+                "methodology": config["methodology"],
+                "lead_hours": (dt(game["tip_utc"]) - dt(captured_at)).total_seconds() / 3600,
+                "raw": {k: raw[k] for k in ["home_score", "away_score", "margin", "total"]},
+                "variants": build_variants(
+                    raw, game, all_records, config, captured_at, "first", quotes, True
+                ),
+            }
+            previous = previews.get(instance)
+            if previous is None or dt(captured_at) > dt(previous["captured_at"]):
+                previews[instance] = preview
         for stage in stages:
             variants = build_variants(raw, game, all_records, config, captured_at, stage, quotes)
             forecast = {
@@ -285,7 +292,7 @@ def capture(root, config, dry_run=False, http=None, now=None):
                     {
                         "updated_at": iso(now),
                         "purpose": "Untracked previews using first-stage parameters; no registered bets, grades or training observations",
-                        "forecasts": previews,
+                        "forecasts": list(previews.values()),
                     },
                     allow_nan=False,
                 ),
@@ -505,11 +512,7 @@ def validate(root):
             if r["stage"] == "lock":
                 c = r["config"]
                 target = dt(r["game"]["tip_utc"]) - timedelta(hours=c["lock_hours"])
-                if (
-                    not target
-                    <= dt(r["captured_at"])
-                    <= target + timedelta(minutes=c["lock_tolerance_minutes"])
-                ):
+                if not target <= dt(r["captured_at"]) <= lock_window_end(r["game"], c):
                     raise ValueError("Outside-window lock")
             for variant, output in r["variants"].items():
                 scoring = output.get("scoring", r["raw"])

@@ -284,3 +284,45 @@ def test_daily_refit_manifest_and_future_application(root, config):
     assert active_calibration(ledger.records(), "first", iso(now))["id"] == cal["id"]
     assert active_calibration(ledger.records(), "lock", iso(now))["params"] == DEFAULTS
     assert refit(root, config, now=now)["calibration_versions"] == 0
+
+
+def test_late_lock_is_qualifying_and_immutable(root, rows, config):
+    http = FixtureHTTP(rows)
+    http.at = "2026-11-07T21:59:59+00:00"
+    assert capture(root, config, http=http, now=dt(http.at))["forecasts"] == 2
+    forecasts = Ledger(root).records("forecast")
+    lock = next(f for f in forecasts if f["stage"] == "lock")
+    assert lock["lead_hours"] == pytest.approx(1 / 3600)
+    assert all(m["eligible"] for m in lock["variants"]["adaptive"]["markets"])
+    assert validate(root)["status"] == "valid"
+    http.at = "2026-11-07T22:00:00+00:00"
+    assert capture(root, config, http=http, now=dt(http.at))["forecasts"] == 0
+    assert Ledger(root).records("forecast") == forecasts
+
+
+def test_latest_pregame_fallback_survives_tip_invalid_feed_and_outage(root, rows, config):
+    from sleeper_nba.matchup import load_previews
+
+    http = FixtureHTTP(rows)
+    http.at = "2026-11-07T16:00:00+00:00"
+    capture(root, config, http=http, now=dt(http.at))
+    http.at = "2026-11-07T16:30:00+00:00"
+    capture(root, config, http=http, now=dt(http.at))
+    saved = load_previews(root)["forecasts"]
+    assert len(saved) == 1 and dt(saved[0]["captured_at"]) == dt(http.at)
+    assert all(not v["selections"] and v["recommendations"] for v in saved[0]["variants"].values())
+    assert not any(f["stage"] == "lock" for f in Ledger(root).records("forecast"))
+    http.rows = []
+    http.at = "2026-11-07T21:00:00+00:00"
+    capture(root, config, http=http, now=dt(http.at))
+    assert load_previews(root)["forecasts"] == saved
+    http.at = "2026-11-07T22:00:00+00:00"
+    capture(root, config, http=http, now=dt(http.at))
+    assert load_previews(root)["forecasts"] == saved
+    http.fail = True
+    capture(root, config, http=http, now=dt(http.at))
+    assert load_previews(root)["forecasts"] == saved
+    build_site(root)
+    data = json.loads((root / "site" / "data.json").read_text())
+    assert data["previews"] == saved  # Remains visible after tip, without new bets.
+    assert len(Ledger(root).records("forecast")) == 1
