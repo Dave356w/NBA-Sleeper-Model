@@ -43,7 +43,7 @@ New adaptive forecasts are tagged `sleeper_only_v1_20`, store raw and adjusted H
 
 Confidence calibration starts at a=10, ATS sigma=14 and totals sigma=19 and learns only from completed, frozen **v1.20 native** forecasts. Its existing 75-completed-game weighting and scale regularization remain unchanged; the new **team-residual component** uses 25 calendar days. Additional scalar ATS/totals biases are held at zero because global/venue mean corrections are already applied by the matchup component. Uncertainty fits use errors against the exact corrected forecasts recorded before each game; no in-sample reapplication of today's ratings to historical targets.
 
-The fixed control always retains raw Sleeper scores and a=10/ATS14/total19. Existing first and lock records keep their original methodology and grades. Public performance offers a methodology selector to avoid pooling v1.19 and v1.20 results.
+The fixed control always retains raw Sleeper scores and a=10/ATS14/total19. Existing first and lock records keep their original methodology and grades. Owner reporting update (9 November 2026): public pages, metrics and forecast downloads show only native v1.20 captures, with the fixed control evaluated on that same cohort. Older and unversioned histories remain internal. The archived 117-game current-season v1.20 first-snapshot replay is a separately labeled historical summary, with assumed result-availability times disclosed; it never enters native forecasts, grades, betting returns or live performance counts. The older-version selector is removed.
 
 ### Latest previews and public display
 

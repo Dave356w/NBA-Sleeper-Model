@@ -8,12 +8,63 @@ from pathlib import Path
 
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 
-from . import __version__, matchup
-from .common import ET, dt, iso, load_config, utcnow
+from . import matchup
+from .common import ET, digest, dt, iso, load_config, utcnow
 from .evaluation import closing_line_values, latest_grades, summarize
 from .models import active_calibration
 from .pipeline import latest_schedules
 from .storage import Ledger
+
+PUBLIC_METHOD = matchup.METHOD
+
+
+def methodology_of(record):
+    return record.get("methodology", record.get("config", {}).get("methodology"))
+
+
+def historical_replay(root, config):
+    """Publish only the selected current-season research summary, never native grades."""
+    path = root / "research" / "output" / "defense_selection_2025-26.json"
+    if not path.exists():
+        return None
+    archive = json.loads(path.read_text())
+    candidate = "defense_offense_control_prior5"
+    if archive["selected_iteration"] != candidate or archive["settings"]["half_life_days"] != 25:
+        raise ValueError("Historical summary does not describe the registered v1.20 candidate")
+    seed = json.loads((root / config["matchup"]["seed_file"]).read_text())
+    body = {k: v for k, v in seed.items() if k != "sha256"}
+    if digest(body) != seed["sha256"] or seed["sha256"] != config["matchup"]["seed_sha256"]:
+        raise ValueError("Historical summary seed integrity failure")
+    point = archive["current_season_check"][candidate]
+    confidence = archive["selected_confidence_calibration"]["2026-27_legacy_first"]["current"]
+    n = point["n"]
+    if n != len(seed["observations"]) or confidence["n"] != n:
+        raise ValueError("Historical summary and archived sample counts differ")
+    dates = sorted(dt(o["tip_utc"]).astimezone(ET).date().isoformat() for o in seed["observations"])
+    correct = round(n * point["accuracy"])
+    return {
+        "methodology": PUBLIC_METHOD,
+        "label": "Historical replay",
+        "provenance": "legacy-first",
+        "stage": "first",
+        "season": "2026–27",
+        "start_date": dates[0],
+        "end_date": dates[-1],
+        "generated_at": archive["generated_at"],
+        "source_hash": digest(archive),
+        "source_url": "https://github.com/Dave356w/NBA-Sleeper-Model/blob/main/research/output/defense_selection_2025-26.json",
+        "outcome_availability": archive["settings"]["outcome_availability"],
+        "metrics": {
+            "n": n,
+            "correct": correct,
+            "incorrect": n - correct,
+            "accuracy": point["accuracy"],
+            "margin": point["margin"],
+            "total": point["total"],
+            "log_loss": confidence["log_loss"],
+            "brier": confidence["brier"],
+        },
+    }
 
 
 def build_site(root):
@@ -21,26 +72,13 @@ def build_site(root):
     records = Ledger(root).records()
     config = load_config(root)
     retired = {r["instance_id"] for r in records if r["kind"] == "retired"}
-    forecasts = [r for r in records if r["kind"] == "forecast"]
-    grades = latest_grades(records)
-    methods = sorted(
-        {
-            f.get("methodology", f.get("config", {}).get("methodology", "sleeper_only_v1_19"))
-            for f in forecasts
-        }
-        | {config["methodology"]}
-    )
-    by_method = {
-        m: summarize(
-            [
-                r
-                for r in records
-                if r["kind"] != "forecast"
-                or r.get("methodology", r.get("config", {}).get("methodology", "sleeper_only_v1_19")) == m
-            ]
-        )
-        for m in methods
-    }
+    all_forecasts = [r for r in records if r["kind"] == "forecast"]
+    forecasts = [
+        f for f in all_forecasts if methodology_of(f) == PUBLIC_METHOD and f.get("provenance") == "native"
+    ]
+    forecast_ids = {f["id"] for f in forecasts}
+    public_records = [r for r in records if r["kind"] != "forecast" or r["id"] in forecast_ids]
+    grades = {k: v for k, v in latest_grades(records).items() if k in forecast_ids}
     defense_versions = [r for r in records if r["kind"] == "matchup_calibration"]
     season = max(
         (r["season"] for r in defense_versions), default=config.get("matchup", {}).get("seed_season", 2026)
@@ -54,41 +92,35 @@ def build_site(root):
             | {
                 "raw": {k: v for k, v in f["raw"].items() if k not in {"players", "raw_rows"}},
                 "retired": f["instance_id"] in retired,
-                "methodology": f.get(
-                    "methodology", f.get("config", {}).get("methodology", "sleeper_only_v1_19")
-                ),
+                "methodology": PUBLIC_METHOD,
             }
             for f in forecasts
         ],
         "grades": grades,
-        "performance": summarize(records),
-        "performance_by_methodology": by_method,
-        "methodologies": methods,
-        "methodology": config["methodology"],
+        "performance": summarize(public_records),
+        "methodology": PUBLIC_METHOD,
+        "historical_replay": historical_replay(root, config),
         "previews": [
             p
             for p in matchup.load_previews(root)["forecasts"]
-            if dt(p["game"]["tip_utc"]) > utcnow() and p["instance_id"] not in retired
+            if methodology_of(p) == PUBLIC_METHOD
+            and dt(p["game"]["tip_utc"]) > utcnow()
+            and p["instance_id"] not in retired
         ],
         "matchup_calibrations": {
             stage: matchup.active(records, stage, iso(), season, config) for stage in ["first", "lock"]
         }
         if matchup.enabled(config)
         else {},
-        "calibrations_by_methodology": {
-            m: {stage: active_calibration(records, stage, iso(), m) for stage in ["first", "lock"]}
-            for m in methods
-        },
-        "clv": closing_line_values(records),
+        "clv": closing_line_values(public_records),
         "calibrations": {
-            stage: active_calibration(records, stage, iso(), config.get("methodology"))
-            for stage in ["first", "lock"]
+            stage: active_calibration(records, stage, iso(), PUBLIC_METHOD) for stage in ["first", "lock"]
         },
         "missed_locks": [r for r in records if r["kind"] == "quality" and r["code"] == "missed_lock"],
         "quality": [
             {k: r[k] for k in ["code", "context", "at"] if k in r} for r in records if r["kind"] == "quality"
         ],
-        "methodology_version": ".".join(__version__.split(".")[:2]),
+        "methodology_version": "1.20",
     }
     output = root / "site"
     output.mkdir(exist_ok=True)
@@ -104,9 +136,16 @@ def build_site(root):
     shutil.copyfile(root / "MODEL.md", output / "MODEL.md")
     (output / ".nojekyll").touch()
     Ledger._atomic(
-        root / "research" / "output" / "performance.json", json.dumps(data["performance"], indent=2)
+        root / "research" / "output" / "performance.json", json.dumps(summarize(records), indent=2)
     )
-    # Auditable forecast export, one row per stage and model variant.
+    # Keep the full internal export; the public download shares the v1.20 cohort.
+    Ledger._atomic(root / "data" / "predictions.csv", forecast_csv(all_forecasts, retired))
+    Ledger._atomic(output / "predictions.csv", forecast_csv(forecasts, retired))
+    return {"pages": 4, "forecasts": len(forecasts), "output": str(output)}
+
+
+def forecast_csv(forecasts, retired):
+    """Auditable export, one row per stage and model variant."""
     stream = io.StringIO()
     fields = [
         "forecast_id",
@@ -164,6 +203,4 @@ def build_site(root):
                     "matchup_id": out.get("matchup_id"),
                 }
             )
-    Ledger._atomic(root / "data" / "predictions.csv", stream.getvalue())
-    Ledger._atomic(output / "predictions.csv", stream.getvalue())
-    return {"pages": 4, "forecasts": len(forecasts), "output": str(output)}
+    return stream.getvalue()
