@@ -107,4 +107,10 @@ The selected residual-defense component uses 25 **calendar days**, with `w=2**(-
 
 First-stage team ratings can learn from the audited current-season legacy-first seed and prior native first snapshots. Locks use lock history only. Probability calibration uses **only new v1.20 frozen native forecasts**, with its original 75-game scale weighting and defaults until 30 eligible outcomes. Extra scalar margin/total biases remain zero to avoid double-counting the new global correction.
 
-Existing frozen v1.19 forecasts are not rewritten. The Today page’s Latest view shows untracked v1.20 previews with first-stage parameters; it never creates historical bets or grades. Public performance keeps methodology versions separate.
+Existing frozen v1.19 forecasts are not rewritten. The Today page’s Latest view shows untracked v1.20 previews with first-stage parameters; it never creates historical bets or grades.
+
+### Public v1.20 reporting
+
+Today, Results, Performance and the public forecast CSV show only native v1.20 captures. The fixed control is compared on that same v1.20 cohort. Older and unversioned forecasts, grades and returns stay in the internal ledger and full `data/predictions.csv`; they are excluded from public metrics and downloads. A missing v1.20 sample remains empty rather than falling back to older results.
+
+Results and Performance also show the archived 117-game current-season v1.20 first-snapshot replay as a separate historical summary: 86 correct and 31 incorrect winners. Its assumed result-availability times and previously inspected sample are disclosed. Probability metrics use the archived prior-only confidence-calibration replay. No historical forecast, bet or grade is added to the native ledger, and the replay is never pooled with live performance or reconstructed as five-hour locks. The public summary reads only the selected v1.20 candidate from the archived research output; alternative iterations remain internal.
