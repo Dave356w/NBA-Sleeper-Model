@@ -251,3 +251,48 @@ def test_lock_coverage_ignores_windows_closed_before_first_observation(root, row
     assert any(q["code"] == "missed_lock" for q in Ledger(root).records("quality"))
     build_site(root)
     assert json.loads((root / "site" / "data.json").read_text())["lock_coverage"] == []
+
+
+def test_season_record_review_fixes_season_scope_quote_timing_and_result_revisions(root, rows, config):
+    from sleeper_nba.season import _forecast_markets, _scores_at, live_rows, replay_observations, replay_rows
+
+    http = FixtureHTTP(rows)
+    capture(root, config, http=http, now=dt(AT))
+    http.final = True
+    http.at = "2026-11-08T02:00:00+00:00"
+    grade(root, config, http=http)
+    records = Ledger(root).records()
+    forecast = next(f for f in records if f["kind"] == "forecast" and f["stage"] == "first")
+
+    # Live rows belong to the reported season only.
+    assert len(live_rows(records, config, 2026)) == 1 and live_rows(records, config, 2027) == []
+
+    # A context line needs a paired, fresh, pregame quote, whatever its stored reason says.
+    assert _forecast_markets(forecast, "adaptive")["spread"] is not None
+    stale = copy.deepcopy(forecast)
+    for m in stale["variants"]["adaptive"]["markets"]:
+        if m["market"] == "ats":
+            m.update(captured_at="2026-11-07T09:00:00+00:00", unavailable_reason="unsupported_line_increment")
+            m.update(eligible=False, line=-5.0)
+    assert _forecast_markets(stale, "adaptive")["spread"] is None
+    assert _forecast_markets(stale, "adaptive")["total_line"] is not None
+
+    # A later score correction is not visible to replay fits made before it.
+    older = copy.deepcopy(forecast)
+    older["id"] = "older:" + forecast["id"]
+    older["methodology"] = older["config"]["methodology"] = "sleeper_only_v1_21"
+    result = next(r for r in records if r["kind"] == "result")
+    correction = {
+        **result,
+        "id": "result:correction",
+        "verified_at": "2026-11-12T00:00:00+00:00",
+        "home_score": result["home_score"] + 9,
+        "supersedes": result["id"],
+    }
+    observations = replay_observations([older, result, correction], root, config, 2026)
+    native = next(o for o in observations if o["segment"] == "replay_native")
+    assert native["available_at"] == result["verified_at"]
+    assert native["actual_home_score"] == correction["home_score"]  # Graded on the final score.
+    assert _scores_at(native, dt("2026-11-09T12:00:00+00:00"))[0] == result["home_score"]
+    assert _scores_at(native, dt("2026-11-12T12:00:00+00:00"))[0] == correction["home_score"]
+    assert len(replay_rows(observations, config)) == 118
