@@ -91,8 +91,11 @@ def test_missing_team_and_ambiguous_game(game, rows, config):
         ("22:00:00", []),
     ],
 )
-def test_snapshot_window(game, config, at, expected):
-    config.pop("lock_policy", None)  # Historical forecasts retain the narrow window.
+@pytest.mark.parametrize("policy", [None, "five_hours_15min_v2"])
+def test_snapshot_window(game, config, at, expected, policy):
+    # Unlabeled historical forecasts and the current policy share the narrow window.
+    config = {**config, "lock_policy": policy}
+    assert config["lock_tolerance_minutes"] == 15
     assert eligible_stages(game, "2026-11-07T" + at + "+00:00", set(), config) == expected
     assert not eligible_stages(game, "2026-11-07T" + at + "+00:00", {"first", "lock"}, config)
 
@@ -321,5 +324,16 @@ def test_canonical_hash():
     ],
 )
 def test_full_pregame_lock_window(game, config, at, locked):
+    # v1.20.1 forecasts keep the through-tip window they were frozen with.
+    config = {**config, "lock_policy": "five_hours_to_tip_v1"}
     stages = eligible_stages(game, "2026-11-07T" + at + "+00:00", set(), config)
     assert ("lock" in stages) == locked
+
+
+def test_registered_lock_policy_and_unknown_policy(game, config):
+    from sleeper_nba.common import dt, lock_window_end
+
+    assert config["lock_policy"] == "five_hours_15min_v2"
+    assert lock_window_end(game, config) == dt("2026-11-07T17:15:00+00:00")
+    with pytest.raises(ValueError, match="Unknown lock policy"):
+        lock_window_end(game, {**config, "lock_policy": "typo"})

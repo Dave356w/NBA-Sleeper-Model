@@ -41,7 +41,7 @@ On the pinned 117-game 2026–27 seed (`research/defense_prior_replay.py`, outpu
 - Neither sample shows v1.21 beating raw Sleeper on win probability. The change removes a likely early-season harm; it does not establish a gain.
 - The 2025–26 archive has unverified pregame-as-of timestamps, and its April log loss (≈0.42–0.45 for every candidate including raw) is too low to treat as representative.
 - Because corrected margins are now close to raw margins, the default a=10 is retained for the new confidence history. No replay calibration is reused.
-- Lock lead time is not controlled. Under the v1.20.1 policy a lock is the first capture between T−5h and tip, and scheduled runs have arrived 3.5–10.5 hours apart, so most games get no lock and the rest mix lead times from five hours to minutes. Lock-stage scores must be read by lead-time bucket. Reliable coverage needs an external scheduler or watcher (Section 17); none is implemented here.
+- Lock lead time is not controlled. Under the v1.20.1 policy a lock is the first capture between T−5h and tip, and scheduled runs have arrived 3.5–10.5 hours apart, so most games get no lock and the rest mix lead times from five hours to minutes. Lock-stage scores must be read by lead-time bucket. The v1.21.1 capture policy at the end of this document restores the 15-minute window and adds a watcher for new captures.
 - Team minutes are exported for audit. Observed first-snapshot team minutes sit at 233–249, so no minutes rescaling is proposed.
 
 ## v1.20 methodology — residual defense update (superseded where v1.21 differs)
@@ -494,3 +494,46 @@ Preview recommendations use the existing market eligibility rules and only
 positive offered-price model EV is displayed; historical records are unchanged.
 The scheduled ten-minute workflow is best effort and cannot guarantee execution
 or profitable outcomes.
+
+
+## Prospective capture policy v1.21.1
+
+Owner update, 10 November 2026. New captures use `lock_policy: five_hours_15min_v2`:
+the lock is the first valid capture with
+`tip − 5h <= capture <= tip − 5h + 15 minutes`, as in Section 11. This supersedes
+the v1.20.1 through-tip window for new captures only. Forecasts frozen under
+`five_hours_to_tip_v1` keep that configuration and remain valid locks; unlabeled
+historical forecasts keep their original 15-minute window. An unrecognized policy
+name is rejected. The scoring methodology remains v1.21.
+
+The Picks view, previews and fallbacks are unchanged: a game without a lock
+shows the latest saved pregame snapshot, labeled and untracked.
+
+### Watcher
+
+Section 17's "dedicated watcher option" is now implemented. The ten-minute cron
+is retired because GitHub delivered it 3.5–10.5 hours apart.
+
+- `watch.yml` runs one job for about 320 minutes. Each pass updates from `main`,
+  runs grade → refit → capture → validate → site build, commits accepted records,
+  starts the Pages deploy, then sleeps until the earliest of: five seconds past
+  the next T−5h target, 60 seconds while a lock window is open without a lock,
+  or a schedule-aware tick: ten minutes from eight hours before a tip until that
+  game has a verified result (bounded at six hours after tip), and one hour when
+  no game is near. `python -m sleeper_nba next-wake` computes the sleep from the
+  ledger and creates no records.
+- Before exiting, the job dispatches its successor. The shared writer concurrency
+  group makes the successor wait until the current run has finished, so there is
+  one writer at a time. The hand-off gap is roughly one minute, inside the
+  15-minute tolerance.
+- No hand-off happens after a manual cancel or when setup or tests fail before
+  the watch starts. `watchdog.yml` (cron, twice an hour, best effort) starts a
+  watcher when none is queued or running.
+- To stop capture, disable both workflows in the Actions tab, then cancel the
+  running watcher.
+
+Limitations: a runner loss or GitHub outage that spans a whole 15-minute window
+still misses that lock, and the miss is recorded. Capture times are runner clock
+times. The watcher keeps the code it started with for workflow steps, but each
+pass runs the Python package as updated from `main`; dependency changes take
+effect at the next hand-off.

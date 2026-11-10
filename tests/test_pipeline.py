@@ -10,7 +10,7 @@ import pytest
 from sleeper_nba.common import dt, iso
 from sleeper_nba.evaluation import latest_grades, summarize
 from sleeper_nba.models import DEFAULTS
-from sleeper_nba.pipeline import assign_instance, capture, grade, refit, validate
+from sleeper_nba.pipeline import assign_instance, capture, grade, next_wake, refit, validate
 from sleeper_nba.research import walk_forward
 from sleeper_nba.site import build_site
 from sleeper_nba.sources import HTTP, SourceError, espn_quotes, schedule
@@ -287,6 +287,8 @@ def test_daily_refit_manifest_and_future_application(root, config):
 
 
 def test_late_lock_is_qualifying_and_immutable(root, rows, config):
+    # Frozen v1.20.1 policy: locks were accepted until strictly before tip.
+    config = {**config, "lock_policy": "five_hours_to_tip_v1"}
     http = FixtureHTTP(rows)
     http.at = "2026-11-07T21:59:59+00:00"
     assert capture(root, config, http=http, now=dt(http.at))["forecasts"] == 2
@@ -326,3 +328,52 @@ def test_latest_pregame_fallback_survives_tip_invalid_feed_and_outage(root, rows
     data = json.loads((root / "site" / "data.json").read_text())
     assert data["previews"] == saved  # Remains visible after tip, without new bets.
     assert len(Ledger(root).records("forecast")) == 1
+
+
+def test_watcher_wakes_at_lock_target_retries_in_window_and_ticks(root, rows, config):
+    http = FixtureHTTP(rows)
+    http.at = "2026-11-07T15:00:00+00:00"
+    capture(root, config, http=http, now=dt(http.at))  # First snapshot; lock target is 17:00.
+    ledger = Ledger(root)
+
+    def wake(at, **kwargs):
+        return next_wake(ledger.records(), config, dt(at), **kwargs)
+
+    assert wake("2026-11-07T15:00:00+00:00") == {"seconds": 600, "reason": "tick", "game_id": None}
+    near = wake("2026-11-07T16:56:00+00:00")
+    assert near == {"seconds": 245, "reason": "lock_target", "game_id": "fixture-1"}
+    assert wake("2026-11-07T16:59:59.500000+00:00")["seconds"] == 15  # Floor; never a busy loop.
+    assert wake("2026-11-07T17:03:00+00:00")["reason"] == "lock_window_open"
+    assert wake("2026-11-07T17:03:00+00:00", retry_seconds=60)["seconds"] == 60
+    assert wake("2026-11-07T17:15:01+00:00")["reason"] == "tick"  # Window closed.
+    # Schedule-aware pace: slow when no game is near, brisk from 8h before tip.
+    assert wake("2026-11-07T09:00:00+00:00") == {"seconds": 3600, "reason": "idle_tick", "game_id": None}
+    early = wake("2026-11-07T13:40:00+00:00")
+    assert early == {"seconds": 1200, "reason": "active_start", "game_id": "fixture-1"}
+    assert wake("2026-11-07T14:00:00+00:00")["reason"] == "tick"
+    assert wake("2026-11-07T23:30:00+00:00")["reason"] == "tick"  # In play, awaiting the final.
+    assert wake("2026-11-08T04:00:01+00:00")["reason"] == "idle_tick"  # Bounded even with no result.
+    assert wake("2026-11-07T09:00:00+00:00", idle_seconds=120)["seconds"] == 600  # Never below the tick.
+    count = len(ledger.records())
+
+    http.at = "2026-11-07T17:00:05+00:00"
+    assert capture(root, config, http=http, now=dt(http.at))["forecasts"] == 1
+    lock = next(f for f in ledger.records("forecast") if f["stage"] == "lock")
+    assert lock["lead_hours"] == pytest.approx(5 - 5 / 3600)
+    assert lock["config"]["lock_policy"] == "five_hours_15min_v2"
+    assert wake("2026-11-07T17:03:00+00:00")["reason"] == "tick"  # Locked; nothing left to chase.
+    assert len(ledger.records()) == count + 1
+    assert validate(root)["status"] == "valid"
+    http.final = True
+    http.at = "2026-11-08T00:40:00+00:00"
+    grade(root, config, http=http)
+    assert wake("2026-11-08T00:41:00+00:00")["reason"] == "idle_tick"  # Graded; nothing near.
+
+
+def test_capture_after_narrow_window_records_a_missed_lock(root, rows, config):
+    http = FixtureHTTP(rows)
+    http.at = "2026-11-07T17:15:01+00:00"
+    assert capture(root, config, http=http, now=dt(http.at))["forecasts"] == 1
+    ledger = Ledger(root)
+    assert [f["stage"] for f in ledger.records("forecast")] == ["first"]
+    assert [q["code"] for q in ledger.records("quality")] == ["missed_lock"]
