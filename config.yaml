@@ -1,4 +1,4 @@
-methodology: sleeper_only_v1_20
+methodology: sleeper_only_v1_21
 sleeper_company: rotowire
 wp_initial: 10.0
 ats_bias_initial: 0.0
@@ -33,7 +33,7 @@ matchup:
   enabled: true
   half_life_days: 25.0
   minimum_games: 30
-  defense_prior: 5.0
+  defense_prior: 40.0
   offense_prior: 20.0
   global_prior: 100.0
   venue_prior: 100.0

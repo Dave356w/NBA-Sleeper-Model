@@ -1,7 +1,8 @@
 """Versioned, stage-specific residual-defense correction with calendar decay.
 
 Offense is a nuisance control during estimation. Scoring uses only the global,
-venue and opponent-defense coefficients selected by the historical comparison.
+venue and opponent-defense coefficients. Prior strengths come from the frozen
+configuration of each version; v1.21 raised the defensive prior from 5 to 40.
 """
 
 from __future__ import annotations
@@ -14,7 +15,7 @@ import numpy as np
 
 from .common import TEAMS, digest, dt
 
-METHOD = "sleeper_only_v1_20"
+METHOD = "sleeper_only_v1_21"
 TEAMS_SORTED = sorted(TEAMS)
 TEAM_INDEX = {t: i for i, t in enumerate(TEAMS_SORTED)}
 

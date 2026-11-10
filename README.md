@@ -5,16 +5,16 @@
 
 **[Open the dashboard](https://dave356w.github.io/NBA-Sleeper-Model/)** · [Build specification](MODEL.md) · [Actions](https://github.com/Dave356w/NBA-Sleeper-Model/actions)
 
-An independent NBA forecasting system. Raw home/away scores are the sums of every valid Sleeper projected player's points. Version 1.20 adds a learned opponent-defense correction to adaptive scoring. No Four Factors, efficiency, BPM, production-model outputs, or independent injury adjustments are used.
+An independent NBA forecasting system. Raw home/away scores are the sums of every valid Sleeper projected player's points. Version 1.20 added a learned opponent-defense correction to adaptive scoring; version 1.21 shrinks it harder. No Four Factors, efficiency, BPM, production-model outputs, or independent injury adjustments are used.
 
 ## What runs
 
 - Sleeper game-specific player points and seconds, validated against 200–280 projected team minutes.
 - ESPN regular-season schedule, UTC tips, statuses and overtime-inclusive finals.
 - **ESPN DraftKings odds only, timestamped when fetched. No Odds API or paid-feed secret.** The sportsbook's own update time is unknown; fetch time establishes quote eligibility by the owner's registered policy.
-- Immutable first snapshots and T−5h locks with a 15-minute capture tolerance.
+- Immutable first snapshots and locks. Since v1.20.1 a lock is the first valid capture from T−5h until tip, so lock lead times vary; earlier locks kept a 15-minute window.
 - A fixed WP-10 / ATS-14 / totals-19 control and versioned adaptive scoring.
-- **25-calendar-day residual-defense decay**, separate zero-centered ridge priors: defense 5 games, offense nuisance control 20, global/venue 100. Offensive coefficients help estimate defense but are not applied to scores.
+- **25-calendar-day residual-defense decay**, separate zero-centered ridge priors: defense 40 games (5 in v1.20), offense nuisance control 20, global/venue 100. Offensive coefficients help estimate defense but are not applied to scores.
 - Raw and adjusted scores, component corrections, and an untracked Latest view alongside immutable first/lock tabs.
 - Winner probabilities, margin/total corrections, ATS/totals probabilities, no-vig edges, offered-price EV, research selections, grades and public results.
 - Stage-specific weighted calibration with 75-game half-life, 30-game minimum, shrinkage, daily caps, rejection safeguards and complete training manifests.
@@ -59,7 +59,7 @@ python -m sleeper_nba import-legacy path/to/input.json --research-only
 
 `model.yml` runs at minutes 03/13/23/33/43/53 of every hour. A shared non-cancelling concurrency group serializes model writers; an OS lock serializes local commands. Accepted transactions are committed even if reporting fails. Each run uploads a 30-day audit recovery artifact. The site is deployed with the official Pages artifact/deploy actions. `deploy.yml` rebuilds after application changes; `ci.yml` lints, tests, validates and builds without live network dependencies.
 
-GitHub schedules are best effort and may run late or skip intervals. A capture outside the defined lock window is never called a lock. Missed locks are recorded. Reliable T−5h coverage requires an external scheduler or continuously running watcher; neither is silently fabricated by this implementation. Public repositories generally have no standard Actions-minute charge, but account policy and limits still apply.
+GitHub schedules are best effort and may run late or skip intervals. Between 7 and 10 November 2026 the ten-minute schedule actually fired 3.5–10.5 hours apart, and 4 of 22 captured games received a lock; the Performance page reports coverage by slate. A capture outside the defined lock window is never called a lock. Missed locks are recorded. Reliable T−5h coverage requires an external scheduler or continuously running watcher; neither is silently fabricated by this implementation. Public repositories generally have no standard Actions-minute charge, but account policy and limits still apply.
 
 ## Market policy
 
@@ -100,6 +100,14 @@ Tests cover numeric equations, aliases, zero/missing handling, incomplete covera
 For an optional browser smoke test, install `pip install -e '.[browser]'`, then `python -m playwright install chromium`, serve `site`, and run `python tests/browser_smoke.py`. It checks all pages, stage/model controls, desktop/mobile layout and JavaScript errors. Browser testing uses a real generated site; no fabricated performance sample is published.
 
 See [MODEL.md](MODEL.md) for registered methodology and implementation clarifications. The original `Dave356w/nba-matchups` repository is unchanged.
+
+## v1.21 shrinkage and reporting update
+
+The defensive ridge prior moved from 5 to 40 fresh team-game observations. In last season's archive the 5-game prior scored worse than raw Sleeper from October through January and worse on full-season win-probability log loss; 40 is level with raw early and best of the family over the season. On the 117-game current-season seed the correction's margin spread drops from 3.6 to 0.8 points. Neither sample shows the correction beating raw Sleeper on win probability, and both were inspected before the choice. Details and limitations are at the top of [MODEL.md](MODEL.md); reproduce the current-season table with `python research/defense_prior_replay.py --root .`.
+
+v1.21 forecasts use their own team-residual versions and start confidence calibration from defaults. Public pages and the download show native v1.21 captures only; v1.20 and older records stay in the ledger and the full `data/predictions.csv`. Accuracy and probability scores are labeled exploratory below 100 graded games and returns below 250 settled bets. Performance adds scores by capture lead time and lock coverage by slate. The export adds tip time, lead hours, team minutes, model tag and per-team corrections.
+
+The sections below describe v1.20 and remain accurate except where v1.21 differs. The archived market study pins the v1.20 configuration and source hashes, so it reproduces only from a v1.20 checkout.
 
 ## v1.20 calibration transition
 
