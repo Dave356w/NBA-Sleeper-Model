@@ -42,7 +42,8 @@ function versusMarket() {
   return `<h2 style="margin-top:30px">Forecast versus market</h2><p class="small">Season to date, replay and live, on games with a recorded DraftKings line. Lower is better. Spread and totals are no longer picked; this table is how a real improvement would show up.</p><div class="table-wrap"><table><thead><tr><th>Measure</th><th>Games</th><th>{V}</th><th>Market</th><th>Closer</th></tr></thead><tbody>${row('Win probability log loss',m.win_probability.n,m.win_probability.model_log_loss,m.win_probability.market_log_loss,4)}${row('Margin error (MAE)',m.margin.n,m.margin.model_mae,m.margin.market_mae,2)}${row('Total error (MAE)',m.total.n,m.total.model_mae,m.total.market_mae,2)}</tbody></table></div>`;
 }
 function teamBlock(code,score,home) {
-  return `<div><img class="team-logo" src="https://a.espncdn.com/i/teamlogos/nba/500/${code.toLowerCase()}.png" alt="" loading="lazy"><div class="team-code">${esc(code)}</div><div class="team-name">${home?'Home':'Away'}</div><div class="score">${num(score)}</div></div>`;
+  const logoCode = code==='UTA'?'utah':code.toLowerCase();
+  return `<div><img class="team-logo" src="https://a.espncdn.com/i/teamlogos/nba/500/${logoCode}.png" alt="" loading="lazy"><div class="team-code">${esc(code)}</div><div class="team-name">${home?'Home':'Away'}</div><div class="score">${num(score)}</div></div>`;
 }
 function selectionDetails(output,game) {
   if(!output) return '<div class="selection-details"><p class="small">Model pick awaiting projection.</p></div>';
