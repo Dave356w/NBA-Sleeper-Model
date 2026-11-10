@@ -61,8 +61,10 @@ def test_shrinkage_centers_team_effects_and_changes_magnitude(root, config):
     assert np.linalg.norm(list(stronger["params"]["defense"].values())) < np.linalg.norm(
         list(fitted["params"]["defense"].values())
     )
-    assert matchup.fit(observations[:29], config["matchup"], at)["status"] == "insufficient_history"
-    assert set(matchup.fit(observations[:29], config["matchup"], at)["params"]["defense"].values()) == {0.0}
+    # Configurations frozen before v1.23 waited for 30 games.
+    legacy = {**config["matchup"], "minimum_games": 30}
+    assert matchup.fit(observations[:29], legacy, at)["status"] == "insufficient_history"
+    assert set(matchup.fit(observations[:29], legacy, at)["params"]["defense"].values()) == {0.0}
 
 
 def test_opponent_defense_is_applied_and_offense_control_is_not(game):
@@ -178,15 +180,16 @@ def test_prospective_transition_preserves_frozen_records_and_previews_do_not_bet
     assert all(v["selections"] == [] for v in preview["variants"].values())
     assert validate(root)["status"] == "valid"
     versions = ledger.records("matchup_calibration")
-    first = next(v for v in versions if v["stage"] == "first")
-    lock = next(v for v in versions if v["stage"] == "lock")
-    assert first["training_count"] == 117 and lock["training_count"] == 0
+    assert [v["stage"] for v in versions] == ["first"]  # v1.23: no lock-only fit
+    assert versions[0]["training_count"] == 117
     count = len(ledger.records())
     capture(root, config, http=http, now=at)
     assert len(ledger.records()) == count
 
 
 def test_failed_team_refit_preserves_last_accepted_version(root, config, monkeypatch):
+    # The daily cadence attempts a refit with an unchanged manifest.
+    config = {**config, "matchup": {k: v for k, v in config["matchup"].items() if k != "refit"}}
     at = after_seed(root, config)
     versions = matchup.prepare_versions([], root, config, iso(at))
     accepted = matchup.active(versions, "first", iso(at), 2026, config)
@@ -220,5 +223,139 @@ def test_v1_21_prior_shrinks_seed_corrections_and_starts_its_own_history(root, c
     assert stale and matchup.active(stale, "first", at, 2026, old)["training_count"] == 117
     assert matchup.active(stale, "first", at, 2026, config)["id"].startswith("matchup-defaults:")
     fresh = matchup.prepare_versions(stale, root, config, at)
-    assert {v["stage"] for v in fresh} == {"first", "lock"}
+    assert {v["stage"] for v in fresh} == {"first"}
     assert all(v["settings"]["defense_prior"] == 40 for v in fresh)
+
+
+def native(game_id, home, away, tip, slate, stage="first", captured=None):
+    game = {
+        "game_id": game_id,
+        "home": home,
+        "away": away,
+        "tip_utc": tip,
+        "slate_date": slate,
+        "season": 2026,
+    }
+    return {
+        "id": f"forecast:{game_id}:{stage}",
+        "kind": "forecast",
+        "stage": stage,
+        "provenance": "native",
+        "instance_id": game_id,
+        "captured_at": captured or iso(dt(tip) - timedelta(hours=6)),
+        "game": game,
+        "raw": {"home_score": 110.0, "away_score": 108.0},
+    }
+
+
+def final(game_id, at, home=121, away=104):
+    return {
+        "id": f"result:{game_id}",
+        "kind": "result",
+        "instance_id": game_id,
+        "verified_at": at,
+        "home_score": home,
+        "away_score": away,
+    }
+
+
+def test_v1_23_corrects_from_the_first_graded_game(config):
+    settings = {k: v for k, v in config["matchup"].items() if k != "seed_file"}
+    assert settings["minimum_games"] == 1
+    records = [
+        native("g1", "BOS", "NYK", "2026-10-21T23:00:00+00:00", "2026-10-21"),
+        final("g1", "2026-10-22T02:00:00+00:00"),
+    ]
+    cfg = {**config, "matchup": settings}
+    observations = matchup.eligible_observations(
+        records, ".", cfg, "first", 2026, "2026-10-22T03:00:00+00:00"
+    )
+    fitted = matchup.fit(observations, settings, "2026-10-22T03:00:00+00:00")
+    assert fitted["status"] == "fit" and fitted["training_count"] == 1
+    defense = fitted["params"]["defense"]
+    # One game moves a team's defense by a fraction of a point, not by its 11-point residual.
+    assert 0 < abs(defense["NYK"]) < 0.5 and abs(sum(defense.values())) < 1e-8
+    assert matchup.fit([], settings, "2026-10-22T03:00:00+00:00")["status"] == "insufficient_history"
+
+
+def test_v1_23_lock_scores_with_the_first_stage_fit(root, config):
+    at = after_seed(root, config)
+    versions = matchup.prepare_versions([], root, config, iso(at))
+    first = matchup.active(versions, "first", iso(at), 2026, config)
+    lock = matchup.active(versions, "lock", iso(at), 2026, config)
+    assert lock["id"] == first["id"] and lock["stage"] == "first" and lock["seed_count"] == 117
+    assert matchup.source_stage(config, "lock") == "first" and matchup.fitted_stages(config) == ["first"]
+    # A configuration frozen before v1.23 keeps a lock-only history.
+    legacy = {**config, "matchup": {k: v for k, v in config["matchup"].items() if k != "stage_source"}}
+    assert matchup.source_stage(legacy, "lock") == "lock"
+    assert matchup.active(versions, "lock", iso(at), 2026, legacy)["id"].startswith("matchup-defaults:")
+
+
+def test_v1_23_captured_lock_carries_the_first_stage_correction(root, rows, config):
+    cfg = {**config, "matchup": {k: v for k, v in config["matchup"].items() if not k.startswith("seed")}}
+    history = [
+        native("g0", "BOS", "NYK", "2026-11-05T23:00:00+00:00", "2026-11-05"),
+        final("g0", "2026-11-06T02:00:00+00:00"),
+    ]
+    versions = matchup.prepare_versions(history, root, cfg, "2026-11-06T03:00:00+00:00")
+    Ledger(root).append(versions)
+    http = FixtureHTTP(rows)
+    capture(root, cfg, http=http, now=dt(http.at))
+    forecasts = {f["stage"]: f for f in Ledger(root).records("forecast")}
+    assert set(forecasts) == {"first", "lock"}
+    for forecast in forecasts.values():
+        out = forecast["variants"]["adaptive"]
+        assert out["matchup_id"] == versions[0]["id"] and out["matchup_training_count"] == 1
+        assert out["scoring"]["home_score"] != forecast["raw"]["home_score"]
+        assert forecast["variants"]["fixed"]["scoring"]["home_score"] == forecast["raw"]["home_score"]
+    assert (
+        forecasts["lock"]["variants"]["adaptive"]["scoring"]
+        == forecasts["first"]["variants"]["adaptive"]["scoring"]
+    )
+    assert validate(root)["status"] == "valid"
+
+
+def test_v1_23_refits_once_each_slate_is_fully_graded(config):
+    cfg = {**config, "matchup": {k: v for k, v in config["matchup"].items() if not k.startswith("seed")}}
+    early = native("g1", "BOS", "NYK", "2026-10-21T23:00:00+00:00", "2026-10-21")
+    late = native("g2", "LAL", "DEN", "2026-10-22T02:30:00+00:00", "2026-10-21")
+    old = [
+        native("g0", "MIA", "CHI", "2026-10-20T23:00:00+00:00", "2026-10-20"),
+        final("g0", "2026-10-21T02:00:00+00:00"),
+    ]
+    records = old + [early, late]
+    # Nothing graded yet: no version. First graded slate: fit, even on one game.
+    assert not matchup.prepare_versions([early], ".", cfg, "2026-10-21T12:00:00+00:00")
+    v1 = matchup.prepare_versions(records, ".", cfg, "2026-10-21T12:00:00+00:00")
+    assert [v["training_count"] for v in v1] == [1]
+    records += v1
+    # Same manifest later, or the next UTC day: no new version.
+    assert not matchup.prepare_versions(records, ".", cfg, "2026-10-21T20:00:00+00:00")
+    # The early game is graded while the late game of the same slate is unplayed, then live.
+    records.append(final("g1", "2026-10-22T01:40:00+00:00"))
+    assert matchup.slate_pending(records, "first", 2026, "2026-10-22T01:45:00+00:00")
+    assert not matchup.prepare_versions(records, ".", cfg, "2026-10-22T01:45:00+00:00")
+    assert not matchup.prepare_versions(records, ".", cfg, "2026-10-22T04:00:00+00:00")
+    # The slate completes after the UTC day has already changed: refit at once.
+    records.append(final("g2", "2026-10-22T05:10:00+00:00"))
+    assert not matchup.slate_pending(records, "first", 2026, "2026-10-22T05:15:00+00:00")
+    v2 = matchup.prepare_versions(records, ".", cfg, "2026-10-22T05:15:00+00:00")
+    assert [v["training_count"] for v in v2] == [3]
+    records += v2
+    assert not matchup.prepare_versions(records, ".", cfg, "2026-10-22T05:25:00+00:00")
+    assert matchup.active(records, "lock", "2026-10-22T05:25:00+00:00", 2026, cfg)["id"] == v2[0]["id"]
+
+
+def test_v1_23_ungraded_game_stops_blocking_after_a_day(config):
+    cfg = {**config, "matchup": {k: v for k, v in config["matchup"].items() if not k.startswith("seed")}}
+    records = [
+        native("g1", "BOS", "NYK", "2026-10-21T23:00:00+00:00", "2026-10-21"),
+        native("g2", "LAL", "DEN", "2026-10-22T02:30:00+00:00", "2026-10-21"),
+        final("g1", "2026-10-22T01:40:00+00:00"),
+    ]
+    records += matchup.prepare_versions(records[:1] + records[2:], ".", cfg, "2026-10-22T01:45:00+00:00")
+    assert matchup.slate_pending(records, "first", 2026, "2026-10-23T02:00:00+00:00")
+    assert not matchup.slate_pending(records, "first", 2026, "2026-10-23T02:31:00+00:00")
+    # A retired instance never blocks.
+    retired = records + [{"id": "retired:g2", "kind": "retired", "instance_id": "g2"}]
+    assert not matchup.slate_pending(retired, "first", 2026, "2026-10-22T03:00:00+00:00")

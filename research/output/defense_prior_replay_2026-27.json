@@ -1,14 +1,14 @@
 {
-  "generated_for": "v1.21 defense-prior review; retrospective and previously inspected",
+  "generated_for": "v1.21 defense-prior review, regenerated under the v1.23 one-game minimum; retrospective and previously inspected",
   "seed_sha256": "9d3a8e56998a4a7e738020614b3546e1afbc658d97370abe7cffe53714348705",
-  "methodology": "sleeper_only_v1_22",
+  "methodology": "sleeper_only_v1_23",
   "selected": "prior40",
   "settings": {
     "half_life_days": 25.0,
     "offense_prior": 20.0,
     "global_prior": 100.0,
     "venue_prior": 100.0,
-    "minimum_training_games": 30,
+    "minimum_training_games": 1,
     "wp_scale": 10.0,
     "outcome_availability": "12 UTC on the following Eastern slate date; assumed, not original verification stamps.",
     "daily_fit": "Latest noon UTC <= prediction time"
@@ -34,151 +34,151 @@
     },
     "prior5": {
       "n": 117,
-      "corrected_games": 75,
-      "correct": 86,
-      "accuracy": 0.7350427350427351,
-      "margin": {
-        "mae": 10.826235964381452,
-        "bias": -0.5809042164760526
-      },
-      "total": {
-        "mae": 14.716602064048017,
-        "bias": -2.6671611728275835
-      },
-      "objective": 0.7739302861276689,
-      "log_loss": 0.5837918932922047,
-      "brier": 0.19949456202864038,
-      "margin_correction_sd": 3.61977278403246
-    },
-    "prior10": {
-      "n": 117,
-      "corrected_games": 75,
-      "correct": 84,
-      "accuracy": 0.717948717948718,
-      "margin": {
-        "mae": 10.765680080535754,
-        "bias": -0.4812557777931773
-      },
-      "total": {
-        "mae": 14.676098753344583,
-        "bias": -2.6640683209713756
-      },
-      "objective": 0.7707016993928637,
-      "log_loss": 0.5765230942639622,
-      "brier": 0.1972774866128833,
-      "margin_correction_sd": 2.33340857443507
-    },
-    "prior20": {
-      "n": 117,
-      "corrected_games": 75,
-      "correct": 84,
-      "accuracy": 0.717948717948718,
-      "margin": {
-        "mae": 10.790881847192235,
-        "bias": -0.4030715807802663
-      },
-      "total": {
-        "mae": 14.649882034293844,
-        "bias": -2.661245989568386
-      },
-      "objective": 0.770911848828508,
-      "log_loss": 0.5742813850816656,
-      "brier": 0.19649518827647208,
-      "margin_correction_sd": 1.3845745383847807
-    },
-    "prior40": {
-      "n": 117,
-      "corrected_games": 75,
+      "corrected_games": 103,
       "correct": 83,
       "accuracy": 0.7094017094017094,
       "margin": {
-        "mae": 10.833555760232729,
-        "bias": -0.35216770832604893
+        "mae": 10.922991042189082,
+        "bias": -0.6112387039966348
       },
       "total": {
-        "mae": 14.679022553645515,
-        "bias": -2.6593160403857823
+        "mae": 14.659198081860556,
+        "bias": -2.3920261004053787
       },
-      "objective": 0.7732027729237951,
-      "log_loss": 0.574315114412735,
-      "brier": 0.1964580097950647,
-      "margin_correction_sd": 0.7910245619060495
+      "objective": 0.7758751935106021,
+      "log_loss": 0.5841431768023249,
+      "brier": 0.20097852529398152,
+      "margin_correction_sd": 3.4010088903928146
+    },
+    "prior10": {
+      "n": 117,
+      "corrected_games": 103,
+      "correct": 82,
+      "accuracy": 0.7008547008547008,
+      "margin": {
+        "mae": 10.818094506405775,
+        "bias": -0.45702493579585224
+      },
+      "total": {
+        "mae": 14.662733694478094,
+        "bias": -2.399319441555442
+      },
+      "objective": 0.7722219310985019,
+      "log_loss": 0.5756574585449693,
+      "brier": 0.19761220583924932,
+      "margin_correction_sd": 2.1484192808459164
+    },
+    "prior20": {
+      "n": 117,
+      "corrected_games": 103,
+      "correct": 83,
+      "accuracy": 0.7094017094017094,
+      "margin": {
+        "mae": 10.816023032004919,
+        "bias": -0.3498804651525673
+      },
+      "total": {
+        "mae": 14.663229194585805,
+        "bias": -2.401165308569211
+      },
+      "objective": 0.7721609893464187,
+      "log_loss": 0.5732938339440332,
+      "brier": 0.19641673210857696,
+      "margin_correction_sd": 1.2649562972785622
+    },
+    "prior40": {
+      "n": 117,
+      "corrected_games": 103,
+      "correct": 83,
+      "accuracy": 0.7094017094017094,
+      "margin": {
+        "mae": 10.843414218285156,
+        "bias": -0.28416938092724
+      },
+      "total": {
+        "mae": 14.707231427763453,
+        "bias": -2.401313752682348
+      },
+      "objective": 0.7742971995039593,
+      "log_loss": 0.5734618127791916,
+      "brier": 0.19625353385997168,
+      "margin_correction_sd": 0.7271529218825075
     },
     "prior80": {
       "n": 117,
-      "corrected_games": 75,
+      "corrected_games": 103,
       "correct": 82,
       "accuracy": 0.7008547008547008,
       "margin": {
-        "mae": 10.867457628984083,
-        "bias": -0.32276448311390743
+        "mae": 10.869201355338014,
+        "bias": -0.24730114101895248
       },
       "total": {
-        "mae": 14.725966237498287,
-        "bias": -2.6581789279536276
+        "mae": 14.762037361553828,
+        "bias": -2.4011287685373066
       },
-      "objective": 0.775648914052018,
-      "log_loss": 0.5748603625529402,
-      "brier": 0.1966249995680025,
-      "margin_correction_sd": 0.46891858571317346
+      "objective": 0.7766604300999547,
+      "log_loss": 0.5741363548990879,
+      "brier": 0.19638508733654256,
+      "margin_correction_sd": 0.4434174829657055
     },
     "prior160": {
       "n": 117,
-      "corrected_games": 75,
-      "correct": 82,
-      "accuracy": 0.7008547008547008,
+      "corrected_games": 103,
+      "correct": 81,
+      "accuracy": 0.6923076923076923,
       "margin": {
-        "mae": 10.88557185895828,
-        "bias": -0.30690836406649685
+        "mae": 10.88313082418986,
+        "bias": -0.2277005136206434
       },
       "total": {
-        "mae": 14.753465167448459,
-        "bias": -2.657559904872888
+        "mae": 14.793583275486458,
+        "bias": -2.4009604643324014
       },
-      "objective": 0.777019506888131,
-      "log_loss": 0.5753146383215352,
-      "brier": 0.1967772767710084,
-      "margin_correction_sd": 0.3199358828366148
+      "objective": 0.7779880667601837,
+      "log_loss": 0.5746728622838492,
+      "brier": 0.19652766849595035,
+      "margin_correction_sd": 0.3175836911876994
     },
     "global_venue": {
       "n": 117,
-      "corrected_games": 75,
-      "correct": 82,
-      "accuracy": 0.7008547008547008,
+      "corrected_games": 103,
+      "correct": 81,
+      "accuracy": 0.6923076923076923,
       "margin": {
-        "mae": 10.907484363913253,
-        "bias": -0.29020805198833716
+        "mae": 10.900769869192981,
+        "bias": -0.20724917102933169
       },
       "total": {
-        "mae": 14.782549781601704,
-        "bias": -2.656903715463657
+        "mae": 14.826795438764528,
+        "bias": -2.4007365622446364
       },
-      "objective": 0.7785674809337888,
-      "log_loss": 0.5759154586660473,
-      "brier": 0.19698763032756222,
-      "margin_correction_sd": 0.23429955016816187
+      "objective": 0.7794920369499436,
+      "log_loss": 0.5753685074494658,
+      "brier": 0.1967341510355464,
+      "margin_correction_sd": 0.2488402437389262
     }
   },
   "selected_versus": {
     "raw_sleeper": {
-      "mean_difference": 0.00012198653730764873,
+      "mean_difference": -0.0007313150962357063,
       "ci95_slate_bootstrap": [
-        -0.004791832957965632,
-        0.004258132764179911
+        -0.006733194872627957,
+        0.004084596152144612
       ],
       "slates": 15
     },
     "prior5": {
-      "mean_difference": -0.009476778879469702,
+      "mean_difference": -0.010681364023133178,
       "ci95_slate_bootstrap": [
-        -0.030225626704729777,
-        0.01625928973600196
+        -0.032035301570245756,
+        0.016214849916878386
       ],
       "slates": 15
     }
   },
   "limitations": [
-    "117 games on 15 slates; 42 precede the 30-game minimum and receive no correction.",
+    "117 games on 15 slates; 14 precede the 1-game minimum and receive no correction.",
     "The sample was inspected before this review and is not untouched forward evidence.",
     "Result-availability times are assumed; the legacy seed has no original raw stat objects.",
     "No betting-profit search was performed."

@@ -582,7 +582,9 @@ def validate(root):
                     versions = [v for v in records if v["id"] == output["matchup_id"]]
                     if versions:
                         v = versions[0]
-                        if dt(v["created_at"]) > dt(r["captured_at"]) or v["stage"] != r["stage"]:
+                        if dt(v["created_at"]) > dt(r["captured_at"]) or v["stage"] != matchup.source_stage(
+                            r["config"], r["stage"]
+                        ):
                             raise ValueError("Matchup chronology or stage mismatch")
                         reproduced, _ = matchup.apply(r["raw"], r["game"], v)
                         if reproduced != scoring:

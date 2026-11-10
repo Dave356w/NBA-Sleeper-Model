@@ -138,7 +138,8 @@ def main(argv=None):
     if selected not in replays:
         raise ValueError("Registered defense prior is not in the replay grid")
     report = {
-        "generated_for": "v1.21 defense-prior review; retrospective and previously inspected",
+        "generated_for": "v1.21 defense-prior review, regenerated under the v1.23 one-game minimum; "
+        "retrospective and previously inspected",
         "seed_sha256": seed["sha256"],
         "methodology": config["methodology"],
         "selected": selected,
@@ -160,8 +161,8 @@ def main(argv=None):
         },
         "limitations": [
             f"{len(raw)} games on {len({r['slate'] for r in raw})} slates; "
-            f"{sum(not r['corrected'] for r in replays[selected])} precede the 30-game minimum "
-            "and receive no correction.",
+            f"{sum(not r['corrected'] for r in replays[selected])} precede the "
+            f"{config['matchup']['minimum_games']}-game minimum and receive no correction.",
             "The sample was inspected before this review and is not untouched forward evidence.",
             "Result-availability times are assumed; the legacy seed has no original raw stat objects.",
             "No betting-profit search was performed.",
