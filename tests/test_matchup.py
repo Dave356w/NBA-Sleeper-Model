@@ -171,8 +171,10 @@ def test_prospective_transition_preserves_frozen_records_and_previews_do_not_bet
     at = after_seed(root, config)
     http.at = iso(at)
     result = capture(root, config, http=http, now=at)
-    assert result["forecasts"] == 0
-    assert ledger.records("forecast") == original
+    assert result["forecasts"] == 1  # Fresh first snapshot; lock window already closed.
+    assert all(f in ledger.records("forecast") for f in original)
+    current = [f for f in ledger.records("forecast") if f["methodology"] == config["methodology"]]
+    assert len(current) == 1 and current[0]["captured_at"] == iso(at)
     preview = matchup.load_previews(root)["forecasts"][0]
     assert preview["methodology"] == matchup.METHOD == config["methodology"]
     assert preview["variants"]["adaptive"]["scoring"]["home_score"] != preview["raw"]["home_score"]

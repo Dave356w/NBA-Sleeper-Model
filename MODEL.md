@@ -600,3 +600,15 @@ still misses that lock, and the miss is recorded. Capture times are runner clock
 times. The watcher keeps the code it started with for workflow steps, but each
 pass runs the Python package as updated from `main`; dependency changes take
 effect at the next hand-off.
+
+
+## Prospective capture across methodology transitions — 10 November 2026
+
+First snapshots and locks are write-once per game instance, stage and methodology.
+An older methodology's frozen forecast does not block a fresh pregame capture
+under the current methodology. When an earlier record occupies the original ID,
+the new ID appends the methodology tag. Earlier forecasts remain unchanged.
+New captures use their actual retrieval time and current parameters; saved
+untracked previews are never promoted or backdated. Locks still require the
+registered window. The pooled record counts each game once, with a graded live
+current-methodology forecast superseding its retrospective replay.

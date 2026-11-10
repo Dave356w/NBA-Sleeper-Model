@@ -377,3 +377,21 @@ def test_capture_after_narrow_window_records_a_missed_lock(root, rows, config):
     ledger = Ledger(root)
     assert [f["stage"] for f in ledger.records("forecast")] == ["first"]
     assert [q["code"] for q in ledger.records("quality")] == ["missed_lock"]
+
+
+def test_methodology_transition_captures_fresh_forecasts_once(root, rows, config):
+    http = FixtureHTTP(rows)
+    previous = copy.deepcopy(config)
+    previous["methodology"] = "sleeper_only_v1_22"
+    assert capture(root, previous, http=http, now=dt(AT))["forecasts"] == 2
+    originals = copy.deepcopy(Ledger(root).records("forecast"))
+    http.at = "2026-11-07T17:01:00+00:00"
+    assert capture(root, config, http=http, now=dt(http.at))["forecasts"] == 2
+    forecasts = Ledger(root).records("forecast")
+    assert all(f in forecasts for f in originals)
+    current = [f for f in forecasts if f["methodology"] == config["methodology"]]
+    assert len(current) == 2
+    assert all(f["captured_at"] == http.at for f in current)
+    assert len({f["id"] for f in forecasts}) == 4
+    assert capture(root, config, http=http, now=dt(http.at))["forecasts"] == 0
+    validate(root)

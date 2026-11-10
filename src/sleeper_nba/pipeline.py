@@ -184,7 +184,11 @@ def capture(root, config, dry_run=False, http=None, now=None):
         instance = game["instance_id"]
         all_records = records + additions
         existing = {
-            r["stage"] for r in all_records if r["kind"] == "forecast" and r["instance_id"] == instance
+            r["stage"]
+            for r in all_records
+            if r["kind"] == "forecast"
+            and r["instance_id"] == instance
+            and r.get("methodology", r.get("config", {}).get("methodology")) == config.get("methodology")
         }
         target = dt(game["tip_utc"]) - timedelta(hours=config["lock_hours"])
         lock_end = lock_window_end(game, config)
@@ -254,8 +258,13 @@ def capture(root, config, dry_run=False, http=None, now=None):
                 previews[instance] = preview
         for stage in stages:
             variants = build_variants(raw, game, all_records, config, captured_at, stage, quotes)
+            forecast_id = f"forecast:{instance}:{stage}"
+            if any(r["id"] == forecast_id for r in all_records):
+                # Earlier methodologies remain immutable; a new version freezes
+                # its own fresh pregame capture, never a relabeled old preview.
+                forecast_id += ":" + config["methodology"]
             forecast = {
-                "id": f"forecast:{instance}:{stage}",
+                "id": forecast_id,
                 "kind": "forecast",
                 "methodology": config.get("methodology", "sleeper_only_v1_19"),
                 "instance_id": instance,
