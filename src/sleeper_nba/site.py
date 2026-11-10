@@ -10,11 +10,12 @@ from statistics import median
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 
 from . import matchup
-from .common import ET, dt, iso, load_config, utcnow
+from .common import ET, dt, iso, load_config, load_evaluation_plan, utcnow
 from .evaluation import closing_line_values, latest_grades, summarize
 from .markets import ALL_MARKETS
 from .models import active_calibration
 from .pipeline import latest_schedules
+from .prospective import forward_evaluation
 from .season import season_record
 from .storage import Ledger
 
@@ -106,6 +107,7 @@ def build_site(root):
         ],
         "grades": grades,
         "performance": summarize(public_records),
+        "forward_evaluation": forward_evaluation(records, load_evaluation_plan(root)),
         "methodology": PUBLIC_METHOD,
         "season": season_record(records, root, config),
         "selection_markets": list(config.get("selection_markets", ALL_MARKETS)),

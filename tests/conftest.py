@@ -14,6 +14,7 @@ BASE = Path(__file__).parents[1]
 def root(tmp_path):
     shutil.copyfile(BASE / "config.yaml", tmp_path / "config.yaml")
     shutil.copyfile(BASE / "MODEL.md", tmp_path / "MODEL.md")
+    shutil.copyfile(BASE / "evaluation_plan.json", tmp_path / "evaluation_plan.json")
     shutil.copytree(BASE / "data" / "calibration_seeds", tmp_path / "data" / "calibration_seeds")
     shutil.copytree(BASE / "web", tmp_path / "web")
     return tmp_path

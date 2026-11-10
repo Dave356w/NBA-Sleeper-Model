@@ -23,7 +23,7 @@ from scipy.special import ndtr
 
 from . import matchup
 from .common import ET, digest, dt, iso
-from .markets import expected_value, no_vig, payout, valid_odds
+from .markets import expected_value, freshness, no_vig, payout, valid_odds
 from .models import DEFAULTS, fit_parameters
 
 QUOTES_FILE = "research/inputs/v1_20_market_quotes_2026-11-09.json"
@@ -84,6 +84,12 @@ def _seed_markets(row, observation, config):
 def _forecast_markets(forecast, variant):
     markets = {"ml": None, "spread": None, "total_line": None}
     for m in forecast["variants"][variant].get("markets", []):
+        # Recheck frozen quotes independently of historical rejection precedence.
+        # Older code could mask a timing failure with a line/price restriction.
+        if freshness(m, forecast["captured_at"], forecast["config"]):
+            continue
+        if dt(m["captured_at"]) >= dt(forecast["game"]["tip_utc"]):
+            continue
         if m["market"] == "moneyline" and m.get("eligible"):
             markets["ml"] = {"home": m["prices"]["home"], "away": m["prices"]["away"]}
         elif m["market"] == "ats" and m.get("unavailable_reason") in USABLE_LINE_REASONS:
@@ -217,7 +223,7 @@ def replay_rows(observations, config):
     return rows
 
 
-def live_rows(records, config):
+def live_rows(records, config, season=None):
     """Graded native first snapshots of the current methodology, adaptive variant."""
     retired = {r["instance_id"] for r in records if r["kind"] == "retired"}
     results, rows = _latest_results(records), []
@@ -225,6 +231,8 @@ def live_rows(records, config):
         if f["kind"] != "forecast" or f["stage"] != "first" or f.get("provenance") != "native":
             continue
         if _method(f) != config["methodology"] or f["instance_id"] in retired:
+            continue
+        if season is not None and matchup.season_of(f["game"]) != season:
             continue
         result = results.get(f["instance_id"])
         if result is None or result["home_score"] == result["away_score"]:
@@ -351,13 +359,14 @@ def season_record(records, root, config):
     if season is None or not matchup.enabled(config):
         return None
     rows = replay_rows(replay_observations(records, root, config, season), config)
-    live = live_rows(records, config)
+    live = live_rows(records, config, season)
     seen = {r["game_id"] for r in live}
     rows = [r for r in rows if r["game_id"] not in seen] + live
     return {
         "season": f"{season}–{str(season + 1)[-2:]}",
         "stage": "first",
         "methodology": config["methodology"],
+        "evidence": "retrospective_research",
         "pooled": metrics(rows, config),
         "segments": [
             {"key": key, "label": label, **metrics([r for r in rows if r["segment"] == key], config)}

@@ -1,0 +1,81 @@
+{
+  "methodology": "sleeper_only_v1_22",
+  "season": 2026,
+  "starts_at": "2026-11-10T20:21:22+00:00",
+  "config": {
+    "methodology": "sleeper_only_v1_22",
+    "sleeper_company": "rotowire",
+    "wp_initial": 10.0,
+    "ats_bias_initial": 0.0,
+    "ats_sigma_initial": 14.0,
+    "totals_bias_initial": 0.0,
+    "totals_sigma_initial": 19.0,
+    "half_life": 75,
+    "prior_strength": 100,
+    "minimum_games": 30,
+    "wp_bounds": [
+      6.0,
+      20.0
+    ],
+    "ats_bias_bounds": [
+      -15.0,
+      15.0
+    ],
+    "ats_sigma_bounds": [
+      5.0,
+      35.0
+    ],
+    "totals_bias_bounds": [
+      -25.0,
+      25.0
+    ],
+    "totals_sigma_bounds": [
+      7.0,
+      45.0
+    ],
+    "daily_scale_movement": 0.1,
+    "daily_bias_movement": 1.0,
+    "team_minutes_bounds": [
+      200.0,
+      280.0
+    ],
+    "lock_policy": "five_hours_15min_v2",
+    "lock_hours": 5,
+    "lock_tolerance_minutes": 15,
+    "market_max_age_minutes": 15,
+    "market_pair_minutes": 5,
+    "market_clock_tolerance_seconds": 60,
+    "price_bounds": [
+      -135,
+      115
+    ],
+    "ats_subset_points": 3.0,
+    "value_probability_edge": 0.05,
+    "selection_markets": [
+      "moneyline"
+    ],
+    "book": "draftkings",
+    "learn_scalar_biases": false,
+    "matchup": {
+      "enabled": true,
+      "half_life_days": 25.0,
+      "minimum_games": 30,
+      "defense_prior": 40.0,
+      "offense_prior": 20.0,
+      "global_prior": 100.0,
+      "venue_prior": 100.0,
+      "coefficient_bound": 30.0,
+      "seed_season": 2026,
+      "seed_file": "data/calibration_seeds/legacy_first_2026-27.json",
+      "seed_sha256": "9d3a8e56998a4a7e738020614b3546e1afbc658d97370abe7cffe53714348705"
+    }
+  },
+  "config_hash": "61c5eb3db8a9a7874b160cad35f933dbe0dbf1cc4dd4fbe9cfc8f46f2bb08f3c",
+  "bootstrap_replicates": 2000,
+  "bootstrap_seed": 1922,
+  "exploratory_slates": 30,
+  "primary_metric": "log_loss",
+  "secondary_metric": "brier",
+  "learning_policy": "Freeze hyperparameters and rules; continue registered daily calibration.",
+  "interpretation": "Paired pointwise 95% slate-bootstrap intervals; exploratory below 30 slates; no sequential stopping claim."
+}

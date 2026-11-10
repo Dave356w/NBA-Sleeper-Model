@@ -35,7 +35,24 @@ def digest(value):
 
 
 def load_config(root):
-    return yaml.safe_load((Path(root) / "config.yaml").read_text())
+    config = yaml.safe_load((Path(root) / "config.yaml").read_text())
+    plan = load_evaluation_plan(root)
+    if plan and config.get("methodology") == plan["methodology"] and digest(config) != plan["config_hash"]:
+        raise ValueError(
+            "Frozen methodology settings changed; register a new prospective methodology version"
+        )
+    return config
+
+
+def load_evaluation_plan(root):
+    path = Path(root) / "evaluation_plan.json"
+    if not path.exists():
+        return None
+    plan = json.loads(path.read_text())
+    if digest(plan["config"]) != plan["config_hash"] or plan["config"]["methodology"] != plan["methodology"]:
+        raise ValueError("Invalid frozen evaluation configuration")
+    dt(plan["starts_at"])
+    return plan
 
 
 ALIASES = {

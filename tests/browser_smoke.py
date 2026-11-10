@@ -19,6 +19,8 @@ def main():
             assert page.locator("h1").inner_text()
             assert page.evaluate("document.documentElement.scrollWidth <= window.innerWidth")
         page.goto("http://localhost:8000/index.html", wait_until="networkidle")
+        assert "/utah.png" in page.evaluate("teamBlock('UTA', 110, false)")
+        assert "/bos.png" in page.evaluate("teamBlock('BOS', 110, true)")
         latest = page.get_by_role("button", name="Latest · untracked", exact=True)
         latest.click()
         assert latest.get_attribute("aria-pressed") == "true"
@@ -46,7 +48,8 @@ def main():
         page.goto("http://localhost:8000/performance.html", wait_until="networkidle")
         assert page.get_by_role("combobox", name="Methodology version").count() == 0
         assert page.get_by_role("heading", name="Residual defense adjustments").count() == 1
-        assert page.get_by_role("heading", name="2026–27 pooled record").count() == 1
+        assert page.get_by_role("heading", name="Prospective model comparisons").count() == 1
+        assert page.get_by_role("heading", name="2026–27 retrospective research").count() == 1
         assert "v1.19" not in page.locator("body").inner_text()
         data = page.request.get("http://localhost:8000/data.json").json()
         assert {f["methodology"] for f in data["forecasts"]} <= {"sleeper_only_v1_22"}
