@@ -15,7 +15,7 @@ import numpy as np
 
 from .common import TEAMS, digest, dt
 
-METHOD = "sleeper_only_v1_21"
+METHOD = "sleeper_only_v1_22"
 TEAMS_SORTED = sorted(TEAMS)
 TEAM_INDEX = {t: i for i, t in enumerate(TEAMS_SORTED)}
 

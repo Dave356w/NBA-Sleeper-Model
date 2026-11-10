@@ -12,10 +12,12 @@ from test_pipeline import AT, FixtureHTTP
 
 from sleeper_nba.common import dt
 from sleeper_nba.pipeline import capture, grade
-from sleeper_nba.site import PUBLIC_METHOD, REPLAY_FILE, build_site
+from sleeper_nba.site import PUBLIC_METHOD, build_site
 from sleeper_nba.storage import Ledger
 
 BASE = Path(__file__).parents[1]
+REPLAY_FILE = "research/output/defense_prior_replay_2026-27.json"
+QUOTES_FILE = "research/inputs/v1_20_market_quotes_2026-11-09.json"
 
 
 def test_public_cohort_excludes_older_and_unversioned_forecasts(root, rows, config):
@@ -58,7 +60,7 @@ def test_public_cohort_excludes_older_and_unversioned_forecasts(root, rows, conf
     assert data["performance"]["forecast"]["first:adaptive"]["n"] == 1
     assert data["performance"]["forecast"]["first:adaptive"]["accuracy"] == 1
     assert "performance_by_methodology" not in data and "methodologies" not in data
-    assert data["historical_replay"] is None
+    assert "historical_replay" not in data
     public = list(csv.DictReader(io.StringIO((root / "site" / "predictions.csv").read_text())))
     internal = list(csv.DictReader(io.StringIO((root / "data" / "predictions.csv").read_text())))
     assert len(public) == 4 and {r["methodology"] for r in public} == {PUBLIC_METHOD}
@@ -69,32 +71,97 @@ def test_public_cohort_excludes_older_and_unversioned_forecasts(root, rows, conf
     assert ledger.records() == before
 
 
-def copy_replay_archive(root):
-    target = root / REPLAY_FILE
+def copy_quotes(root):
+    target = root / QUOTES_FILE
     target.parent.mkdir(parents=True, exist_ok=True)
-    shutil.copyfile(BASE / REPLAY_FILE, target)
+    shutil.copyfile(BASE / QUOTES_FILE, target)
     return target
 
 
-def test_historical_summary_does_not_enter_live_metrics_or_download(root):
-    copy_replay_archive(root)
+def test_season_record_pools_replay_without_entering_live_metrics_or_ledger(root):
+    copy_quotes(root)
     before = Ledger(root).records()
     build_site(root)
     data = json.loads((root / "site" / "data.json").read_text())
-    replay = data["historical_replay"]
-    assert replay["methodology"] == PUBLIC_METHOD
-    assert replay["stage"] == "first" and replay["provenance"] == "legacy-first"
-    assert replay["start_date"] == "2026-10-22" and replay["end_date"] == "2026-11-06"
-    assert replay["metrics"]["n"] == 117 and replay["metrics"]["corrected_games"] == 75
-    assert replay["metrics"]["correct"] == 83 and replay["metrics"]["incorrect"] == 34
-    assert replay["metrics"]["log_loss"] == pytest.approx(0.574315114412735)
-    assert replay["wp_scale"] == 10
-    assert "assumed" in replay["outcome_availability"]
+    season = data["season"]
+    assert season["season"] == "2026–27" and season["stage"] == "first"
+    assert season["methodology"] == PUBLIC_METHOD
+    legacy, native, live = season["segments"]
+    assert [s["key"] for s in season["segments"]] == ["replay_legacy", "replay_native", "live"]
+    assert legacy["n"] == 117 and native["n"] == 0 and live["n"] == 0
+    assert legacy["start_date"] == "2026-10-22" and legacy["end_date"] == "2026-11-06"
+    assert legacy["correct"] == 83 and legacy["winner_count"] == 117
+    assert season["pooled"]["n"] == 117 and season["pooled"]["correct"] == 83
+    # Moneyline series only, at the archived prices, with the market shown beside the model.
+    assert set(legacy["betting"]) == {"directional", "value"}
+    assert legacy["betting"]["directional"]["n"] == 115
+    versus = legacy["versus_market"]
+    assert versus["margin"]["n"] == 115 and versus["total"]["n"] == 60
+    assert versus["margin"]["market_mae"] < versus["margin"]["model_mae"]
+    assert versus["win_probability"]["market_log_loss"] < versus["win_probability"]["model_log_loss"]
+    assert "assumed" in season["replay_clock"]
+    # The native record stays empty: no replay forecast, bet or grade is created.
     assert data["forecasts"] == [] and data["grades"] == {}
     assert data["performance"] == {"forecast": {}, "betting": {}, "paired": {}}
     assert not list(csv.DictReader(io.StringIO((root / "site" / "predictions.csv").read_text())))
-    assert "raw_sleeper" not in json.dumps(replay) and "prior5" not in json.dumps(replay)
     assert Ledger(root).records() == before
+
+
+def test_season_record_works_without_retained_quotes_and_rejects_altered_ones(root):
+    build_site(root)
+    legacy = json.loads((root / "site" / "data.json").read_text())["season"]["segments"][0]
+    assert legacy["n"] == 117 and legacy["betting"]["directional"]["n"] == 0
+    assert legacy["versus_market"]["margin"] == {"n": 0, "model_mae": None, "market_mae": None}
+    path = copy_quotes(root)
+    archive = json.loads(path.read_text())
+    archive["rows"][0]["first_home_ml"] = "-101.0"
+    path.write_text(json.dumps(archive))
+    with pytest.raises(ValueError, match="checksum mismatch"):
+        build_site(root)
+
+
+def test_season_record_replays_earlier_versions_and_adds_live_games_once(root, rows, config):
+    from sleeper_nba.season import replay_rows, season_record
+
+    older = {
+        **config,
+        "methodology": "sleeper_only_v1_21",
+        "selection_markets": ["moneyline", "ats", "totals"],
+    }
+    http = FixtureHTTP(rows)
+    capture(root, older, http=http, now=dt(AT))
+    ledger = Ledger(root)
+    record = season_record(ledger.records(), root, config)
+    assert [s["n"] for s in record["segments"]] == [117, 0, 0]  # Ungraded games never count.
+    http.final = True
+    http.at = "2026-11-08T02:00:00+00:00"
+    grade(root, config, http=http)
+    record = season_record(ledger.records(), root, config)
+    assert [s["n"] for s in record["segments"]] == [117, 1, 0]
+    assert record["pooled"]["n"] == 118
+    native = record["segments"][1]
+    assert native["start_date"] == native["end_date"] == "2026-11-07"
+    assert native["betting"]["directional"]["n"] == 1  # Its own contemporaneous moneyline.
+
+    # The same game captured and graded under the current version is live, not replay.
+    current = copy.deepcopy(next(f for f in ledger.records("forecast") if f["stage"] == "first"))
+    current["id"] = "current:" + current["id"]
+    current["methodology"] = current["config"]["methodology"] = config["methodology"]
+    ledger.append([current])
+    record = season_record(ledger.records(), root, config)
+    assert [s["n"] for s in record["segments"]] == [117, 0, 1]
+    assert record["pooled"]["n"] == 118  # One row per game.
+
+    # Replay never sees a result before it was usable.
+    from sleeper_nba.season import replay_observations
+
+    observations = replay_observations(ledger.records(), root, config, 2026)
+    scored = replay_rows(observations, config)
+    first = min(scored, key=lambda r: r["slate_date"])
+    assert first["wp_a"] == 10 and first["segment"] == "replay_legacy"
+    assert scored[0]["margin"] == pytest.approx(
+        observations[0]["projected_home_score"] - observations[0]["projected_away_score"]
+    )
 
 
 def test_committed_replay_reproduces_from_the_pinned_seed(root, config):
@@ -116,24 +183,6 @@ def test_committed_replay_reproduces_from_the_pinned_seed(root, config):
     assert close(json.loads((root / REPLAY_FILE).read_text()), json.loads((BASE / REPLAY_FILE).read_text()))
 
 
-def test_replay_count_mismatch_cannot_be_published(root):
-    path = copy_replay_archive(root)
-    archive = json.loads(path.read_text())
-    archive["candidates"][archive["selected"]]["n"] -= 1
-    path.write_text(json.dumps(archive))
-    with pytest.raises(ValueError, match="sample counts differ"):
-        build_site(root)
-
-
-def test_replay_for_another_prior_cannot_be_published(root):
-    path = copy_replay_archive(root)
-    archive = json.loads(path.read_text())
-    archive["selected"] = "prior5"
-    path.write_text(json.dumps(archive))
-    with pytest.raises(ValueError, match="registered candidate"):
-        build_site(root)
-
-
 def test_export_and_reporting_expose_lead_time_minutes_and_lock_coverage(root, rows, config):
     http = FixtureHTTP(rows)
     capture(root, config, http=http, now=dt(AT))
@@ -142,7 +191,8 @@ def test_export_and_reporting_expose_lead_time_minutes_and_lock_coverage(root, r
     grade(root, config, http=http)
     build_site(root)
     data = json.loads((root / "site" / "data.json").read_text())
-    assert data["methodology_version"] == "1.21"
+    assert data["methodology_version"] == "1.22"
+    assert data["selection_markets"] == ["moneyline"]
     assert data["sample_gates"] == {"forecast_games": 100, "settled_bets": 250}
     assert data["matchup_settings"]["defense_prior"] == 40
     stages = {f["stage"]: f for f in data["forecasts"]}

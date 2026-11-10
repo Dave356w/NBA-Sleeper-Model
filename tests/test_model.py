@@ -130,7 +130,12 @@ def quote(market, line=None, prices=None, **kw):
     }
 
 
+ALL_MARKETS = ["moneyline", "ats", "totals"]
+
+
 def test_market_equations_and_signs(game, config):
+    # Spread and totals series as registered before v1.22.
+    config = {**config, "selection_markets": ALL_MARKETS}
     out = probabilities({"margin": 10, "total": 230}, DEFAULTS)
     markets, selections = evaluate(
         out, DEFAULTS, [quote("ats", -5.5), quote("totals", 225.5)], AT, game, config, "lock"
@@ -150,6 +155,7 @@ def test_integer_line_excluded(game, config):
 
 
 def test_espn_fetch_timestamp_qualifies_without_provider_update(game, config):
+    config = {**config, "selection_markets": ALL_MARKETS}
     out = probabilities({"margin": 10, "total": 230}, DEFAULTS)
     markets, selections = evaluate(
         out, DEFAULTS, [quote("ats", -5.5, updated_at=None)], AT, game, config, "first"
@@ -337,3 +343,25 @@ def test_registered_lock_policy_and_unknown_policy(game, config):
     assert lock_window_end(game, config) == dt("2026-11-07T17:15:00+00:00")
     with pytest.raises(ValueError, match="Unknown lock policy"):
         lock_window_end(game, {**config, "lock_policy": "typo"})
+
+
+def test_v1_22_selects_moneyline_only_and_keeps_spread_and_total_as_context(game, config):
+    assert config["selection_markets"] == ["moneyline"]
+    out = probabilities({"margin": 10, "total": 230}, DEFAULTS)
+    quotes = [
+        quote("moneyline", None, prices={"home": -150, "away": 130}),
+        quote("ats", -5.5),
+        quote("totals", 225.5),
+    ]
+    markets, selections = evaluate(out, DEFAULTS, quotes, AT, game, config, "first")
+    assert {s["market"] for s in selections} == {"moneyline"}
+    assert {s["series"] for s in selections} == {"directional", "value"}
+    assert [m["selects"] for m in markets] == [True, False, False]
+    # The lines and the model's view of them stay available for forecast-versus-market checks.
+    assert all(m["eligible"] and "probabilities" in m for m in markets)
+    # A forecast frozen before v1.22 has no key and still registers every market.
+    legacy = {k: v for k, v in config.items() if k != "selection_markets"}
+    _, older = evaluate(out, DEFAULTS, quotes, AT, game, legacy, "first")
+    assert {s["market"] for s in older} == {"moneyline", "ats", "totals"}
+    with pytest.raises(ValueError, match="Unknown selection market"):
+        evaluate(out, DEFAULTS, quotes, AT, game, {**config, "selection_markets": ["props"]}, "first")

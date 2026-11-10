@@ -63,8 +63,15 @@ def freshness(quote, captured_at, config):
     return None
 
 
+ALL_MARKETS = ("moneyline", "ats", "totals")
+
+
 def evaluate(output, params, quotes, captured_at, game, config, stage):
     markets, selections = [], []
+    # Configurations frozen before v1.22 registered every market.
+    selecting = set(config.get("selection_markets", ALL_MARKETS))
+    if not selecting <= set(ALL_MARKETS):
+        raise ValueError("Unknown selection market")
     for quote in quotes:
         market = quote["market"]
         reason = freshness(quote, captured_at, config)
@@ -116,8 +123,9 @@ def evaluate(output, params, quotes, captured_at, game, config, stage):
             edge_points=edge_points,
             direction=direction,
         )
+        record["selects"] = market in selecting
         markets.append(record)
-        if reason:
+        if reason or market not in selecting:
             continue
 
         def selection(side, series):

@@ -1,13 +1,55 @@
 # Sleeper-Only NBA Prediction Model
 
-Implementation specification · v1.21 · 10 November 2026
+Implementation specification · v1.22 · 10 November 2026
 
 Suggested repository: `sleeper-nba-model`  
 Runtime: Python 3.12  
 Deployment: GitHub Actions and GitHub Pages  
 Status: Build specification for a new, independent model. No existing production repository is to be changed.
 
-## Active methodology — v1.21 defense shrinkage and reporting update
+## Active methodology — v1.22 moneyline-only picks and pooled season record
+
+Owner update, 10 November 2026. This section overrides conflicting text below, including Sections 7, 8, 12 and 13 where they register spread and totals selections, and the 9 November reporting rule that the replay is never shown with live results. Scoring is unchanged from v1.21. New forecasts are tagged `sleeper_only_v1_22`; frozen records of every earlier version, and their grades, are never rewritten.
+
+### Selections
+
+`selection_markets: [moneyline]`. Only the moneyline creates tracked selections: the predicted-winner series and the value series (at least 0.05 above the no-vig probability and positive expected value at the offered price, either side). Spread and totals selections are retired for new forecasts. A configuration frozen without this key registered all three markets and keeps doing so on replay or validation; an unknown market name is rejected.
+
+Spread and total quotes are still captured and stored with the model's margin and total, flagged `selects: false`. They are context and the basis of the forecast-versus-market comparison, not picks.
+
+Reasons, from the 115 priced first-snapshot games of 22 October–6 November (v1.21 scoring, default scales):
+
+- Spread leans were on the underdog in 97 of 115 games because the model's margins are compressed (83% lie inside the spread). They returned −13.6%; betting every underdog blind returned −13.7%.
+- Totals leans went 30–30. Market total error was 13.57 against the model's 13.76.
+- Regressing the actual margin on the spread and on the model-minus-spread difference gives a coefficient of −1.26 on the difference (95% slate-bootstrap interval −2.58 to +0.11). It must be positive for a spread bet to have an edge.
+- A fixed margin slope fitted on 2025–26 (1.26; by period 1.05, 1.31, 1.45) reduced the underdog share to 66% but did not produce a positive return, and the improvement vanished when the slope was learned sequentially. No slope is registered.
+
+For the moneyline, a slope on the margin is the same adjustment as the win-probability scale `a`, which already refits from completed games (Section 6). On a 2025–26 replay of v1.21 the adaptive scale changed log loss by −0.0043 against fixed a=10 (interval −0.0093 to +0.0004). No additional parameter is added.
+
+None of this shows a moneyline edge. On the same games the market's log loss was 0.5610 against the model's 0.5754, and the value series returned +0.7% on 37 bets (interval −29% to +30%).
+
+### Pooled season record
+
+The public pages show one season-to-date first-snapshot record under the current methodology, built at render time by `season.py` from three parts that stay individually visible:
+
+1. **Replay · archived first snapshots**: the pinned 117-game seed, with moneyline, spread and total quotes from the retained `research/inputs/v1_20_market_quotes_2026-11-09.json` (checksum verified; paired within five minutes of the snapshot and before tip).
+2. **Replay · earlier-version captures**: resolved native first snapshots frozen under earlier methodology tags, re-scored from their frozen raw Sleeper scores, with the contemporaneous quotes stored in each forecast.
+3. **Live**: graded native first snapshots of the current methodology, exactly as frozen.
+
+Replay chronology: a result is usable at its recorded verification time, or at 12:00 UTC on the day after the Eastern tip date for seed games, whose original verification times were not retained. Each replay forecast uses the latest noon-UTC fit at or before its capture. Team residuals use the registered settings; the win-probability scale starts at 10 and refits from earlier usable replay games once 30 exist, with the registered weighting, shrinkage and daily cap. A game appears once; a live row supersedes a replay row for the same game.
+
+Pooled and per-part outputs: games, winner record, accuracy, log loss, Brier, margin and total MAE, the two moneyline series at recorded prices, and model-versus-market errors on games with a recorded line.
+
+This is a reporting change only. Replay creates no forecast, selection, grade or calibration record; it does not seed live confidence calibration; locks are not replayed; and the native ledger, forecast download and live tables are unchanged. The live-only tables remain on the same pages.
+
+### Limitations
+
+- The pooled line mixes retrospective and prospective evidence. The seed sample was inspected before the v1.21 prior and the v1.22 selection policy were chosen, so its part is in-sample for those choices and will flatter the pooled record relative to future live results.
+- Seed availability times are assumed. Seed quotes are legacy first-snapshot records without original response-completion times.
+- Predicted-winner returns largely track how favorites performed; in the seed period favorites won 71% against a market-implied 66%.
+- Each methodology tag restarts live confidence calibration at defaults. v1.22 therefore begins at a=10 while its replay part uses a replayed adaptive scale.
+
+## v1.21 methodology — defense shrinkage and reporting update (scoring still current)
 
 Owner-requested review, 10 November 2026. This section overrides conflicting v1.20 text below. Everything not named here is unchanged from v1.20. New forecasts are tagged `sleeper_only_v1_21`; frozen v1.19 and v1.20 records, grades and calibration versions are never rewritten.
 
