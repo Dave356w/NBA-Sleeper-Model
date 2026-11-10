@@ -86,9 +86,18 @@ def lock_coverage(records, retired):
         for f in records
         if f["kind"] == "forecast" and f["stage"] == "lock" and f.get("provenance") == "native"
     }
-    missed = {r["instance_id"] for r in records if r["kind"] == "quality" and r["code"] == "missed_lock"}
-    captured = {
-        f["instance_id"] for f in records if f["kind"] == "forecast" and f.get("provenance") == "native"
+    # A window that closed before this system first observed a schedule is not an
+    # operational miss. Every later miss counts, including games that never
+    # received a valid projection and so have no forecast at all.
+    observed = [dt(r["at"]) for r in records if r["kind"] == "schedule"]
+    launch = min(observed) if observed else None
+    missed = {
+        r["instance_id"]
+        for r in records
+        if r["kind"] == "quality"
+        and r["code"] == "missed_lock"
+        and launch is not None
+        and dt(r["window_end"]) >= launch
     }
     slates = {}
     for schedule in latest_schedules(records).values():
@@ -96,8 +105,8 @@ def lock_coverage(records, retired):
         instance = schedule["instance_id"]
         if game["competition_class"] != "regular" or instance in retired:
             continue
-        if instance not in captured or (instance not in locks and instance not in missed):
-            continue  # Never captured natively, or the lock window is still open.
+        if instance not in locks and instance not in missed:
+            continue  # Lock window still open, or it closed before launch.
         row = slates.setdefault(game["slate_date"], {"slate_date": game["slate_date"], "leads": []})
         if instance in locks:
             row["leads"].append(locks[instance])
