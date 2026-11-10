@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import math
 import platform
 import subprocess
 from collections import defaultdict
@@ -298,6 +299,34 @@ def capture(root, config, dry_run=False, http=None, now=None):
                 ),
             )
     return {"forecasts": forecast_count, "records": len(additions), "dry_run": dry_run, "status": "ok"}
+
+
+def next_wake(records, config, now, tick_seconds=600, retry_seconds=60, floor_seconds=15):
+    """Seconds a watcher should sleep before its next run.
+
+    Wakes just after the earliest upcoming lock target, retries quickly while a
+    lock window is open without an accepted lock, and otherwise ticks.
+    """
+    retired = {r["instance_id"] for r in records if r["kind"] == "retired"}
+    locked = {r["instance_id"] for r in records if r["kind"] == "forecast" and r["stage"] == "lock"}
+    best = {"seconds": float(tick_seconds), "reason": "tick", "game_id": None}
+    for record in latest_schedules(records).values():
+        game, instance = record["game"], record["instance_id"]
+        if game["competition_class"] != "regular" or game["status"] != "pre":
+            continue
+        if instance in retired or instance in locked:
+            continue
+        target = dt(game["tip_utc"]) - timedelta(hours=config["lock_hours"])
+        if now > lock_window_end(game, config):
+            continue
+        if now >= target:
+            wait, reason = float(retry_seconds), "lock_window_open"
+        else:
+            # A few seconds past the target so the capture timestamp is inside the window.
+            wait, reason = (target - now).total_seconds() + 5, "lock_target"
+        if wait < best["seconds"]:
+            best = {"seconds": wait, "reason": reason, "game_id": game["game_id"]}
+    return {**best, "seconds": max(int(floor_seconds), math.ceil(best["seconds"]))}
 
 
 def grade(root, config, http=None):

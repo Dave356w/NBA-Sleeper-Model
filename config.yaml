@@ -16,7 +16,7 @@ totals_sigma_bounds: [7.0, 45.0]
 daily_scale_movement: 0.10
 daily_bias_movement: 1.0
 team_minutes_bounds: [200.0, 280.0]
-lock_policy: five_hours_to_tip_v1
+lock_policy: five_hours_15min_v2
 lock_hours: 5
 lock_tolerance_minutes: 15
 market_max_age_minutes: 15

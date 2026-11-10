@@ -66,6 +66,10 @@ def team(value):
 def lock_window_end(game, config):
     """Honor each frozen forecast's policy, including historical narrow windows."""
     tip = dt(game["tip_utc"])
-    if config.get("lock_policy") == "five_hours_to_tip_v1":
+    policy = config.get("lock_policy")
+    if policy == "five_hours_to_tip_v1":
         return tip
+    # Unlabeled historical forecasts and the v2 policy share the narrow window.
+    if policy not in (None, "five_hours_15min_v2"):
+        raise ValueError(f"Unknown lock policy: {policy!r}")
     return tip - timedelta(hours=config["lock_hours"]) + timedelta(minutes=config["lock_tolerance_minutes"])

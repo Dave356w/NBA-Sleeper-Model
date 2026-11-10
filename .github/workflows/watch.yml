@@ -1,0 +1,106 @@
+name: Lock watcher
+# One long-running job replaces the ten-minute cron, which GitHub delivered
+# hours apart. It sleeps until each game's T-5h lock target, captures, commits,
+# and hands off to a fresh run before the six-hour job limit.
+on:
+  workflow_dispatch:
+    inputs:
+      minutes:
+        description: Minutes to watch before handing off (job limit is 360)
+        default: '320'
+      tick_seconds:
+        description: Seconds between routine grade/preview runs
+        default: '600'
+permissions:
+  contents: write
+  actions: write
+concurrency:
+  # Shared writer group: a successor waits until this run has finished.
+  group: sleeper-model-writer
+  cancel-in-progress: false
+jobs:
+  watch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+      WATCH_MINUTES: ${{ inputs.minutes }}
+      TICK_SECONDS: ${{ inputs.tick_seconds }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - run: pip install -r requirements.txt
+      - run: pytest -q
+      - name: Watch, capture and persist
+        id: watch
+        run: |
+          set -u
+          case "$WATCH_MINUTES" in ''|*[!0-9]*) WATCH_MINUTES=320 ;; esac
+          case "$TICK_SECONDS" in ''|*[!0-9]*) TICK_SECONDS=600 ;; esac
+          [ "$WATCH_MINUTES" -gt 330 ] && WATCH_MINUTES=330
+          [ "$TICK_SECONDS" -lt 60 ] && TICK_SECONDS=60
+          git config user.name 'sleeper-model[bot]'
+          git config user.email 'sleeper-model[bot]@users.noreply.github.com'
+          limit=$(( WATCH_MINUTES * 60 ))
+          failures=0
+          while [ "$SECONDS" -lt "$limit" ]; do
+            # Pick up merged code and configuration before each run.
+            git pull --quiet --rebase origin main || echo "::warning::Could not update from main"
+            ok=1
+            python -m sleeper_nba run || { ok=0; failures=$(( failures + 1 )); echo "::warning::Model run failed"; }
+            # Accepted records are persisted even when reporting failed.
+            git add data model research/output
+            if ! git diff --cached --quiet; then
+              git commit --quiet -m 'Record Sleeper forecasts, grades and calibration'
+              pushed=0
+              for attempt in 1 2 3; do
+                if git pull --quiet --rebase origin main && git push --quiet origin HEAD:main; then
+                  pushed=1
+                  break
+                fi
+                sleep 5
+              done
+              if [ "$pushed" -eq 0 ]; then
+                echo "::warning::Push failed; the commit stays local and is retried next run"
+              elif [ "$ok" -eq 1 ]; then
+                gh workflow run deploy.yml --ref main || echo "::warning::Could not start the site deploy"
+              fi
+            fi
+            wake=$(python -m sleeper_nba next-wake --tick-seconds "$TICK_SECONDS" | jq -r '.seconds' 2>/dev/null || true)
+            case "$wake" in ''|*[!0-9]*) wake=$TICK_SECONDS ;; esac
+            remaining=$(( limit - SECONDS ))
+            [ "$remaining" -le 0 ] && break
+            [ "$wake" -gt "$remaining" ] && wake=$remaining
+            echo "Sleeping ${wake}s"
+            sleep "$wake"
+          done
+          echo "failures=$failures" >> "$GITHUB_OUTPUT"
+      - name: Upload recovery audit copy
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: audit-records-${{ github.run_id }}
+          path: |
+            data/transactions
+            data/calibration_seeds
+            config.yaml
+            model
+          retention-days: 30
+      - name: Hand off to the next watcher
+        # Not after a manual cancel, and not when setup or tests failed before the
+        # watch began: that would restart a broken build in a tight loop. The
+        # watchdog restarts the chain instead.
+        if: ${{ !cancelled() && steps.watch.outcome != 'skipped' }}
+        run: gh workflow run watch.yml --ref main -f minutes="$WATCH_MINUTES" -f tick_seconds="$TICK_SECONDS"
+      - name: Report failed runs
+        if: ${{ steps.watch.outputs.failures != '' && steps.watch.outputs.failures != '0' }}
+        run: |
+          echo "::error::${{ steps.watch.outputs.failures }} model run(s) failed during this watch"
+          exit 1

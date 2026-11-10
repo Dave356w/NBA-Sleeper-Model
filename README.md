@@ -1,7 +1,7 @@
 # NBA Sleeper Model
 
 [![Tests](https://github.com/Dave356w/NBA-Sleeper-Model/actions/workflows/ci.yml/badge.svg)](https://github.com/Dave356w/NBA-Sleeper-Model/actions/workflows/ci.yml)
-[![Capture and publish](https://github.com/Dave356w/NBA-Sleeper-Model/actions/workflows/model.yml/badge.svg)](https://github.com/Dave356w/NBA-Sleeper-Model/actions/workflows/model.yml)
+[![Lock watcher](https://github.com/Dave356w/NBA-Sleeper-Model/actions/workflows/watch.yml/badge.svg)](https://github.com/Dave356w/NBA-Sleeper-Model/actions/workflows/watch.yml)
 
 **[Open the dashboard](https://dave356w.github.io/NBA-Sleeper-Model/)** · [Build specification](MODEL.md) · [Actions](https://github.com/Dave356w/NBA-Sleeper-Model/actions)
 
@@ -12,7 +12,7 @@ An independent NBA forecasting system. Raw home/away scores are the sums of ever
 - Sleeper game-specific player points and seconds, validated against 200–280 projected team minutes.
 - ESPN regular-season schedule, UTC tips, statuses and overtime-inclusive finals.
 - **ESPN DraftKings odds only, timestamped when fetched. No Odds API or paid-feed secret.** The sportsbook's own update time is unknown; fetch time establishes quote eligibility by the owner's registered policy.
-- Immutable first snapshots and locks. Since v1.20.1 a lock is the first valid capture from T−5h until tip, so lock lead times vary; earlier locks kept a 15-minute window.
+- Immutable first snapshots and locks. A lock is the first valid capture in the 15 minutes after T−5h (v1.21.1). Locks frozen under v1.20.1 were accepted until tip and keep that record.
 - A fixed WP-10 / ATS-14 / totals-19 control and versioned adaptive scoring.
 - **25-calendar-day residual-defense decay**, separate zero-centered ridge priors: defense 40 games (5 in v1.20), offense nuisance control 20, global/venue 100. Offensive coefficients help estimate defense but are not applied to scores.
 - Raw and adjusted scores, component corrections, and an untracked Latest view alongside immutable first/lock tabs.
@@ -46,20 +46,23 @@ python -m sleeper_nba report
 python -m sleeper_nba build-site
 python -m sleeper_nba validate
 python -m sleeper_nba backtest
+python -m sleeper_nba next-wake
 python -m sleeper_nba import-legacy path/to/input.json --research-only
 ```
 
-`run` grades existing forecasts, refits completed slates, captures new first/lock forecasts, verifies the ledger and renders the website. `capture --dry-run` performs reads and calculations without creating records or advancing calibration. `backtest` is an explicitly labeled internal chronological replay, not a substitute for the native experiment. Legacy imports are isolated in `research/output` and cannot enter native calibration.
+`run` grades existing forecasts, refits completed slates, captures new first/lock forecasts, verifies the ledger and renders the website. `capture --dry-run` performs reads and calculations without creating records or advancing calibration. `next-wake` prints how long the watcher should sleep and creates no records. `backtest` is an explicitly labeled internal chronological replay, not a substitute for the native experiment. Legacy imports are isolated in `research/output` and cannot enter native calibration.
 
 ## GitHub Actions and Pages
 
 1. In **Settings → Pages**, select **GitHub Actions** as the source.
 2. In **Settings → Actions → General**, enable Actions and allow the model workflow's declared contents-write permissions. No external credentials are needed.
-3. Run **Capture, grade, calibrate and publish** manually once, then leave its scheduled runs enabled.
+3. Run **Watcher watchdog** manually once. It starts the **Lock watcher**, which then keeps itself running.
 
-`model.yml` runs at minutes 03/13/23/33/43/53 of every hour. A shared non-cancelling concurrency group serializes model writers; an OS lock serializes local commands. Accepted transactions are committed even if reporting fails. Each run uploads a 30-day audit recovery artifact. The site is deployed with the official Pages artifact/deploy actions. `deploy.yml` rebuilds after application changes; `ci.yml` lints, tests, validates and builds without live network dependencies.
+`watch.yml` is one long-running job. Each pass updates from `main`, grades, refits, captures, validates and builds the site, commits accepted records and starts `deploy.yml`. It then sleeps until just after the next T−5h lock target, retries every minute while a lock window is open without a lock, and otherwise ticks every ten minutes. After about 320 minutes it dispatches its successor; the shared writer concurrency group keeps one writer at a time, and an OS lock serializes local commands. Each run uploads a 30-day audit recovery artifact. `watchdog.yml` runs twice an hour and starts a watcher only when none is queued or running. `deploy.yml` also rebuilds after application changes; `ci.yml` lints, tests, validates and builds without live network dependencies.
 
-GitHub schedules are best effort and may run late or skip intervals. Between 7 and 10 November 2026 the ten-minute schedule actually fired 3.5–10.5 hours apart, and 4 of 22 captured games received a lock; the Performance page reports coverage by slate. A capture outside the defined lock window is never called a lock. Missed locks are recorded. Reliable T−5h coverage requires an external scheduler or continuously running watcher; neither is silently fabricated by this implementation. Public repositories generally have no standard Actions-minute charge, but account policy and limits still apply.
+This replaced a ten-minute cron that GitHub delivered 3.5–10.5 hours apart between 7 and 10 November 2026, when 4 of 22 captured games received a lock. The watcher no longer depends on cron timing, but a runner loss or outage spanning a whole 15-minute lock window still misses that lock. Missed locks are recorded and shown by slate on the Performance page; none is fabricated. A capture outside the lock window is never called a lock.
+
+To stop capture, disable **Lock watcher** and **Watcher watchdog** in the Actions tab, then cancel the running watcher. A cancelled watcher does not hand off. To change the pace, run **Lock watcher** manually with different `minutes` or `tick_seconds`; the values carry through later hand-offs. Public repositories generally have no standard Actions-minute charge, but the watcher occupies one runner continuously and account policy and limits still apply.
 
 ## Market policy
 
@@ -82,7 +85,7 @@ Major tip changes (>15 minutes), date changes and postponements retire the origi
 - An API outage is recorded in quality events; already accepted forecasts survive. Retry the workflow after the source recovers.
 - Restore the complete `data/transactions` and `data/calibration_seeds` directories from Git history or an audit artifact into an isolated checkout. Run `validate`, then `build-site`; compare IDs/checksums/counts before replacing a production copy. Never edit an existing transaction to repair a result.
 - Export corruption is repairable by rebuilding from transactions. A transaction checksum failure stops processing and must be investigated/restored from backup.
-- For a failed git push, preserve runner artifacts and retry against the current branch. Do not force-push or overwrite competing records. Workflows pull with rebase before pushing their new immutable transaction files.
+- For a failed git push, the watcher retries three times and again on its next pass; otherwise preserve runner artifacts and retry against the current branch. Do not force-push or overwrite competing records. Workflows pull with rebase before pushing their new immutable transaction files.
 - For a failed Pages deployment, rerun **Publish reporting site**. Forecast persistence is independent of the deployment step.
 
 ## Verification

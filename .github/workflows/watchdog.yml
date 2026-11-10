@@ -1,0 +1,33 @@
+name: Watcher watchdog
+# Starts the lock watcher when none is running. The watcher normally hands off
+# to itself; this only repairs a broken chain, so late or skipped cron
+# deliveries cost at most a delayed restart.
+on:
+  schedule:
+    - cron: '7,37 * * * *'
+  workflow_dispatch:
+permissions:
+  actions: write
+  contents: read
+jobs:
+  ensure:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+    steps:
+      - name: Start the watcher if it is not running
+        run: |
+          set -eu
+          active=0
+          for status in in_progress queued pending waiting requested; do
+            count=$(gh api "repos/$GH_REPO/actions/workflows/watch.yml/runs?status=$status&per_page=1" --jq '.total_count')
+            active=$(( active + count ))
+          done
+          if [ "$active" -eq 0 ]; then
+            gh workflow run watch.yml --ref main
+            echo "No watcher was running; started one."
+          else
+            echo "Watcher already active ($active run(s))."
+          fi
