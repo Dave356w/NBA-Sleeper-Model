@@ -18,7 +18,7 @@ from sleeper_nba.markets import (
     settle,
 )
 from sleeper_nba.models import DEFAULTS, fit_parameters, probabilities, training_observations, weights
-from sleeper_nba.projections import InvalidProjection, aggregate, eligible_stages
+from sleeper_nba.projections import InvalidProjection, aggregate, eligible_stages, public_player_snapshot
 from sleeper_nba.storage import Ledger
 
 AT = "2026-11-07T17:00:00+00:00"
@@ -53,6 +53,27 @@ def test_empty_roster_placeholder_retained(game, rows, config):
     assert result["home_score"] == 120
     assert result["players"][-1]["points"] is None
     assert result["players"][-1]["projection_status"] == "unprojected"
+
+
+def test_public_player_snapshot_keeps_only_display_fields_and_sorts_by_minutes(game, rows, config):
+    players = aggregate(game, rows, AT, config)["players"]
+    snapshot = public_player_snapshot(players)
+    assert set(snapshot[0]) == {
+        "name",
+        "team",
+        "projection_status",
+        "points",
+        "minutes",
+        "injury_status",
+    }
+    assert "player_id" not in snapshot[0] and "source_hash" not in snapshot[0]
+    for team_name in {player["team"] for player in snapshot}:
+        minutes = [
+            player["minutes"]
+            for player in snapshot
+            if player["team"] == team_name and player["projection_status"] == "projected"
+        ]
+        assert minutes == sorted(minutes, reverse=True)
 
 
 def test_zero_minutes_inconsistent(game, rows, config):

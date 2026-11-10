@@ -177,6 +177,7 @@ def test_prospective_transition_preserves_frozen_records_and_previews_do_not_bet
     assert len(current) == 1 and current[0]["captured_at"] == iso(at)
     preview = matchup.load_previews(root)["forecasts"][0]
     assert preview["methodology"] == matchup.METHOD == config["methodology"]
+    assert preview["lineup"] and "source_hash" not in preview["lineup"][0]
     assert preview["variants"]["adaptive"]["scoring"]["home_score"] != preview["raw"]["home_score"]
     assert preview["variants"]["fixed"]["scoring"]["home_score"] == preview["raw"]["home_score"]
     assert all(v["selections"] == [] for v in preview["variants"].values())

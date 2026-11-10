@@ -122,6 +122,16 @@ def test_full_capture_grade_report_and_correction(root, rows, config):
     site_data = json.loads((root / "site" / "data.json").read_text())
     assert site_data["performance"]["forecast"]["first:fixed"]["n"] == 1
     assert "raw_rows" not in site_data["forecasts"][0]["raw"]
+    assert "players" not in site_data["forecasts"][0]["raw"]
+    assert site_data["forecasts"][0]["lineup"]
+    assert set(site_data["forecasts"][0]["lineup"][0]) == {
+        "name",
+        "team",
+        "projection_status",
+        "points",
+        "minutes",
+        "injury_status",
+    }
     assert walk_forward(root, config)["replay_rows"] == 4
     assert validate(root)["status"] == "valid"
     # Durable restore reproduces record counts and forecast hashes.
@@ -312,6 +322,7 @@ def test_latest_pregame_fallback_survives_tip_invalid_feed_and_outage(root, rows
     capture(root, config, http=http, now=dt(http.at))
     saved = load_previews(root)["forecasts"]
     assert len(saved) == 1 and dt(saved[0]["captured_at"]) == dt(http.at)
+    assert saved[0]["lineup"] and "player_id" not in saved[0]["lineup"][0]
     assert all(not v["selections"] and v["recommendations"] for v in saved[0]["variants"].values())
     assert not any(f["stage"] == "lock" for f in Ledger(root).records("forecast"))
     http.rows = []

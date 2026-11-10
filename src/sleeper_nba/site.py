@@ -15,6 +15,7 @@ from .evaluation import closing_line_values, latest_grades, summarize
 from .markets import ALL_MARKETS
 from .models import active_calibration
 from .pipeline import latest_schedules
+from .projections import public_player_snapshot
 from .season import season_record
 from .storage import Ledger
 
@@ -99,6 +100,7 @@ def build_site(root):
             {k: v for k, v in f.items() if k not in {"config", "source"}}
             | {
                 "raw": {k: v for k, v in f["raw"].items() if k not in {"players", "raw_rows"}},
+                "lineup": public_player_snapshot(f["raw"].get("players", [])),
                 "retired": f["instance_id"] in retired,
                 "methodology": PUBLIC_METHOD,
             }

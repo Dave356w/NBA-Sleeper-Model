@@ -10,6 +10,21 @@ class InvalidProjection(ValueError):
     pass
 
 
+def public_player_snapshot(players):
+    """Return the projection fields that are useful on the public game card."""
+    fields = ("name", "team", "projection_status", "points", "minutes", "injury_status")
+    snapshot = [{field: player.get(field) for field in fields} for player in players]
+    return sorted(
+        snapshot,
+        key=lambda player: (
+            player["team"],
+            player["projection_status"] != "projected",
+            -(player["minutes"] or 0),
+            player["name"] or "",
+        ),
+    )
+
+
 def aggregate(game, raw, captured_at, config):
     if dt(captured_at) >= dt(game["tip_utc"]) or game["status"] != "pre":
         raise InvalidProjection("at_or_after_tip_or_started")

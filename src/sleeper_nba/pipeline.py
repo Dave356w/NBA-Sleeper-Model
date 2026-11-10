@@ -22,7 +22,7 @@ from .models import (
     training_observations,
     weights,
 )
-from .projections import InvalidProjection, aggregate, eligible_stages
+from .projections import InvalidProjection, aggregate, eligible_stages, public_player_snapshot
 from .sources import HTTP, SourceError, dates_around, espn_quotes, schedule, sleeper_feed
 from .storage import Ledger, event
 
@@ -249,6 +249,7 @@ def capture(root, config, dry_run=False, http=None, now=None):
                 "methodology": config["methodology"],
                 "lead_hours": (dt(game["tip_utc"]) - dt(captured_at)).total_seconds() / 3600,
                 "raw": {k: raw[k] for k in ["home_score", "away_score", "margin", "total"]},
+                "lineup": public_player_snapshot(raw["players"]),
                 "variants": build_variants(
                     raw, game, all_records, config, captured_at, "first", quotes, True
                 ),
