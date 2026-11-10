@@ -168,3 +168,36 @@ def test_no_public_fallback_when_only_older_forecasts_exist(root, rows, config):
     data = json.loads((root / "site" / "data.json").read_text())
     assert data["methodology"] == PUBLIC_METHOD
     assert data["forecasts"] == [] and data["performance"]["forecast"] == {}
+
+
+def test_lock_coverage_counts_uncaptured_misses_but_not_prelaunch_windows(root, rows, config):
+    # No valid projection during the whole window: a miss is recorded with no forecast.
+    http = FixtureHTTP([])
+    http.at = "2026-11-07T16:00:00+00:00"
+    capture(root, config, http=http, now=dt(http.at))  # Schedule observed before the window.
+    http.at = "2026-11-07T22:05:00+00:00"  # After the window under either lock policy.
+    capture(root, config, http=http, now=dt(http.at))
+    ledger = Ledger(root)
+    assert not ledger.records("forecast")
+    assert [q["code"] for q in ledger.records("quality") if q["code"] == "missed_lock"] == ["missed_lock"]
+    build_site(root)
+    coverage = json.loads((root / "site" / "data.json").read_text())["lock_coverage"]
+    assert coverage == [
+        {
+            "slate_date": "2026-11-07",
+            "missed": 1,
+            "locked": 0,
+            "games": 1,
+            "median_lead_hours": None,
+            "min_lead_hours": None,
+        }
+    ]
+
+
+def test_lock_coverage_ignores_windows_closed_before_first_observation(root, rows, config):
+    http = FixtureHTTP(rows)
+    http.at = "2026-11-07T22:05:00+00:00"  # First run ever, after the window closed.
+    capture(root, config, http=http, now=dt(http.at))
+    assert any(q["code"] == "missed_lock" for q in Ledger(root).records("quality"))
+    build_site(root)
+    assert json.loads((root / "site" / "data.json").read_text())["lock_coverage"] == []
