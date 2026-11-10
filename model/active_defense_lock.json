@@ -1,7 +1,7 @@
 {
-  "created_at": "2026-11-10T02:46:09.084031+00:00",
-  "id": "matchup:c12d90ff26c46081cc2d332bd935e5f2c6065bb8657e845c5fb17cb596e2ddc4",
-  "implementation_sha256": "8f001a8e86d17cdaac1f74097dc16c5e529fb1f570c2ea2c933b2fdc87df15a1",
+  "created_at": "2026-11-10T14:39:34.229981+00:00",
+  "id": "matchup:fb7fa9e4c7beaf132dd374cad8e77d96d9007038cab591d2e1b735df82f6ecbb",
+  "implementation_sha256": "93b4b6f2c0e0ad060b621471bdcd8d7f84442f14fce55fff4cb008a760713bab",
   "kind": "matchup_calibration",
   "manifest": [
     {
@@ -41,12 +41,50 @@
       "stage": "lock",
       "tip_utc": "2026-11-08T03:00:00.000000+00:00",
       "verified_at": "2026-11-08T06:43:45.900650+00:00"
+    },
+    {
+      "actual_away_score": 122,
+      "actual_home_score": 125,
+      "away": "IND",
+      "forecast_hash": "2371447c51ef0f0bd8b0d8d86f1d597fd35d7bacd8938e7490f3fb47e24c6026",
+      "game_id": "401909956",
+      "home": "DAL",
+      "observation_id": "forecast:401909956:ee943e83b40ae2f4:lock",
+      "projected_away_score": 113.53000000000002,
+      "projected_home_score": 115.88,
+      "provenance": "native",
+      "result_hash": "4f00759cbf55152a44fb9327fe78482ec299984992096f8efdeb286d30fcd097",
+      "result_id": "result:df0c4db7ec0349973eb70e32b1655adb73e3a2799820fac53b1bf9070514470a",
+      "season": 2026,
+      "snapshot_utc": "2026-11-09T20:10:31.058650+00:00",
+      "stage": "lock",
+      "tip_utc": "2026-11-10T01:00:00.000000+00:00",
+      "verified_at": "2026-11-10T10:35:42.184629+00:00"
+    },
+    {
+      "actual_away_score": 87,
+      "actual_home_score": 138,
+      "away": "NOP",
+      "forecast_hash": "b58a986bf5c6173650a15e3e87581df4ee82d16f8fc883892076f878b0362779",
+      "game_id": "401909959",
+      "home": "GSW",
+      "observation_id": "forecast:401909959:08a29e0cf56bd538:lock",
+      "projected_away_score": 112.04999999999998,
+      "projected_home_score": 118.79000000000002,
+      "provenance": "native",
+      "result_hash": "fa2d0c29b18d0d8e93bc3e93442d19ff8bf019707da0ff3a0e3f3c7023164916",
+      "result_id": "result:c726a886c8ff2ba8c6085bed0b3bb41d8278ce481f5430f4b693846a09a1d47c",
+      "season": 2026,
+      "snapshot_utc": "2026-11-10T02:46:10.204615+00:00",
+      "stage": "lock",
+      "tip_utc": "2026-11-10T03:00:00.000000+00:00",
+      "verified_at": "2026-11-10T10:35:42.184629+00:00"
     }
   ],
-  "manifest_hash": "2a3cedfab7fc0bcb922178a51bf76dc43aa7b3b9a8f746a59f656522ca15f146",
-  "methodology": "sleeper_only_v1_20",
-  "n_eff": 1.9999993327045187,
-  "native_count": 2,
+  "manifest_hash": "1c59da8b3f1a98744b99d39ab89b12597d949a3d85217eb61275b027b37dbf7c",
+  "methodology": "sleeper_only_v1_21",
+  "n_eff": 3.996989102413621,
+  "native_count": 4,
   "params": {
     "defense": {
       "ATL": 0.0,
@@ -119,7 +157,7 @@
   "seed_count": 0,
   "settings": {
     "coefficient_bound": 30.0,
-    "defense_prior": 5.0,
+    "defense_prior": 40.0,
     "enabled": true,
     "global_prior": 100.0,
     "half_life_days": 25.0,
@@ -130,7 +168,7 @@
     "seed_sha256": "9d3a8e56998a4a7e738020614b3546e1afbc658d97370abe7cffe53714348705",
     "venue_prior": 100.0
   },
-  "settings_hash": "22e638a5cbd29df18c92bb7213dfed23f7cd245c0a5e8ed7540bdff415107674",
+  "settings_hash": "85654aef4eaed006efe368f5d7c2d5335171acffa13de18cf2f9e5b7f7ded55c",
   "stage": "lock",
   "status": "insufficient_history",
   "team_counts": {
@@ -140,19 +178,19 @@
     "CHA": 0,
     "CHI": 0,
     "CLE": 0,
-    "DAL": 0,
+    "DAL": 1,
     "DEN": 0,
     "DET": 0,
-    "GSW": 0,
+    "GSW": 1,
     "HOU": 1,
-    "IND": 0,
+    "IND": 1,
     "LAC": 0,
     "LAL": 0,
     "MEM": 0,
     "MIA": 0,
     "MIL": 0,
     "MIN": 0,
-    "NOP": 0,
+    "NOP": 1,
     "NYK": 0,
     "OKC": 0,
     "ORL": 0,
@@ -165,11 +203,13 @@
     "UTA": 0,
     "WAS": 0
   },
-  "training_count": 2,
-  "training_cutoff": "2026-11-10T02:46:09.084031+00:00",
-  "weight_sum": 1.8915272895400705,
+  "training_count": 4,
+  "training_cutoff": "2026-11-10T14:39:34.229981+00:00",
+  "weight_sum": 3.8366869508868686,
   "weights": [
-    0.9452173503275848,
-    0.9463099392124856
+    0.932322390130749,
+    0.9334000735654087,
+    0.9843437703707544,
+    0.9866207168199566
   ]
 }
