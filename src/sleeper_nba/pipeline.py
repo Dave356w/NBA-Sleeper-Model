@@ -301,31 +301,60 @@ def capture(root, config, dry_run=False, http=None, now=None):
     return {"forecasts": forecast_count, "records": len(additions), "dry_run": dry_run, "status": "ok"}
 
 
-def next_wake(records, config, now, tick_seconds=600, retry_seconds=60, floor_seconds=15):
-    """Seconds a watcher should sleep before its next run.
+def next_wake(
+    records,
+    config,
+    now,
+    tick_seconds=600,
+    idle_seconds=3600,
+    active_hours_before_tip=8,
+    active_hours_after_tip=6,
+    retry_seconds=60,
+    floor_seconds=15,
+):
+    """Seconds a watcher should sleep before its next run, read from the schedule.
 
-    Wakes just after the earliest upcoming lock target, retries quickly while a
-    lock window is open without an accepted lock, and otherwise ticks.
+    Wakes just after the earliest upcoming lock target and retries quickly while
+    a lock window is open without an accepted lock. Otherwise it ticks: briskly
+    from a few hours before a tip until that game has a verified result, and
+    slowly when no game is near. The slow tick still refreshes the schedule.
     """
     retired = {r["instance_id"] for r in records if r["kind"] == "retired"}
     locked = {r["instance_id"] for r in records if r["kind"] == "forecast" and r["stage"] == "lock"}
-    best = {"seconds": float(tick_seconds), "reason": "tick", "game_id": None}
-    for record in latest_schedules(records).values():
-        game, instance = record["game"], record["instance_id"]
-        if game["competition_class"] != "regular" or game["status"] != "pre":
-            continue
-        if instance in retired or instance in locked:
-            continue
-        target = dt(game["tip_utc"]) - timedelta(hours=config["lock_hours"])
-        if now > lock_window_end(game, config):
-            continue
-        if now >= target:
-            wait, reason = float(retry_seconds), "lock_window_open"
-        else:
-            # A few seconds past the target so the capture timestamp is inside the window.
-            wait, reason = (target - now).total_seconds() + 5, "lock_target"
+    resolved = {r["instance_id"] for r in records if r["kind"] == "result"}
+    games = [
+        (r["game"], r["instance_id"])
+        for r in latest_schedules(records).values()
+        if r["game"]["competition_class"] == "regular" and r["instance_id"] not in retired
+    ]
+    before, after = timedelta(hours=active_hours_before_tip), timedelta(hours=active_hours_after_tip)
+    # The ledger's game status can lag, so activity is bounded by time and results.
+    active = any(
+        dt(g["tip_utc"]) - before <= now <= dt(g["tip_utc"]) + after and i not in resolved for g, i in games
+    )
+    best = {
+        "seconds": float(tick_seconds if active else max(idle_seconds, tick_seconds)),
+        "reason": "tick" if active else "idle_tick",
+        "game_id": None,
+    }
+
+    def consider(wait, reason, game):
+        nonlocal best
         if wait < best["seconds"]:
             best = {"seconds": wait, "reason": reason, "game_id": game["game_id"]}
+
+    for game, instance in games:
+        tip = dt(game["tip_utc"])
+        if now < tip - before:
+            consider((tip - before - now).total_seconds(), "active_start", game)
+        if game["status"] != "pre" or instance in locked or now > lock_window_end(game, config):
+            continue
+        target = tip - timedelta(hours=config["lock_hours"])
+        if now >= target:
+            consider(float(retry_seconds), "lock_window_open", game)
+        else:
+            # A few seconds past the target so the capture timestamp is inside the window.
+            consider((target - now).total_seconds() + 5, "lock_target", game)
     return {**best, "seconds": max(int(floor_seconds), math.ceil(best["seconds"]))}
 
 

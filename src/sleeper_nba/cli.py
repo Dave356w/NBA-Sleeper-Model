@@ -20,6 +20,7 @@ def main(argv=None):
         commands.add_parser(name)
     wake = commands.add_parser("next-wake")
     wake.add_argument("--tick-seconds", type=int, default=600)
+    wake.add_argument("--idle-seconds", type=int, default=3600)
     legacy = commands.add_parser("import-legacy")
     legacy.add_argument("path", type=Path)
     legacy.add_argument("--research-only", action="store_true", required=True)
@@ -36,7 +37,13 @@ def main(argv=None):
             from .common import utcnow
             from .pipeline import next_wake
 
-            result = next_wake(ledger.records(), config, utcnow(), tick_seconds=args.tick_seconds)
+            result = next_wake(
+                ledger.records(),
+                config,
+                utcnow(),
+                tick_seconds=args.tick_seconds,
+                idle_seconds=args.idle_seconds,
+            )
         elif args.command == "backtest":
             from .research import walk_forward
 

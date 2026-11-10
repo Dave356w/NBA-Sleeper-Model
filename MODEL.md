@@ -518,8 +518,10 @@ is retired because GitHub delivered it 3.5–10.5 hours apart.
   runs grade → refit → capture → validate → site build, commits accepted records,
   starts the Pages deploy, then sleeps until the earliest of: five seconds past
   the next T−5h target, 60 seconds while a lock window is open without a lock,
-  or a ten-minute tick. `python -m sleeper_nba next-wake` computes the sleep from
-  the ledger and creates no records.
+  or a schedule-aware tick: ten minutes from eight hours before a tip until that
+  game has a verified result (bounded at six hours after tip), and one hour when
+  no game is near. `python -m sleeper_nba next-wake` computes the sleep from the
+  ledger and creates no records.
 - Before exiting, the job dispatches its successor. The shared writer concurrency
   group makes the successor wait until the current run has finished, so there is
   one writer at a time. The hand-off gap is roughly one minute, inside the

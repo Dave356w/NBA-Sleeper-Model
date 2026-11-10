@@ -346,6 +346,14 @@ def test_watcher_wakes_at_lock_target_retries_in_window_and_ticks(root, rows, co
     assert wake("2026-11-07T17:03:00+00:00")["reason"] == "lock_window_open"
     assert wake("2026-11-07T17:03:00+00:00", retry_seconds=60)["seconds"] == 60
     assert wake("2026-11-07T17:15:01+00:00")["reason"] == "tick"  # Window closed.
+    # Schedule-aware pace: slow when no game is near, brisk from 8h before tip.
+    assert wake("2026-11-07T09:00:00+00:00") == {"seconds": 3600, "reason": "idle_tick", "game_id": None}
+    early = wake("2026-11-07T13:40:00+00:00")
+    assert early == {"seconds": 1200, "reason": "active_start", "game_id": "fixture-1"}
+    assert wake("2026-11-07T14:00:00+00:00")["reason"] == "tick"
+    assert wake("2026-11-07T23:30:00+00:00")["reason"] == "tick"  # In play, awaiting the final.
+    assert wake("2026-11-08T04:00:01+00:00")["reason"] == "idle_tick"  # Bounded even with no result.
+    assert wake("2026-11-07T09:00:00+00:00", idle_seconds=120)["seconds"] == 600  # Never below the tick.
     count = len(ledger.records())
 
     http.at = "2026-11-07T17:00:05+00:00"
@@ -356,6 +364,10 @@ def test_watcher_wakes_at_lock_target_retries_in_window_and_ticks(root, rows, co
     assert wake("2026-11-07T17:03:00+00:00")["reason"] == "tick"  # Locked; nothing left to chase.
     assert len(ledger.records()) == count + 1
     assert validate(root)["status"] == "valid"
+    http.final = True
+    http.at = "2026-11-08T00:40:00+00:00"
+    grade(root, config, http=http)
+    assert wake("2026-11-08T00:41:00+00:00")["reason"] == "idle_tick"  # Graded; nothing near.
 
 
 def test_capture_after_narrow_window_records_a_missed_lock(root, rows, config):
