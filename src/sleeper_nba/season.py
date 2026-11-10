@@ -98,10 +98,14 @@ def _contemporaneous(quote, forecast):
 def _forecast_markets(forecast, variant):
     markets = {"ml": None, "spread": None, "total_line": None}
     for m in forecast["variants"][variant].get("markets", []):
+        # Preserve the stricter reader check for all markets, including frozen
+        # records whose original rejection reason masked a timing failure.
+        if not _contemporaneous(m, forecast):
+            continue
         if m["market"] == "moneyline":
             if m.get("eligible"):
                 markets["ml"] = {"home": m["prices"]["home"], "away": m["prices"]["away"]}
-        elif m.get("unavailable_reason") not in USABLE_LINE_REASONS or not _contemporaneous(m, forecast):
+        elif m.get("unavailable_reason") not in USABLE_LINE_REASONS:
             continue
         elif m["market"] == "ats":
             markets["spread"] = _number(m.get("line"))
@@ -400,6 +404,7 @@ def season_record(records, root, config):
         "season": f"{season}–{str(season + 1)[-2:]}",
         "stage": "first",
         "methodology": config["methodology"],
+        "evidence": "retrospective_research",
         "pooled": metrics(rows, config),
         "segments": [
             {"key": key, "label": label, **metrics([r for r in rows if r["segment"] == key], config)}

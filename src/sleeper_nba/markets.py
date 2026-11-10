@@ -89,14 +89,14 @@ def evaluate(output, params, quotes, captured_at, game, config, stage):
             reason = "invalid_two_sided_prices"
         if market != "moneyline":
             line = quote.get("line")
-            if not half_point(line):
+            if reason is None and not half_point(line):
                 reason = "unsupported_line_increment"
-            if reason != "invalid_two_sided_prices" and not all(
+            if reason is None and not all(
                 config["price_bounds"][0] <= v <= config["price_bounds"][1] for v in prices.values()
             ):
                 reason = "outside_price_range"
         record = {**quote, "eligible": reason is None, "unavailable_reason": reason}
-        if reason in {"invalid_two_sided_prices", "unsupported_line_increment", "outside_price_range"}:
+        if reason is not None:
             markets.append(record)
             continue
         q = no_vig(prices[sides[0]], prices[sides[1]])

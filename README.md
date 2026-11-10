@@ -7,6 +7,14 @@
 
 An independent NBA forecasting system. Raw home/away scores are the sums of every valid Sleeper projected player's points. Version 1.20 added a learned opponent-defense correction to adaptive scoring; version 1.21 shrinks it harder; version 1.22 picks moneylines only and reports one pooled season record. No Four Factors, efficiency, BPM, production-model outputs, or independent injury adjustments are used.
 
+## Frozen live evaluation
+
+The current v1.22 settings are pinned in `evaluation_plan.json`, starting 10 November 2026 at 20:21:22 UTC. Scoring rules, priors, selection thresholds and calibration rules stay fixed; registered daily fitting continues. Changing settings under the same methodology fails validation and requires a new prospective methodology version.
+
+Performance leads with subsequent native live forecasts, separately for first snapshots and locks. It compares frozen adaptive probabilities against raw Sleeper at scale 10 and contemporaneous no-vig DraftKings probabilities on paired games, reporting log loss (primary), Brier score and 95% intervals from 2,000 whole-slate bootstrap replicates. Missing prices exclude a game only from the market comparison. Intervals are descriptive, exploratory below 30 slates, and do not provide a sequential stopping rule or establish a betting edge at any sample-count threshold.
+
+The pooled season record remains visible as **retrospective research**, separately from the primary live evaluation. See the protocol at the top of [MODEL.md](MODEL.md).
+
 ## What runs
 
 - Sleeper game-specific player points and seconds, validated against 200–280 projected team minutes.
