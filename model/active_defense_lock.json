@@ -1,6 +1,6 @@
 {
-  "created_at": "2026-11-09T02:00:06.311299+00:00",
-  "id": "matchup:f636f0751cc69b10c29a61fc5190159d8d895d153b8e51195e27322a8d1a5394",
+  "created_at": "2026-11-10T02:46:09.084031+00:00",
+  "id": "matchup:c12d90ff26c46081cc2d332bd935e5f2c6065bb8657e845c5fb17cb596e2ddc4",
   "implementation_sha256": "8f001a8e86d17cdaac1f74097dc16c5e529fb1f570c2ea2c933b2fdc87df15a1",
   "kind": "matchup_calibration",
   "manifest": [
@@ -45,7 +45,7 @@
   ],
   "manifest_hash": "2a3cedfab7fc0bcb922178a51bf76dc43aa7b3b9a8f746a59f656522ca15f146",
   "methodology": "sleeper_only_v1_20",
-  "n_eff": 1.9999993327045182,
+  "n_eff": 1.9999993327045187,
   "native_count": 2,
   "params": {
     "defense": {
@@ -166,10 +166,10 @@
     "WAS": 0
   },
   "training_count": 2,
-  "training_cutoff": "2026-11-09T02:00:06.311299+00:00",
-  "weight_sum": 1.9464302570614191,
+  "training_cutoff": "2026-11-10T02:46:09.084031+00:00",
+  "weight_sum": 1.8915272895400705,
   "weights": [
-    0.9726529774912136,
-    0.9737772795702055
+    0.9452173503275848,
+    0.9463099392124856
   ]
 }
