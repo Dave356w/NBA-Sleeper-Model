@@ -32,7 +32,7 @@ def test_calendar_half_life_is_distinct_from_sample_shrinkage(config):
     assert weights.tolist() == [0.5, 1.0]
     with pytest.raises(ValueError, match="Future game"):
         matchup.calendar_weights(observations, "2026-11-25T12:00:00Z", 25)
-    assert config["matchup"]["defense_prior"] == 5 and config["matchup"]["offense_prior"] == 20
+    assert config["matchup"]["defense_prior"] == 40 and config["matchup"]["offense_prior"] == 20
 
 
 def test_seed_is_first_only_known_before_use_and_hashed(root, config):
@@ -172,7 +172,7 @@ def test_prospective_transition_preserves_frozen_records_and_previews_do_not_bet
     assert result["forecasts"] == 0
     assert ledger.records("forecast") == original
     preview = matchup.load_previews(root)["forecasts"][0]
-    assert preview["methodology"] == "sleeper_only_v1_20"
+    assert preview["methodology"] == matchup.METHOD == config["methodology"]
     assert preview["variants"]["adaptive"]["scoring"]["home_score"] != preview["raw"]["home_score"]
     assert preview["variants"]["fixed"]["scoring"]["home_score"] == preview["raw"]["home_score"]
     assert all(v["selections"] == [] for v in preview["variants"].values())
@@ -202,3 +202,23 @@ def test_failed_team_refit_preserves_last_accepted_version(root, config, monkeyp
     assert (
         matchup.active(versions + rejected, "first", iso(later), 2026, config)["params"] == accepted["params"]
     )
+
+
+def test_v1_21_prior_shrinks_seed_corrections_and_starts_its_own_history(root, config):
+    at = iso(after_seed(root, config))
+    observations = matchup.seed_observations(root, config, "first", 2026, at)
+    current = matchup.fit(observations, config["matchup"], at)["params"]["defense"]
+    previous = matchup.fit(observations, {**config["matchup"], "defense_prior": 5.0}, at)["params"]["defense"]
+    assert max(map(abs, current.values())) < 0.5 * max(map(abs, previous.values()))
+    # A v1.20 version in the ledger is never reused for v1.21 scoring.
+    old = {
+        **config,
+        "methodology": "sleeper_only_v1_20",
+        "matchup": {**config["matchup"], "defense_prior": 5.0},
+    }
+    stale = matchup.prepare_versions([], root, old, at)
+    assert stale and matchup.active(stale, "first", at, 2026, old)["training_count"] == 117
+    assert matchup.active(stale, "first", at, 2026, config)["id"].startswith("matchup-defaults:")
+    fresh = matchup.prepare_versions(stale, root, config, at)
+    assert {v["stage"] for v in fresh} == {"first", "lock"}
+    assert all(v["settings"]["defense_prior"] == 40 for v in fresh)

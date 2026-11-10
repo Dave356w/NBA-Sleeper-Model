@@ -1,13 +1,50 @@
 # Sleeper-Only NBA Prediction Model
 
-Implementation specification · v1.20 · 7 November 2026
+Implementation specification · v1.21 · 10 November 2026
 
 Suggested repository: `sleeper-nba-model`  
 Runtime: Python 3.12  
 Deployment: GitHub Actions and GitHub Pages  
 Status: Build specification for a new, independent model. No existing production repository is to be changed.
 
-## Active methodology — v1.20 residual defense update
+## Active methodology — v1.21 defense shrinkage and reporting update
+
+Owner-requested review, 10 November 2026. This section overrides conflicting v1.20 text below. Everything not named here is unchanged from v1.20. New forecasts are tagged `sleeper_only_v1_21`; frozen v1.19 and v1.20 records, grades and calibration versions are never rewritten.
+
+### What changed
+
+1. **Defensive ridge prior: 5 → 40 fresh team-game observations.** Family, 25-calendar-day half-life, offense control (20), global/venue priors (100), the 30-game minimum and the scoring equations are unchanged.
+2. **New version histories.** Team-residual versions and confidence calibration are keyed by methodology, so v1.21 fits its own first-stage team version (117-game pinned seed plus native first snapshots) and starts confidence calibration at a=10 / ATS 14 / totals 19 with zero native games. The lock stage still starts at zero corrections and waits for 30 native lock outcomes.
+3. **Reporting.** Public pages, metrics and the forecast download show native v1.21 captures only, following the 9 November policy. Winner accuracy and probability scores are labeled exploratory below 100 graded games; returns below 250 settled bets per series. Performance reports scores by capture lead time and lock coverage by slate. The export adds `tip_utc`, `lead_hours`, team minutes, `model_tag`, per-team corrections and the team-fit training count, rounds floats to six decimals and orders rows by tip.
+
+### Why the prior changed
+
+The v1.20 prior was chosen on February–March 2026 and checked on April. October–January was warm-up and was never scored as a selection period, yet that thin-data regime is where v1.20 went live. The archived comparison (`research/output/defense_selection_2025-26.json`) already contains the relevant numbers for the same family:
+
+| 2025–26 period | Model | N | Margin MAE | Total MAE | WP log loss (a=10) |
+|---|---|---:|---:|---:|---:|
+| Oct–Jan | raw Sleeper | 729 | 10.855 | 15.134 | 0.6201 |
+| Oct–Jan | prior 5 (v1.20) | 729 | 10.980 | 15.288 | 0.6386 |
+| Oct–Jan | prior 40 (v1.21) | 729 | 10.863 | 15.131 | 0.6216 |
+| Full season | raw Sleeper | 1230 | 11.161 | 14.880 | 0.5752 |
+| Full season | prior 5 (v1.20) | 1230 | 11.065 | 14.907 | 0.5834 |
+| Full season | prior 20 | 1230 | 11.052 | 14.838 | 0.5742 |
+| Full season | prior 40 (v1.21) | 1230 | 11.076 | 14.840 | 0.5729 |
+
+Prior 5 was worse than raw Sleeper on every measure through January and worse on full-season log loss. Prior 40 is level with raw early, keeps most of the late-season point-error gain and has the best full-season log loss of the family. Priors 20 and 40 are not distinguishable; 40 was taken as the more conservative of the two.
+
+On the pinned 117-game 2026–27 seed (`research/defense_prior_replay.py`, output in `research/output/defense_prior_replay_2026-27.json`), 75 games receive a correction. The standard deviation of the margin correction falls from 3.62 points (prior 5) to 0.79 (prior 40), against a raw-margin spread of roughly 4–5 points. Log loss at a=10 is 0.5838 for prior 5, 0.5743 for prior 40 and 0.5742 for raw Sleeper. The prior 40 − prior 5 difference is −0.0095 with a slate-bootstrap interval of [−0.030, +0.016], and prior 40 − raw is +0.0001 [−0.005, +0.004].
+
+### Limitations
+
+- This is a retrospective re-selection on two previously inspected samples, using periods the v1.20 selection treated as warm-up. It is not untouched forward evidence. It moves toward more shrinkage, which limits but does not remove selection risk.
+- Neither sample shows v1.21 beating raw Sleeper on win probability. The change removes a likely early-season harm; it does not establish a gain.
+- The 2025–26 archive has unverified pregame-as-of timestamps, and its April log loss (≈0.42–0.45 for every candidate including raw) is too low to treat as representative.
+- Because corrected margins are now close to raw margins, the default a=10 is retained for the new confidence history. No replay calibration is reused.
+- Lock lead time is not controlled. Under the v1.20.1 policy a lock is the first capture between T−5h and tip, and scheduled runs have arrived 3.5–10.5 hours apart, so most games get no lock and the rest mix lead times from five hours to minutes. Lock-stage scores must be read by lead-time bucket. Reliable coverage needs an external scheduler or watcher (Section 17); none is implemented here.
+- Team minutes are exported for audit. Observed first-snapshot team minutes sit at 233–249, so no minutes rescaling is proposed.
+
+## v1.20 methodology — residual defense update (superseded where v1.21 differs)
 
 The owner requested a residual defense correction with a **25-calendar-day half-life**, followed by a last-season iteration comparison. This section overrides conflicting v1.19 adaptive scoring/bias rules below. Raw Sleeper aggregation and the permanently fixed control remain unchanged. Previously frozen records are never rewritten.
 

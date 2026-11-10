@@ -32,6 +32,28 @@ def error_scores(values):
     return {"mae": float(np.mean(abs(x))), "rmse": float(np.sqrt(np.mean(x * x))), "bias": float(np.mean(x))}
 
 
+LEAD_BUCKETS = [(0, 1), (1, 3), (3, 6), (6, 24), (24, float("inf"))]
+
+
+def lead_buckets(rows):
+    """Scores by hours between capture and tip; a stage can mix lead times."""
+    result = []
+    for low, high in LEAD_BUCKETS:
+        subset = [r for r in rows if low <= r[0]["lead_hours"] < high]
+        if not subset:
+            continue
+        correct = [r[2]["winner_correct"] for r in subset if r[2]["winner_correct"] is not None]
+        result.append(
+            {
+                "bucket": f"{low}–{high}h" if high != float("inf") else f"{low}h+",
+                "n": len(subset),
+                "accuracy": float(np.mean(correct)) if correct else None,
+                **binary_scores([r[1]["wp_home"] for r in subset], [r[3] for r in subset]),
+            }
+        )
+    return result
+
+
 def summarize(records):
     grades = latest_grades(records)
     groups = defaultdict(list)
@@ -111,6 +133,7 @@ def summarize(records):
             "raw_total": error_scores([r[2]["raw_total_error"] for r in rows]),
             "reliability": reliability,
             "margin_bands": bands,
+            "lead_buckets": lead_buckets(rows),
             "monthly": {
                 month: {"n": len(v), **binary_scores([r[1]["wp_home"] for r in v], [r[3] for r in v])}
                 for month, v in monthly.items()
