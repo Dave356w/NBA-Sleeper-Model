@@ -10,73 +10,22 @@ from statistics import median
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 
 from . import matchup
-from .common import ET, digest, dt, iso, load_config, utcnow
+from .common import ET, dt, iso, load_config, utcnow
 from .evaluation import closing_line_values, latest_grades, summarize
+from .markets import ALL_MARKETS
 from .models import active_calibration
 from .pipeline import latest_schedules
+from .season import season_record
 from .storage import Ledger
 
 PUBLIC_METHOD = matchup.METHOD
 PUBLIC_VERSION = PUBLIC_METHOD.removeprefix("sleeper_only_v").replace("_", ".")
-REPLAY_FILE = "research/output/defense_prior_replay_2026-27.json"
 # Below these counts the public pages label scores exploratory.
 SAMPLE_GATES = {"forecast_games": 100, "settled_bets": 250}
 
 
 def methodology_of(record):
     return record.get("methodology", record.get("config", {}).get("methodology"))
-
-
-def historical_replay(root, config):
-    """Publish only the registered candidate's current-season replay, never native grades."""
-    path = root / REPLAY_FILE
-    if not path.exists():
-        return None
-    archive = json.loads(path.read_text())
-    candidate = f"prior{config['matchup']['defense_prior']:g}"
-    if (
-        archive["selected"] != candidate
-        or archive["methodology"] != PUBLIC_METHOD
-        or archive["settings"]["half_life_days"] != config["matchup"]["half_life_days"]
-    ):
-        raise ValueError("Historical summary does not describe the registered candidate")
-    seed = json.loads((root / config["matchup"]["seed_file"]).read_text())
-    body = {k: v for k, v in seed.items() if k != "sha256"}
-    if (
-        digest(body) != seed["sha256"]
-        or seed["sha256"] != config["matchup"]["seed_sha256"]
-        or archive["seed_sha256"] != seed["sha256"]
-    ):
-        raise ValueError("Historical summary seed integrity failure")
-    point = archive["candidates"][candidate]
-    n = point["n"]
-    if n != len(seed["observations"]):
-        raise ValueError("Historical summary and archived sample counts differ")
-    dates = sorted(dt(o["tip_utc"]).astimezone(ET).date().isoformat() for o in seed["observations"])
-    return {
-        "methodology": PUBLIC_METHOD,
-        "label": "Historical replay",
-        "provenance": "legacy-first",
-        "stage": "first",
-        "season": "2026–27",
-        "start_date": dates[0],
-        "end_date": dates[-1],
-        "source_hash": digest(archive),
-        "source_url": "https://github.com/Dave356w/NBA-Sleeper-Model/blob/main/" + REPLAY_FILE,
-        "outcome_availability": archive["settings"]["outcome_availability"],
-        "wp_scale": archive["settings"]["wp_scale"],
-        "metrics": {
-            "n": n,
-            "corrected_games": point["corrected_games"],
-            "correct": point["correct"],
-            "incorrect": n - point["correct"],
-            "accuracy": point["accuracy"],
-            "margin": point["margin"],
-            "total": point["total"],
-            "log_loss": point["log_loss"],
-            "brier": point["brier"],
-        },
-    }
 
 
 def lock_coverage(records, retired):
@@ -158,7 +107,8 @@ def build_site(root):
         "grades": grades,
         "performance": summarize(public_records),
         "methodology": PUBLIC_METHOD,
-        "historical_replay": historical_replay(root, config),
+        "season": season_record(records, root, config),
+        "selection_markets": list(config.get("selection_markets", ALL_MARKETS)),
         "previews": [
             p
             for p in matchup.load_previews(root)["forecasts"]

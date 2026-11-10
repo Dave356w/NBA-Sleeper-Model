@@ -1,4 +1,4 @@
-methodology: sleeper_only_v1_21
+methodology: sleeper_only_v1_22
 sleeper_company: rotowire
 wp_initial: 10.0
 ats_bias_initial: 0.0
@@ -25,6 +25,8 @@ market_clock_tolerance_seconds: 60
 price_bounds: [-135, 115]
 ats_subset_points: 3.0
 value_probability_edge: 0.05
+# Markets that create tracked selections. Spread and totals are context only.
+selection_markets: [moneyline]
 book: draftkings
 
 # Team residual decay is calendar time, distinct from confidence calibration.

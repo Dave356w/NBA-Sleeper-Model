@@ -2,7 +2,7 @@
 <html lang="en" data-theme="dark">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="description" content="NBA v{{ methodology_version }} forecasts from Sleeper player projections, with separately reported historical replay and live results.">
+<meta name="description" content="NBA v{{ methodology_version }} forecasts from Sleeper player projections, with a season record that pools replayed and live results.">
 <meta name="color-scheme" content="dark light"><title>Sleeper NBA · {{ page|capitalize }}</title>
 <link rel="stylesheet" href="style.css"><script src="app.js" defer></script>
 </head>
@@ -22,7 +22,7 @@
 <div class="workspace">
 <header class="topbar"><span>NBA <span class="slash">/</span> <span id="section-title">Research dashboard</span></span><div><span class="version">MODEL {{ methodology_version }}</span><span class="updated" id="updated">Updated {{ updated_at }}</span></div></header>
 <main id="content" aria-live="polite"><div class="loading">Loading the recorded slate…</div></main>
-<footer><span>v{{ methodology_version }} · Historical replay and live tracking</span><a href="predictions.csv" download>Download v{{ methodology_version }} live forecasts ↓</a><a href="MODEL.md">Build specification ↗</a></footer>
+<footer><span>v{{ methodology_version }} · Season record: replay and live</span><a href="predictions.csv" download>Download v{{ methodology_version }} live forecasts ↓</a><a href="MODEL.md">Build specification ↗</a></footer>
 </div>
 <noscript>This dashboard requires JavaScript. Download the forecast CSV for the recorded predictions.</noscript>
 </body></html>

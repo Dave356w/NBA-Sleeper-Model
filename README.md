@@ -5,7 +5,7 @@
 
 **[Open the dashboard](https://dave356w.github.io/NBA-Sleeper-Model/)** · [Build specification](MODEL.md) · [Actions](https://github.com/Dave356w/NBA-Sleeper-Model/actions)
 
-An independent NBA forecasting system. Raw home/away scores are the sums of every valid Sleeper projected player's points. Version 1.20 added a learned opponent-defense correction to adaptive scoring; version 1.21 shrinks it harder. No Four Factors, efficiency, BPM, production-model outputs, or independent injury adjustments are used.
+An independent NBA forecasting system. Raw home/away scores are the sums of every valid Sleeper projected player's points. Version 1.20 added a learned opponent-defense correction to adaptive scoring; version 1.21 shrinks it harder; version 1.22 picks moneylines only and reports one pooled season record. No Four Factors, efficiency, BPM, production-model outputs, or independent injury adjustments are used.
 
 ## What runs
 
@@ -16,7 +16,7 @@ An independent NBA forecasting system. Raw home/away scores are the sums of ever
 - A fixed WP-10 / ATS-14 / totals-19 control and versioned adaptive scoring.
 - **25-calendar-day residual-defense decay**, separate zero-centered ridge priors: defense 40 games (5 in v1.20), offense nuisance control 20, global/venue 100. Offensive coefficients help estimate defense but are not applied to scores.
 - Raw and adjusted scores, component corrections, and an untracked Latest view alongside immutable first/lock tabs.
-- Winner probabilities, margin/total corrections, ATS/totals probabilities, no-vig edges, offered-price EV, research selections, grades and public results.
+- Winner probabilities, margin and total forecasts, no-vig edges, offered-price EV, moneyline selections, grades and public results. Spread and totals picks were retired in v1.22; their lines are kept to compare the forecasts with the market.
 - Stage-specific weighted calibration with 75-game half-life, 30-game minimum, shrinkage, daily caps, rejection safeguards and complete training manifests.
 - An atomic, hash-verified transaction ledger; CSV and public JSON are derived exports.
 
@@ -68,7 +68,7 @@ To stop capture, disable **Lock watcher** and **Watcher watchdog** in the Action
 
 Quotes come from ESPN's DraftKings main-line fields; the feed's field name `close` is treated as its current captured quote, not proof of a genuine closing price. Two-sided prices must come from the same captured event/book/line. Fetch completion must be within five minutes of the paired Sleeper response and before tip. Lock quotes must also be captured inside the lock window. Missing odds never block a score forecast and cannot be backfilled into its betting record later.
 
-ATS/totals primary betting and probability scores use half-point main lines, with both prices between -135 and +115. Integer lines remain informational because the normal model does not estimate push mass. The grading engine supports imported pushes (zero units). Moneyline value requires ≥5 percentage points of no-vig advantage and positive offered-price EV, evaluating both sides. ATS's ≥3-point subset and totals' ≥5-percentage-point subset remain separately labeled research series; a no-vig edge alone does not guarantee positive EV.
+From v1.22 only moneyline selections are created. For forecasts frozen earlier, ATS/totals primary betting and probability scores use half-point main lines, with both prices between -135 and +115. Integer lines remain informational because the normal model does not estimate push mass. The grading engine supports imported pushes (zero units). Moneyline value requires ≥5 percentage points of no-vig advantage and positive offered-price EV, evaluating both sides. ATS's ≥3-point subset and totals' ≥5-percentage-point subset remain separately labeled research series; a no-vig edge alone does not guarantee positive EV.
 
 Near-tip quote observations support **observed closing** comparisons only when a same-book quote was actually captured within 15 minutes before tip. No unavailable opening/closing price is inferred. Captured odds can still reflect a stale upstream sportsbook feed; fetch time is not the sportsbook update time.
 
@@ -104,7 +104,12 @@ For an optional browser smoke test, install `pip install -e '.[browser]'`, then 
 
 See [MODEL.md](MODEL.md) for registered methodology and implementation clarifications. The original `Dave356w/nba-matchups` repository is unchanged.
 
-## v1.21 shrinkage and reporting update
+## v1.22 moneyline-only picks and pooled season record
+
+Only the moneyline creates tracked picks: the predicted winner, and a value series needing a 5-point advantage over the no-vig price and positive expected value. Spread and totals picks are retired. On this season's 115 priced games the spread leans were an underdog bias from compressed margins (−13.6%, the same as betting every underdog), totals went 30–30, and the market was more accurate at both. The lines are still captured, and the Performance page compares the model's margin, total and win probability with the market's.
+
+The pages show one season-to-date record that pools replayed games with live results and lists each part: the 117 archived first snapshots, earlier-version native captures re-scored from their frozen raw scores, and live v1.22 forecasts. Replay is computed at build time by `src/sleeper_nba/season.py`, uses only results usable before each game, and writes nothing to the ledger. It is retrospective and was inspected before these settings were chosen, so read the pooled line with its parts. Details and limitations are at the top of [MODEL.md](MODEL.md).
+
 
 The defensive ridge prior moved from 5 to 40 fresh team-game observations. In last season's archive the 5-game prior scored worse than raw Sleeper from October through January and worse on full-season win-probability log loss; 40 is level with raw early and best of the family over the season. On the 117-game current-season seed the correction's margin spread drops from 3.6 to 0.8 points. Neither sample shows the correction beating raw Sleeper on win probability, and both were inspected before the choice. Details and limitations are at the top of [MODEL.md](MODEL.md); reproduce the current-season table with `python research/defense_prior_replay.py --root .`.
 

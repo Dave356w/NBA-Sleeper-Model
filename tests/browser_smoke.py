@@ -32,7 +32,7 @@ def main():
             page.get_by_role("button", name="5-hour lock", exact=True).get_attribute("aria-pressed") == "true"
         )
         page.get_by_role("button", name="First snapshot", exact=True).click()
-        page.get_by_role("button", name="v1.21", exact=True).click()
+        page.get_by_role("button", name="v1.22", exact=True).click()
         page.get_by_role("button", name="Latest · untracked", exact=True).click()
         (ROOT / ".cache").mkdir(exist_ok=True)
         page.screenshot(path=str(ROOT / ".cache" / "dashboard-desktop.png"), full_page=True)
@@ -46,10 +46,10 @@ def main():
         page.goto("http://localhost:8000/performance.html", wait_until="networkidle")
         assert page.get_by_role("combobox", name="Methodology version").count() == 0
         assert page.get_by_role("heading", name="Residual defense adjustments").count() == 1
-        assert page.get_by_role("heading", name="v1.21 historical record").count() == 1
+        assert page.get_by_role("heading", name="2026–27 pooled record").count() == 1
         assert "v1.19" not in page.locator("body").inner_text()
         data = page.request.get("http://localhost:8000/data.json").json()
-        assert {f["methodology"] for f in data["forecasts"]} <= {"sleeper_only_v1_21"}
+        assert {f["methodology"] for f in data["forecasts"]} <= {"sleeper_only_v1_22"}
         assert set(data["grades"]) <= {f["id"] for f in data["forecasts"]}
         assert not errors, errors
         browser.close()
