@@ -3,25 +3,43 @@
 Offense is a nuisance control during estimation. Scoring uses only the global,
 venue and opponent-defense coefficients. Prior strengths come from the frozen
 configuration of each version; v1.21 raised the defensive prior from 5 to 40.
+
+v1.23 (owner update, 10 November 2026): the correction applies from the first
+graded game of a season (`minimum_games: 1`), locks score with the first-stage
+fit (`stage_source`), and the fit refreshes once each slate is fully graded
+(`refit: slate`). Configurations frozen without these keys keep the earlier
+30-game minimum, stage-specific fits and one refit per UTC day.
 """
 
 from __future__ import annotations
 
 import json
 import math
+from datetime import timedelta
 from pathlib import Path
 
 import numpy as np
 
 from .common import TEAMS, digest, dt
 
-METHOD = "sleeper_only_v1_22"
+METHOD = "sleeper_only_v1_23"
+# A slate stops holding back a refit once its ungraded games are this old.
+PENDING_HOURS = 24
 TEAMS_SORTED = sorted(TEAMS)
 TEAM_INDEX = {t: i for i, t in enumerate(TEAMS_SORTED)}
 
 
 def enabled(config):
     return config.get("matchup", {}).get("enabled", False)
+
+
+def source_stage(config, stage):
+    """The stage whose fit scores a forecast of `stage` (v1.23: locks use first)."""
+    return config.get("matchup", {}).get("stage_source", {}).get(stage, stage)
+
+
+def fitted_stages(config):
+    return [s for s in ["first", "lock"] if source_stage(config, s) == s]
 
 
 def season_of(game):
@@ -178,7 +196,35 @@ def fit(observations, settings, cutoff):
     }
 
 
+def slate_pending(records, stage, season, cutoff):
+    """True while a started slate still has an ungraded forecast game.
+
+    A slate has started once one of its forecast games has tipped. Games
+    ungraded more than PENDING_HOURS after tip no longer hold a refit back.
+    """
+    cutoff = dt(cutoff)
+    retired = {r["instance_id"] for r in records if r["kind"] == "retired"}
+    graded = {r["instance_id"] for r in records if r["kind"] == "result" and dt(r["verified_at"]) <= cutoff}
+    games = [
+        f["game"] | {"instance_id": f["instance_id"]}
+        for f in records
+        if f["kind"] == "forecast"
+        and f["stage"] == stage
+        and f.get("provenance") == "native"
+        and f["instance_id"] not in retired
+        and season_of(f["game"]) == season
+    ]
+    started = {g["slate_date"] for g in games if dt(g["tip_utc"]) <= cutoff}
+    return any(
+        g["slate_date"] in started
+        and g["instance_id"] not in graded
+        and dt(g["tip_utc"]) > cutoff - timedelta(hours=PENDING_HOURS)
+        for g in games
+    )
+
+
 def active(records, stage, at, season, config):
+    stage = source_stage(config, stage)
     eligible = [
         r
         for r in records
@@ -210,11 +256,21 @@ def prepare_versions(records, root, config, cutoff):
         seasons.add(int(config["matchup"]["seed_season"]))
     additions = []
     for season in sorted(seasons):
-        for stage in ["first", "lock"]:
+        for stage in fitted_stages(config):
             old = active(records, stage, cutoff, season, config)
-            if old.get("created_at") and dt(old["created_at"]).date() == dt(cutoff).date():
+            by_slate = config["matchup"].get("refit") == "slate"
+            if by_slate:
+                # An existing fit waits for the whole slate; a first fit does not.
+                if old.get("created_at") and slate_pending(records, stage, season, cutoff):
+                    continue
+            elif old.get("created_at") and dt(old["created_at"]).date() == dt(cutoff).date():
                 continue
             observations = eligible_observations(records, root, config, stage, season, cutoff)
+            if by_slate and (
+                digest(observations) == old.get("manifest_hash")
+                or not (observations or old.get("created_at"))
+            ):
+                continue
             try:
                 fitted = fit(observations, config["matchup"], cutoff)
             except (ValueError, np.linalg.LinAlgError) as exc:

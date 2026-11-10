@@ -1,13 +1,34 @@
 # Sleeper-Only NBA Prediction Model
 
-Implementation specification · v1.22 · 10 November 2026
+Implementation specification · v1.23 · 10 November 2026
 
 Suggested repository: `sleeper-nba-model`  
 Runtime: Python 3.12  
 Deployment: GitHub Actions and GitHub Pages  
 Status: Build specification for a new, independent model. No existing production repository is to be changed.
 
-## Active methodology — v1.22 moneyline-only picks and pooled season record
+## Active methodology — v1.23 residual defense from game 1, on locks, refit each slate
+
+Owner update, 10 November 2026. The owner's stated intention is that the residual-defense correction applies from the first game of a season, to every forecast, and is updated after each slate. v1.22 did not do that in three places. This section overrides conflicting text below, including the v1.20 rules that the lock stage "cannot use first-stage seed observations" and "waits for 30 native lock outcomes", the 30-game requirement for team residuals, and one refit per UTC day for team residuals. Everything not named here is unchanged from v1.22, including moneyline-only selections, the priors, the 25-calendar-day decay and the scoring equations. New forecasts are tagged `sleeper_only_v1_23`; frozen records of every earlier version, and their grades, are never rewritten.
+
+### What changed
+
+1. **Locks use the first-stage team fit** (`matchup.stage_source: {lock: first}`). Under v1.22 the lock stage had its own history, started at zero corrections and needed 30 graded native locks; it had 4, so every lock to date carries a zero correction. From v1.23 a lock is scored with the same team-residual version as a first snapshot captured at that moment. That version is trained on first-snapshot residuals, including the pinned 117-game seed. No lock-only team fit is created. Lock forecasts and their outcomes do not train the team fit.
+2. **No 30-game wait** (`matchup.minimum_games: 1`). The fit runs from the first graded game of a season. The zero-centered priors (defense 40, offense control 20, global and venue 100) do the shrinking: one game moves a team's defensive term by a fraction of a point. With no graded game the correction is zero.
+3. **Refit after each slate** (`matchup.refit: slate`). Under v1.22 the team fit was refreshed at most once per UTC day, at the first pass after 00:00 UTC. That is mid-evening in the Eastern slate, so games finishing later waited a day: the first snapshots captured at 10:35 UTC on 10 November used a fit missing five games of the previous night. From v1.23 a new team version is created when the eligible observation manifest has changed and no started slate still has an ungraded forecast game. A slate has started once one of its forecast games has tipped; a game still ungraded 24 hours after its tip stops holding the refit back, and a retired instance never does. The first version of a methodology is fitted at once. A day without new results creates no version.
+
+Confidence calibration (the win-probability scale and the context sigmas) is unchanged: stage-specific, native forecasts of the current methodology only, 30-game minimum, at most one accepted refit per UTC day. The v1.23 tag starts that history at defaults, as every tag does.
+
+A configuration frozen without these keys keeps the earlier behavior on replay and validation: a 30-game minimum, stage-specific team fits and one refit per UTC day.
+
+### Evidence and its limits
+
+- Seed replay, 117 first snapshots, prior 40 (`research/defense_prior_replay.py`, regenerated): with a one-game minimum 103 games receive a correction (75 with the 30-game minimum). Log loss 0.5735 against 0.5743 with the 30-game minimum and 0.5742 for raw Sleeper; margin MAE 10.843 against 10.883 raw. Against raw the paired log-loss difference is −0.0007 (95% slate-bootstrap interval −0.0067 to +0.0041). Starting earlier is neutral on this sample; it is neither a demonstrated gain nor a harm.
+- The pooled season record under v1.23 is 101–38 with log loss 0.5618 (v1.22: 101–38, 0.5625). The value series changes from 43 to 46 bets.
+- Using the first-stage fit on locks is not tested: only four graded locks exist. Sleeper's projections at T−5h include later lineup news than at the first snapshot, so first-snapshot residuals may overstate the lock-stage residual. The correction is small (team defensive terms currently between −1.1 and +1.5 points, global −1.4) and the fixed control remains the comparison.
+- The seed sample was inspected before these choices. This is a change to match the owner's intention, not a selection on results.
+
+## v1.22 methodology — moneyline-only picks and pooled season record (still current)
 
 Owner update, 10 November 2026. This section overrides conflicting text below, including Sections 7, 8, 12 and 13 where they register spread and totals selections, and the 9 November reporting rule that the replay is never shown with live results. Scoring is unchanged from v1.21. New forecasts are tagged `sleeper_only_v1_22`; frozen records of every earlier version, and their grades, are never rewritten.
 

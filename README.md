@@ -5,7 +5,7 @@
 
 **[Open the dashboard](https://dave356w.github.io/NBA-Sleeper-Model/)** · [Build specification](MODEL.md) · [Actions](https://github.com/Dave356w/NBA-Sleeper-Model/actions)
 
-An independent NBA forecasting system. Raw home/away scores are the sums of every valid Sleeper projected player's points. Version 1.20 added a learned opponent-defense correction to adaptive scoring; version 1.21 shrinks it harder; version 1.22 picks moneylines only and reports one pooled season record. No Four Factors, efficiency, BPM, production-model outputs, or independent injury adjustments are used.
+An independent NBA forecasting system. Raw home/away scores are the sums of every valid Sleeper projected player's points. Version 1.20 added a learned opponent-defense correction to adaptive scoring; version 1.21 shrinks it harder; version 1.22 picks moneylines only and reports one pooled season record; version 1.23 applies the correction from the first graded game, on locks as well as first snapshots, and refits it after each slate. No Four Factors, efficiency, BPM, production-model outputs, or independent injury adjustments are used.
 
 ## What runs
 
@@ -20,7 +20,7 @@ An independent NBA forecasting system. Raw home/away scores are the sums of ever
 - Stage-specific weighted calibration with 75-game half-life, 30-game minimum, shrinkage, daily caps, rejection safeguards and complete training manifests.
 - An atomic, hash-verified transaction ledger; CSV and public JSON are derived exports.
 
-Version 1.19 started without historical seeding. For v1.20, the first-stage team correction is explicitly initialized from 117 audited current-season legacy first snapshots, stored with a pinned hash in `data/calibration_seeds`. They are training history, never native forward results. Lock-stage corrections and new-version confidence calibration start at defaults. Historical reference claims are not imported as forward performance. No actual wagers are executed.
+Version 1.19 started without historical seeding. For v1.20, the first-stage team correction is explicitly initialized from 117 audited current-season legacy first snapshots, stored with a pinned hash in `data/calibration_seeds`. They are training history, never native forward results. New-version confidence calibration starts at defaults. Until v1.23, lock-stage corrections also started at zero; from v1.23 locks use the first-stage team fit. Historical reference claims are not imported as forward performance. No actual wagers are executed.
 
 ## Local setup
 
@@ -103,6 +103,10 @@ Tests cover numeric equations, aliases, zero/missing handling, incomplete covera
 For an optional browser smoke test, install `pip install -e '.[browser]'`, then `python -m playwright install chromium`, serve `site`, and run `python tests/browser_smoke.py`. It checks all pages, stage/model controls, desktop/mobile layout and JavaScript errors. Browser testing uses a real generated site; no fabricated performance sample is published.
 
 See [MODEL.md](MODEL.md) for registered methodology and implementation clarifications. The original `Dave356w/nba-matchups` repository is unchanged.
+
+## v1.23 residual defense from game 1
+
+The owner's intention is a residual-defense correction that applies from the first game of the season and is updated after each slate. v1.23 closes three gaps: locks now use the first-stage team fit (they had a separate history that needed 30 graded locks and so carried no correction), the fit no longer waits for 30 games, and it refreshes when a slate is fully graded instead of once per UTC day. Priors, decay, scoring equations and moneyline-only selections are unchanged. Confidence calibration keeps its own stage-specific histories. Statements below that locks use lock history only describe v1.20–v1.22. See [MODEL.md](MODEL.md) for the rules, evidence and limits.
 
 ## v1.22 moneyline-only picks and pooled season record
 

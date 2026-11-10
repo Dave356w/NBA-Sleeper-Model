@@ -1,4 +1,4 @@
-methodology: sleeper_only_v1_22
+methodology: sleeper_only_v1_23
 sleeper_company: rotowire
 wp_initial: 10.0
 ats_bias_initial: 0.0
@@ -34,7 +34,12 @@ learn_scalar_biases: false
 matchup:
   enabled: true
   half_life_days: 25.0
-  minimum_games: 30
+  # v1.23: correct from the first graded game; the priors do the shrinking.
+  minimum_games: 1
+  # v1.23: locks score with the first-stage fit instead of a lock-only history.
+  stage_source: {lock: first}
+  # v1.23: refit once each slate is fully graded, not once per UTC day.
+  refit: slate
   defense_prior: 40.0
   offense_prior: 20.0
   global_prior: 100.0
