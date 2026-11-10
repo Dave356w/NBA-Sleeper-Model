@@ -23,7 +23,7 @@ from scipy.special import ndtr
 
 from . import matchup
 from .common import ET, digest, dt, iso
-from .markets import expected_value, no_vig, payout, valid_odds
+from .markets import expected_value, freshness, no_vig, payout, valid_odds
 from .models import DEFAULTS, fit_parameters
 
 QUOTES_FILE = "research/inputs/v1_20_market_quotes_2026-11-09.json"
@@ -81,27 +81,54 @@ def _seed_markets(row, observation, config):
     return markets
 
 
+def _contemporaneous(quote, forecast):
+    """Paired, fresh and pregame under the forecast's frozen timing rules.
+
+    A stored reason such as an integer line can mask a timing failure, so the
+    timestamps are rechecked here instead of trusting the final reason.
+    """
+    try:
+        if freshness(quote, forecast["captured_at"], forecast["config"]) is not None:
+            return False
+        return dt(quote["captured_at"]) < dt(forecast["game"]["tip_utc"])
+    except (KeyError, ValueError, TypeError):
+        return False
+
+
 def _forecast_markets(forecast, variant):
     markets = {"ml": None, "spread": None, "total_line": None}
     for m in forecast["variants"][variant].get("markets", []):
-        if m["market"] == "moneyline" and m.get("eligible"):
-            markets["ml"] = {"home": m["prices"]["home"], "away": m["prices"]["away"]}
-        elif m["market"] == "ats" and m.get("unavailable_reason") in USABLE_LINE_REASONS:
+        if m["market"] == "moneyline":
+            if m.get("eligible"):
+                markets["ml"] = {"home": m["prices"]["home"], "away": m["prices"]["away"]}
+        elif m.get("unavailable_reason") not in USABLE_LINE_REASONS or not _contemporaneous(m, forecast):
+            continue
+        elif m["market"] == "ats":
             markets["spread"] = _number(m.get("line"))
-        elif m["market"] == "totals" and m.get("unavailable_reason") in USABLE_LINE_REASONS:
+        elif m["market"] == "totals":
             markets["total_line"] = _number(m.get("line"))
     return markets
 
 
-def _latest_results(records):
-    results = {}
+def _result_revisions(records):
+    """Every verified result per game instance, oldest first."""
+    revisions = {}
     for r in records:
-        if r["kind"] == "result" and (
-            r["instance_id"] not in results
-            or dt(r["verified_at"]) > dt(results[r["instance_id"]]["verified_at"])
-        ):
-            results[r["instance_id"]] = r
-    return results
+        if r["kind"] == "result":
+            revisions.setdefault(r["instance_id"], []).append(r)
+    for values in revisions.values():
+        values.sort(key=lambda r: dt(r["verified_at"]))
+    return revisions
+
+
+def _latest_results(records):
+    return {instance: values[-1] for instance, values in _result_revisions(records).items()}
+
+
+def _scores_at(row, cutoff):
+    """The result as it was known at a cutoff; later corrections are not visible."""
+    known = [r for r in row.get("revisions", []) if dt(r[0]) <= cutoff]
+    return (known[-1][1], known[-1][2]) if known else (row["actual_home_score"], row["actual_away_score"])
 
 
 def _method(record):
@@ -134,7 +161,7 @@ def replay_observations(records, root, config, season):
                 "markets": _seed_markets(quotes.get(o["game_id"]), o, config),
             }
     retired = {r["instance_id"] for r in records if r["kind"] == "retired"}
-    results = _latest_results(records)
+    results, revisions = _latest_results(records), _result_revisions(records)
     for f in records:
         if f["kind"] != "forecast" or f["stage"] != "first" or f.get("provenance") != "native":
             continue
@@ -155,7 +182,11 @@ def replay_observations(records, root, config, season):
             "projected_away_score": f["raw"]["away_score"],
             "actual_home_score": result["home_score"],
             "actual_away_score": result["away_score"],
-            "available_at": result["verified_at"],
+            # Usable from its first verification; corrections apply from their own times.
+            "available_at": revisions[f["instance_id"]][0]["verified_at"],
+            "revisions": [
+                (r["verified_at"], r["home_score"], r["away_score"]) for r in revisions[f["instance_id"]]
+            ],
             "segment": "replay_native",
             "provenance": "native",
             "markets": _forecast_markets(f, "fixed"),
@@ -172,9 +203,12 @@ def replay_rows(observations, config):
         captured = dt(o["snapshot_utc"])
         cutoff = _noon_cutoff(captured)
         if cutoff not in versions:
-            training = [
-                x for x in observations if dt(x["available_at"]) <= cutoff and dt(x["tip_utc"]) <= cutoff
-            ]
+            training = []
+            for x in observations:
+                if dt(x["available_at"]) <= cutoff and dt(x["tip_utc"]) <= cutoff:
+                    home, away = _scores_at(x, cutoff)
+                    if home != away:
+                        training.append({**x, "actual_home_score": home, "actual_away_score": away})
             try:
                 last_version = matchup.fit(training, settings, iso(cutoff))
             except (ValueError, np.linalg.LinAlgError):
@@ -185,15 +219,18 @@ def replay_rows(observations, config):
                 key=lambda r: (dt(r["available_at"]), r["game_id"]),
             )
             if len(usable) >= config["minimum_games"]:
-                history = [
-                    {
-                        "margin": r["margin"],
-                        "home_won": r["actual_margin"] > 0,
-                        "ats_residual": r["actual_margin"] - r["margin"],
-                        "totals_residual": r["actual_total"] - r["total"],
-                    }
-                    for r in usable
-                ]
+                history = []
+                for r in usable:
+                    home, away = _scores_at(r, cutoff)
+                    if home != away:
+                        history.append(
+                            {
+                                "margin": r["margin"],
+                                "home_won": home > away,
+                                "ats_residual": home - away - r["margin"],
+                                "totals_residual": home + away - r["total"],
+                            }
+                        )
                 params, _, _ = fit_parameters(history, params, config)
             params_at[cutoff] = dict(params)
         raw = {"home_score": o["projected_home_score"], "away_score": o["projected_away_score"]}
@@ -211,13 +248,16 @@ def replay_rows(observations, config):
                 "wp_a": scale,
                 "actual_margin": o["actual_home_score"] - o["actual_away_score"],
                 "actual_total": o["actual_home_score"] + o["actual_away_score"],
+                "actual_home_score": o["actual_home_score"],
+                "actual_away_score": o["actual_away_score"],
+                "revisions": o.get("revisions", []),
                 **o["markets"],
             }
         )
     return rows
 
 
-def live_rows(records, config):
+def live_rows(records, config, season=None):
     """Graded native first snapshots of the current methodology, adaptive variant."""
     retired = {r["instance_id"] for r in records if r["kind"] == "retired"}
     results, rows = _latest_results(records), []
@@ -225,6 +265,8 @@ def live_rows(records, config):
         if f["kind"] != "forecast" or f["stage"] != "first" or f.get("provenance") != "native":
             continue
         if _method(f) != config["methodology"] or f["instance_id"] in retired:
+            continue
+        if season is not None and matchup.season_of(f["game"]) != season:
             continue
         result = results.get(f["instance_id"])
         if result is None or result["home_score"] == result["away_score"]:
@@ -351,7 +393,7 @@ def season_record(records, root, config):
     if season is None or not matchup.enabled(config):
         return None
     rows = replay_rows(replay_observations(records, root, config, season), config)
-    live = live_rows(records, config)
+    live = live_rows(records, config, season)
     seen = {r["game_id"] for r in live}
     rows = [r for r in rows if r["game_id"] not in seen] + live
     return {
