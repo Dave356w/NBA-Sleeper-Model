@@ -117,7 +117,9 @@ def test_full_capture_grade_report_and_correction(root, rows, config):
     assert len(ledger.records("result")) == 2
     assert all(g["result"]["home_score"] == 125 for g in latest_grades(ledger.records()).values())
     assert ledger.records("forecast") == original
-    assert refit(root, config, now=dt(http.at))["calibration_versions"] == 0
+    # One native game is far below the minimum; without the season history nothing refits.
+    legacy = {k: v for k, v in config.items() if k != "calibration"}
+    assert refit(root, legacy, now=dt(http.at))["calibration_versions"] == 0
     assert build_site(root)["pages"] == 4
     site_data = json.loads((root / "site" / "data.json").read_text())
     assert site_data["performance"]["forecast"]["first:fixed"]["n"] == 1
@@ -233,6 +235,9 @@ def test_daily_refit_manifest_and_future_application(root, config):
     from sleeper_nba.common import digest
     from sleeper_nba.models import active_calibration
 
+    # A configuration frozen before v1.24: native games of its own tag only.
+    config = {k: v for k, v in config.items() if k != "calibration"}
+
     ledger = Ledger(root)
     additions = []
     for i in range(35):
@@ -294,6 +299,40 @@ def test_daily_refit_manifest_and_future_application(root, config):
     assert active_calibration(ledger.records(), "first", iso(now))["id"] == cal["id"]
     assert active_calibration(ledger.records(), "lock", iso(now))["params"] == DEFAULTS
     assert refit(root, config, now=now)["calibration_versions"] == 0
+
+
+def test_v1_24_calibration_starts_from_the_season_replay_and_scores_locks(root, config):
+    from sleeper_nba.models import active_calibration
+    from sleeper_nba.season import calibration_observations
+
+    ledger = Ledger(root)
+    now = dt("2026-11-08T13:00:00+00:00")
+    replayed = calibration_observations(ledger.records(), root, config, iso(now))
+    # No native game exists, yet the season's replayed games already exceed the minimum.
+    assert len(replayed) >= config["minimum_games"]
+    assert all(o["provenance"] == "replay" and dt(o["verified_at"]) <= now for o in replayed)
+    # Only results usable at the cutoff are read.
+    early = calibration_observations(ledger.records(), root, config, "2026-10-24T13:00:00+00:00")
+    assert 0 < len(early) < len(replayed)
+    assert [o["game_id"] for o in early] == [o["game_id"] for o in replayed][: len(early)]
+
+    assert refit(root, config, now=now)["calibration_versions"] == 1
+    cal = ledger.records("calibration")[0]
+    assert cal["stage"] == "first" and cal["training_count"] == len(replayed)
+    assert cal["statuses"]["wp"] == "accepted"
+    # The registered daily cap still applies: one step of at most 10% from the default.
+    assert 9.0 <= cal["params"]["wp_a"] <= 11.0 and cal["params"]["wp_a"] != DEFAULTS["wp_a"]
+    records = ledger.records()
+    method = config["methodology"]
+    # Locks are scored with the first-stage calibration; no lock-only version is created.
+    assert active_calibration(records, "lock", iso(now), method, config)["id"] == cal["id"]
+    assert active_calibration(records, "lock", iso(now), method)["params"] == DEFAULTS
+    assert (
+        active_calibration(records, "first", iso(now - timedelta(seconds=1)), method, config)["params"]
+        == DEFAULTS
+    )
+    assert refit(root, config, now=now)["calibration_versions"] == 0
+    assert validate(root)["status"] == "valid"
 
 
 def test_late_lock_is_qualifying_and_immutable(root, rows, config):

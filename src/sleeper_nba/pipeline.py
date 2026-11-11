@@ -17,6 +17,7 @@ from .markets import evaluate, settle
 from .models import (
     DEFAULTS,
     active_calibration,
+    calibration_stage,
     fit_parameters,
     probabilities,
     training_observations,
@@ -85,7 +86,7 @@ def assign_instance(game, records):
 
 
 def build_variants(raw, game, records, config, captured_at, stage, quotes, preview=False):
-    calibration = active_calibration(records, stage, captured_at, config.get("methodology"))
+    calibration = active_calibration(records, stage, captured_at, config.get("methodology"), config)
     variants = {}
     for variant, params in [("fixed", DEFAULTS), ("adaptive", calibration["params"])]:
         scoring = {k: raw[k] for k in ["home_score", "away_score", "margin", "total"]}
@@ -503,11 +504,28 @@ def refit(root, config, now=None):
     except subprocess.CalledProcessError:
         commit = "uncommitted"
     for stage in ["first", "lock"]:
+        if calibration_stage(config, stage) != stage:
+            continue  # v1.24: this stage is scored with another stage's calibration.
         observations = [
             o
             for o in training_observations(records, stage, iso(now), config.get("methodology"))
             if o["instance_id"] in allowed_instances
         ]
+        if stage == "first" and config.get("calibration", {}).get("history") == "season":
+            # v1.24: the season's earlier games, replayed walk-forward under this
+            # methodology, start the history; a native game supersedes its replay.
+            from .season import calibration_observations
+
+            native_games = {o["game_id"] for o in observations}
+            observations = sorted(
+                [
+                    o
+                    for o in calibration_observations(records, root, config, iso(now))
+                    if o["game_id"] not in native_games
+                ]
+                + observations,
+                key=lambda o: (dt(o["verified_at"]), o["game_id"]),
+            )
         previous = active_calibration(records, stage, iso(now), config.get("methodology"))
         manifest_hash = digest(observations)
         if previous.get("manifest_hash") == manifest_hash:
@@ -649,7 +667,7 @@ def export_active(root):
     records = Ledger(root).records()
     for stage in ["first", "lock"]:
         config = load_config(root)
-        value = active_calibration(records, stage, iso(), config.get("methodology"))
+        value = active_calibration(records, stage, iso(), config.get("methodology"), config)
         Ledger._atomic(root / "model" / f"active_{stage}.json", json.dumps(value, indent=2) + "\n")
         if matchup.enabled(config):
             seasons = [r["season"] for r in records if r["kind"] == "matchup_calibration"]

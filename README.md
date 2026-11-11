@@ -104,6 +104,12 @@ For an optional browser smoke test, install `pip install -e '.[browser]'`, then 
 
 See [MODEL.md](MODEL.md) for registered methodology and implementation clarifications. The original `Dave356w/nba-matchups` repository is unchanged.
 
+## v1.24 confidence calibration from the season history
+
+The owner wants the model to be dynamic. Until v1.24 the win-probability scale restarted at 10 with every methodology tag and needed 30 graded games of that tag, so it never moved. From v1.24 the first-stage confidence history starts with the season's earlier games replayed under the current method from results known before each game, then adds native games; locks use the same calibration. The minimum, weighting, shrinkage toward 10 and the 10% daily cap are unchanged. In a sequential test on this season's 139 replayed games this lowered log loss by 0.0019 (95% interval −0.0057 to +0.0025), which is not distinguishable from zero; it was adopted as a design choice. See [MODEL.md](MODEL.md).
+
+The public pages were restyled to match the NBA Composite pages, and Today now shows live and final scores read from ESPN in the reader's browser. Scores are display only and never enter the ledger.
+
 ## v1.23 residual defense from game 1
 
 The owner's intention is a residual-defense correction that applies from the first game of the season and is updated after each slate. v1.23 closes three gaps: locks now use the first-stage team fit (they had a separate history that needed 30 graded locks and so carried no correction), the fit no longer waits for 30 games, and it refreshes when a slate is fully graded instead of once per UTC day. Priors, decay, scoring equations and moneyline-only selections are unchanged. Confidence calibration keeps its own stage-specific histories. Statements below that locks use lock history only describe v1.20–v1.22. See [MODEL.md](MODEL.md) for the rules, evidence and limits.

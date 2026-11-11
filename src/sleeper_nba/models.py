@@ -162,7 +162,13 @@ def training_observations(records, stage, cutoff, methodology=None):
     return sorted(observations.values(), key=lambda x: (dt(x["verified_at"]), x["game_id"]))
 
 
-def active_calibration(records, stage, at, methodology=None):
+def calibration_stage(config, stage):
+    """The stage whose confidence calibration scores `stage` (v1.24: locks use first)."""
+    return (config or {}).get("calibration", {}).get("stage_source", {}).get(stage, stage)
+
+
+def active_calibration(records, stage, at, methodology=None, config=None):
+    stage = calibration_stage(config, stage)
     eligible = [
         r
         for r in records

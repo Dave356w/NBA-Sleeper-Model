@@ -1,7 +1,7 @@
 {
   "generated_for": "v1.21 defense-prior review, regenerated under the v1.23 one-game minimum; retrospective and previously inspected",
   "seed_sha256": "9d3a8e56998a4a7e738020614b3546e1afbc658d97370abe7cffe53714348705",
-  "methodology": "sleeper_only_v1_23",
+  "methodology": "sleeper_only_v1_24",
   "selected": "prior40",
   "settings": {
     "half_life_days": 25.0,

@@ -257,6 +257,39 @@ def replay_rows(observations, config):
     return rows
 
 
+def calibration_observations(records, root, config, cutoff):
+    """Replay games usable at `cutoff`, as confidence-calibration observations (v1.24).
+
+    Each margin is the replayed forecast under the current methodology, scored
+    from team fits that used earlier results only. Scores are read as they were
+    known at the cutoff. Nothing is written to the ledger.
+    """
+    seasons = [matchup.season_of(r["game"]) for r in records if r["kind"] in ("forecast", "schedule")]
+    season = max(seasons, default=config.get("matchup", {}).get("seed_season"))
+    if season is None or not matchup.enabled(config):
+        return []
+    cutoff, observations = dt(cutoff), []
+    for row in replay_rows(replay_observations(records, root, config, season), config):
+        if dt(row["available_at"]) > cutoff:
+            continue
+        home, away = _scores_at(row, cutoff)
+        if home == away:
+            continue
+        observations.append(
+            {
+                "game_id": row["game_id"],
+                "provenance": "replay",
+                "segment": row["segment"],
+                "verified_at": row["available_at"],
+                "margin": row["margin"],
+                "home_won": home > away,
+                "ats_residual": home - away - row["margin"],
+                "totals_residual": home + away - row["total"],
+            }
+        )
+    return sorted(observations, key=lambda o: (dt(o["verified_at"]), o["game_id"]))
+
+
 def live_rows(records, config, season=None):
     """Graded native first snapshots of the current methodology, adaptive variant."""
     retired = {r["instance_id"] for r in records if r["kind"] == "retired"}

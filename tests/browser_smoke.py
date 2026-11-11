@@ -19,6 +19,8 @@ def main():
         page = browser.new_page(viewport={"width": 1440, "height": 1100}, device_scale_factor=1)
         errors = []
         page.on("pageerror", lambda error: errors.append(str(error)))
+        # The Today page reads live scores in the browser; keep this check offline.
+        page.route("https://site.api.espn.com/**", lambda route: route.abort())
         for width in [1440, 820, 390, 320]:
             page.set_viewport_size({"width": width, "height": 1000})
             for name in ["index", "results", "performance", "methodology"]:
@@ -56,8 +58,9 @@ def main():
             page.get_by_role("button", name="Latest preview", exact=True).get_attribute("aria-pressed")
             == "true"
         )
+        before = page.evaluate("document.documentElement.dataset.theme")
         page.get_by_role("button", name="Switch light or dark theme").click()
-        assert page.evaluate("document.documentElement.dataset.theme") == "light"
+        assert {before, page.evaluate("document.documentElement.dataset.theme")} == {"light", "dark"}
         for logo in data["games"]:
             for team in [logo["home"], logo["away"]]:
                 for theme in ["light", "dark"]:
