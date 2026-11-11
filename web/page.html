@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en" data-theme="light">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="description" content="Independent NBA v{{ methodology_version }} forecasts from Sleeper projections. Compare live results, historical replay and recorded market prices.">
-<meta name="color-scheme" content="dark light"><meta name="theme-color" content="#101416">
+<meta name="color-scheme" content="light dark"><meta name="theme-color" content="#f4f6f9">
 <title>Sleeper NBA Lab · {{ page_title }}</title>
 <link rel="canonical" href="{{ canonical_url }}">
 <link rel="icon" href="assets/favicon.ico" sizes="any"><link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
@@ -14,6 +14,8 @@
 <meta property="og:description" content="Independent NBA projections. Live performance, historical replay and market comparisons with their samples clearly labeled.">
 <meta property="og:image" content="https://dave356w.github.io/NBA-Sleeper-Model/assets/social-card.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="Sleeper NBA Lab: independent projections, market comparisons and results">
 <meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Sleeper NBA Lab · {{ page_title }}"><meta name="twitter:image" content="https://dave356w.github.io/NBA-Sleeper-Model/assets/social-card.png">
+<script>(function(){var r=document.documentElement,t=null;try{t=localStorage.getItem('sleeper-theme');}catch(e){}
+r.dataset.theme=t==='dark'||t==='light'?t:(window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');})();</script>
 <link rel="stylesheet" href="style.css"><script src="app.js" defer></script>
 </head>
 {% macro icon(name) -%}
@@ -27,22 +29,20 @@
 {%- endmacro %}
 <body data-page="{{ page }}">
 <a class="skip-link" href="#content">Skip to content</a>
-<aside class="sidebar">
-<a class="brand" href="index.html" aria-label="Sleeper NBA home"><img class="brand-logo brand-dark" src="assets/wordmark-dark.svg" width="182" height="45" alt="Sleeper NBA Lab"><img class="brand-logo brand-light" src="assets/wordmark-light.svg" width="182" height="45" alt="Sleeper NBA Lab"></a>
-<div class="nav-label">THE MODEL</div>
-<nav aria-label="Main navigation">
-<a href="index.html" {% if page == 'index' %}aria-current="page"{% endif %}>{{ icon('slate') }}<span>Today's slate</span></a>
+<div class="mx-wrap">
+<header class="topbar">
+<a class="brand" href="index.html" aria-label="Sleeper NBA home"><img class="brand-logo brand-dark" src="assets/wordmark-dark.svg" width="150" height="37" alt="Sleeper NBA Lab"><img class="brand-logo brand-light" src="assets/wordmark-light.svg" width="150" height="37" alt="Sleeper NBA Lab"></a>
+<span class="brand-version">v{{ methodology_version }}</span>
+<nav class="nav" aria-label="Main navigation">
+<a href="index.html" {% if page == 'index' %}aria-current="page"{% endif %}>{{ icon('slate') }}<span>Today</span></a>
 <a href="results.html" {% if page == 'results' %}aria-current="page"{% endif %}>{{ icon('results') }}<span>Results</span></a>
 <a href="performance.html" {% if page == 'performance' %}aria-current="page"{% endif %}>{{ icon('performance') }}<span>Performance</span></a>
-<a href="methodology.html" {% if page == 'methodology' %}aria-current="page"{% endif %}>{{ icon('methodology') }}<span>Methodology</span></a>
+<a href="methodology.html" {% if page == 'methodology' %}aria-current="page"{% endif %}>{{ icon('methodology') }}<span>How it works</span></a>
 </nav>
-<div class="sidebar-note"><span class="pulse"></span> INDEPENDENT MODEL<p>Player projections.<br>Measured against results.</p><a href="https://github.com/Dave356w/NBA-Sleeper-Model" target="_blank" rel="noopener">View the source</a></div>
-<button id="theme" type="button" class="theme-button" aria-label="Switch light or dark theme">{{ icon('theme') }}<span>Change appearance</span></button>
-</aside>
-<div class="workspace">
-<header class="topbar"><span>NBA <span class="slash">/</span> <span id="section-title">{{ page_title }}</span></span><div><span class="version">MODEL {{ methodology_version }}</span><span class="updated" id="updated">Updated {{ updated_at }}</span></div></header>
+<button id="theme" type="button" class="theme-button" aria-label="Switch light or dark theme" title="Switch theme">{{ icon('theme') }}</button>
+</header>
 <main id="content" aria-live="polite" tabindex="-1"><div class="loading">Loading the recorded slate…</div></main>
-<footer><span>Independent model · v{{ methodology_version }}</span><a href="predictions.csv" download>Download live forecasts</a><a href="MODEL.md">Build specification</a></footer>
+<footer class="foot"><span>Independent model · v{{ methodology_version }} · <span id="updated">Updated {{ updated_at }}</span>. Sleeper player projections with a learned opponent-defense correction; market prices are a benchmark only. Not betting advice.</span><a href="predictions.csv" download>Download live forecasts</a><a href="MODEL.md">Build specification</a><a href="https://github.com/Dave356w/NBA-Sleeper-Model" target="_blank" rel="noopener">Source</a></footer>
 </div>
 <noscript>This dashboard requires JavaScript. Download the forecast CSV for the recorded predictions.</noscript>
 </body></html>

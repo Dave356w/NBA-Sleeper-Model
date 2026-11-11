@@ -19,6 +19,11 @@ Owner update, 11 November 2026. The owner's stated intention is a dynamic model:
 
 A configuration frozen without these keys keeps the earlier behavior on replay and validation.
 
+### Public pages (presentation only)
+
+- **Live scores.** While the Today page is open, the reader's browser reads ESPN's public scoreboard for the selected slate and shows each game's live or final score and clock on its card, every 30 seconds while a game is in progress and at the next tip before that; a hidden tab waits. Live games are listed first, then upcoming, then final. This is display only: it is never written to the ledger and never changes a forecast, selection, grade or training observation. Projected scores stay labeled as projected.
+- **Layout.** The four pages use the same visual system as the NBA Composite public pages (top navigation, shared color tokens and type, light and dark themes following the reader's system setting unless they choose one). No content, record or number changed.
+
 ### Evidence and its limits
 
 - The margins are compressed: on 145 season games the actual margin is 1.46 times the projected margin (standard error 0.23), and the in-sample best scale is 7.0 against the default 10.
