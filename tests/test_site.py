@@ -296,3 +296,58 @@ def test_season_record_review_fixes_season_scope_quote_timing_and_result_revisio
     assert _scores_at(native, dt("2026-11-09T12:00:00+00:00"))[0] == result["home_score"]
     assert _scores_at(native, dt("2026-11-12T12:00:00+00:00"))[0] == correction["home_score"]
     assert len(replay_rows(observations, config)) == 118
+
+
+def test_site_exports_pooled_rows_and_display_only_live_win_chance(root):
+    import math
+
+    from sleeper_nba.site import live_win_fit
+
+    before = Ledger(root).records()
+    build_site(root)
+    data = json.loads((root / "site" / "data.json").read_text())
+    season = data["season"]
+    # One public row per game of the pooled record, in tip order, with the fields the pages read.
+    assert len(season["rows"]) == season["pooled"]["n"] == len({r["game_id"] for r in season["rows"]})
+    assert [r["tip_utc"] for r in season["rows"]] == sorted(r["tip_utc"] for r in season["rows"])
+    correct = sum(
+        (r["margin"] > 0) == (r["actual_home_score"] > r["actual_away_score"])
+        for r in season["rows"]
+        if r["margin"] != 0
+    )
+    assert correct == season["pooled"]["correct"]
+    assert set(season["rows"][0]) == {
+        "game_id",
+        "slate_date",
+        "tip_utc",
+        "home",
+        "away",
+        "segment",
+        "margin",
+        "wp_home",
+        "actual_home_score",
+        "actual_away_score",
+        "ml",
+    }
+    # The live win chance is a browser display: coefficients only, nothing in the ledger.
+    fit = data["live_wp"]
+    assert set(fit) == {"knots", "a", "b"} and len(fit["knots"]) == len(fit["a"]) == len(fit["b"])
+
+    def chance(lead, mu, t):
+        def at(values):
+            k = fit["knots"]
+            for i in range(1, len(k)):
+                if t <= k[i]:
+                    return values[i - 1] + (t - k[i - 1]) / (k[i] - k[i - 1]) * (values[i] - values[i - 1])
+            return values[-1]
+
+        z = at(fit["a"]) * lead / math.sqrt(t) + at(fit["b"]) * mu * math.sqrt(t)
+        return 0.5 * math.erfc(-z / math.sqrt(2))
+
+    assert chance(0, 0, 1.0) == 0.5
+    assert 0.6 < chance(0, 5, 1.0) < 0.75  # a five-point favorite at tip
+    assert chance(10, 0, 0.5) < chance(10, 0, 0.1) < 1  # the same lead is worth more late
+    assert chance(-8, 6, 0.25) < 0.5 < chance(8, -6, 0.25)
+    (root / "web" / "live_wp.json").write_text("{}")
+    assert live_win_fit(root) is None
+    assert Ledger(root).records() == before

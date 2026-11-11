@@ -32,6 +32,19 @@ SEGMENTS = [
     ("replay_native", "Replay · earlier-version captures"),
     ("live", "Live"),
 ]
+PUBLIC_ROW_FIELDS = (
+    "game_id",
+    "slate_date",
+    "tip_utc",
+    "home",
+    "away",
+    "segment",
+    "margin",
+    "wp_home",
+    "actual_home_score",
+    "actual_away_score",
+    "ml",
+)
 USABLE_LINE_REASONS = {None, "unsupported_line_increment", "outside_price_range"}
 
 
@@ -239,6 +252,9 @@ def replay_rows(observations, config):
         rows.append(
             {
                 "game_id": o["game_id"],
+                "home": o["home"],
+                "away": o["away"],
+                "tip_utc": o["tip_utc"],
                 "segment": o["segment"],
                 "slate_date": dt(o["tip_utc"]).astimezone(ET).date().isoformat(),
                 "available_at": o["available_at"],
@@ -309,6 +325,11 @@ def live_rows(records, config, season=None):
         rows.append(
             {
                 "game_id": f["game"]["game_id"],
+                "home": f["game"]["home"],
+                "away": f["game"]["away"],
+                "tip_utc": f["game"]["tip_utc"],
+                "actual_home_score": result["home_score"],
+                "actual_away_score": result["away_score"],
                 "segment": "live",
                 "slate_date": f["game"]["slate_date"],
                 "available_at": result["verified_at"],
@@ -481,6 +502,11 @@ def season_record(records, root, config):
         "stage": "first",
         "methodology": config["methodology"],
         "pooled": metrics(rows, config),
+        # One public row per game of the pooled record, in tip order.
+        "rows": [
+            {k: r[k] for k in PUBLIC_ROW_FIELDS}
+            for r in sorted(rows, key=lambda r: (dt(r["tip_utc"]), r["game_id"]))
+        ],
         "segments": [
             {"key": key, "label": label, **metrics([r for r in rows if r["segment"] == key], config)}
             for key, label in SEGMENTS
