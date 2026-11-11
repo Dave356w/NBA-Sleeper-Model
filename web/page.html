@@ -2,27 +2,47 @@
 <html lang="en" data-theme="dark">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="description" content="NBA v{{ methodology_version }} forecasts from Sleeper player projections, with a season record that pools replayed and live results.">
-<meta name="color-scheme" content="dark light"><title>Sleeper NBA · {{ page|capitalize }}</title>
+<meta name="description" content="Independent NBA v{{ methodology_version }} forecasts from Sleeper projections. Compare live results, historical replay and recorded market prices.">
+<meta name="color-scheme" content="dark light"><meta name="theme-color" content="#101416">
+<title>Sleeper NBA Lab · {{ page_title }}</title>
+<link rel="canonical" href="{{ canonical_url }}">
+<link rel="icon" href="assets/favicon.ico" sizes="any"><link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png"><link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png"><link rel="manifest" href="assets/site.webmanifest">
+<meta property="og:type" content="website"><meta property="og:site_name" content="Sleeper NBA Lab">
+<meta property="og:title" content="Sleeper NBA Lab · {{ page_title }}"><meta property="og:url" content="{{ canonical_url }}">
+<meta property="og:description" content="Independent NBA projections. Live performance, historical replay and market comparisons with their samples clearly labeled.">
+<meta property="og:image" content="https://dave356w.github.io/NBA-Sleeper-Model/assets/social-card.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="Sleeper NBA Lab: independent projections, market comparisons and results">
+<meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Sleeper NBA Lab · {{ page_title }}"><meta name="twitter:image" content="https://dave356w.github.io/NBA-Sleeper-Model/assets/social-card.png">
 <link rel="stylesheet" href="style.css"><script src="app.js" defer></script>
 </head>
+{% macro icon(name) -%}
+<svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+{% if name == 'slate' %}<rect x="4" y="4" width="16" height="16" rx="3"/><path d="M4 10h16M9 4v16M14 14h3M14 17h3"/>
+{% elif name == 'results' %}<path d="M5 4h14v16H5zM8 8h8M8 12h8M8 16h5"/>
+{% elif name == 'performance' %}<path d="M4 4v16h16M7 15l5-5 4 3 4-7M16 6h4v4"/>
+{% elif name == 'methodology' %}<circle cx="12" cy="12" r="8"/><path d="M12 10v6M12 7h.01"/>
+{% else %}<circle cx="12" cy="12" r="8"/><path d="M12 4v16"/>
+{% endif %}</svg>
+{%- endmacro %}
 <body data-page="{{ page }}">
+<a class="skip-link" href="#content">Skip to content</a>
 <aside class="sidebar">
-<a class="brand" href="index.html" aria-label="Sleeper NBA home"><span class="brand-mark">S<span>•</span></span><span>SLEEPER<span class="brand-sub">NBA LAB</span></span></a>
+<a class="brand" href="index.html" aria-label="Sleeper NBA home"><img class="brand-logo brand-dark" src="assets/wordmark-dark.svg" width="182" height="45" alt="Sleeper NBA Lab"><img class="brand-logo brand-light" src="assets/wordmark-light.svg" width="182" height="45" alt="Sleeper NBA Lab"></a>
 <div class="nav-label">THE MODEL</div>
 <nav aria-label="Main navigation">
-<a href="index.html" {% if page == 'index' %}aria-current="page"{% endif %}><span>◈</span> Today's slate</a>
-<a href="results.html" {% if page == 'results' %}aria-current="page"{% endif %}><span>▤</span> Results</a>
-<a href="performance.html" {% if page == 'performance' %}aria-current="page"{% endif %}><span>↗</span> Performance</a>
-<a href="methodology.html" {% if page == 'methodology' %}aria-current="page"{% endif %}><span>◎</span> Methodology</a>
+<a href="index.html" {% if page == 'index' %}aria-current="page"{% endif %}>{{ icon('slate') }}<span>Today's slate</span></a>
+<a href="results.html" {% if page == 'results' %}aria-current="page"{% endif %}>{{ icon('results') }}<span>Results</span></a>
+<a href="performance.html" {% if page == 'performance' %}aria-current="page"{% endif %}>{{ icon('performance') }}<span>Performance</span></a>
+<a href="methodology.html" {% if page == 'methodology' %}aria-current="page"{% endif %}>{{ icon('methodology') }}<span>Methodology</span></a>
 </nav>
-<div class="sidebar-note"><span class="pulse"></span> INDEPENDENT MODEL<p>Player projections.<br>Measured against results.</p><a href="https://github.com/Dave356w/NBA-Sleeper-Model" target="_blank" rel="noopener">View the source ↗</a></div>
-<button id="theme" class="theme-button" aria-label="Switch light or dark theme">◐ &nbsp; Change appearance</button>
+<div class="sidebar-note"><span class="pulse"></span> INDEPENDENT MODEL<p>Player projections.<br>Measured against results.</p><a href="https://github.com/Dave356w/NBA-Sleeper-Model" target="_blank" rel="noopener">View the source</a></div>
+<button id="theme" type="button" class="theme-button" aria-label="Switch light or dark theme">{{ icon('theme') }}<span>Change appearance</span></button>
 </aside>
 <div class="workspace">
-<header class="topbar"><span>NBA <span class="slash">/</span> <span id="section-title">Research dashboard</span></span><div><span class="version">MODEL {{ methodology_version }}</span><span class="updated" id="updated">Updated {{ updated_at }}</span></div></header>
-<main id="content" aria-live="polite"><div class="loading">Loading the recorded slate…</div></main>
-<footer><span>v{{ methodology_version }} · Season record: replay and live</span><a href="predictions.csv" download>Download v{{ methodology_version }} live forecasts ↓</a><a href="MODEL.md">Build specification ↗</a></footer>
+<header class="topbar"><span>NBA <span class="slash">/</span> <span id="section-title">{{ page_title }}</span></span><div><span class="version">MODEL {{ methodology_version }}</span><span class="updated" id="updated">Updated {{ updated_at }}</span></div></header>
+<main id="content" aria-live="polite" tabindex="-1"><div class="loading">Loading the recorded slate…</div></main>
+<footer><span>Independent model · v{{ methodology_version }}</span><a href="predictions.csv" download>Download live forecasts</a><a href="MODEL.md">Build specification</a></footer>
 </div>
 <noscript>This dashboard requires JavaScript. Download the forecast CSV for the recorded predictions.</noscript>
 </body></html>

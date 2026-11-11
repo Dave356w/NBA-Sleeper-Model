@@ -1,10 +1,16 @@
-"""Optional real-browser smoke test; run with the generated site served on port 8000."""
+"""Optional browser regression check against a locally generated site.
 
+Serve site/ on port 8000, or set SLEEPER_SITE_URL to the existing preview URL.
+No live sports APIs are called by this test.
+"""
+
+import os
 from pathlib import Path
 
 from playwright.sync_api import sync_playwright
 
 ROOT = Path(__file__).parents[1]
+BASE_URL = os.environ.get("SLEEPER_SITE_URL", "http://localhost:8000").rstrip("/")
 
 
 def main():
@@ -13,47 +19,55 @@ def main():
         page = browser.new_page(viewport={"width": 1440, "height": 1100}, device_scale_factor=1)
         errors = []
         page.on("pageerror", lambda error: errors.append(str(error)))
-        for name in ["index", "results", "performance", "methodology"]:
-            page.goto(f"http://localhost:8000/{name}.html", wait_until="networkidle")
-            page.locator("h1").wait_for()
-            assert page.locator("h1").inner_text()
-            assert page.evaluate("document.documentElement.scrollWidth <= window.innerWidth")
-        page.goto("http://localhost:8000/index.html", wait_until="networkidle")
-        latest = page.get_by_role("button", name="Latest · untracked", exact=True)
-        latest.click()
-        assert latest.get_attribute("aria-pressed") == "true"
-        page.get_by_role("button", name="Fixed control", exact=True).click()
+        for width in [1440, 820, 390, 320]:
+            page.set_viewport_size({"width": width, "height": 1000})
+            for name in ["index", "results", "performance", "methodology"]:
+                page.goto(f"{BASE_URL}/{name}.html", wait_until="networkidle")
+                page.locator("h1").wait_for()
+                assert page.evaluate("document.documentElement.scrollWidth <= window.innerWidth"), (
+                    name,
+                    width,
+                )
+                assert page.locator(".brand-logo:visible").count() == 1
+                assert page.get_by_role("button", name="Switch light or dark theme").is_visible()
+                if name == "results" and width < 700:
+                    assert page.locator(".results-table").is_hidden()
+                    assert page.locator(".results-cards").is_visible()
+        page.goto(f"{BASE_URL}/performance.html", wait_until="networkidle")
+        data = page.request.get(f"{BASE_URL}/data.json").json()
+        version = "v" + data["methodology_version"]
+        for stage, stage_label in [("first", "First snapshot"), ("lock", "5-hour lock")]:
+            page.get_by_role("button", name=stage_label, exact=True).click()
+            for variant, variant_label in [("adaptive", version), ("fixed", "Fixed control")]:
+                page.get_by_role("button", name=variant_label, exact=True).click()
+                comparison = page.locator("#live-market-comparison")
+                text = comparison.inner_text()
+                assert stage_label in text and variant_label in text
+                metric = data["market_comparisons"][f"{stage}:{variant}"]["versus_market"]["win_probability"]
+                if metric["n"]:
+                    assert f"{metric['model_log_loss']:.4f}" in text
+                assert page.locator("#model-diagnostics").get_attribute("open") is None
+                assert page.get_by_role(
+                    "heading", name=f"{data['season']['season']} pooled record"
+                ).is_visible()
+        page.goto(f"{BASE_URL}/index.html", wait_until="networkidle")
+        page.get_by_role("button", name="Latest preview", exact=True).click()
         assert (
-            page.get_by_role("button", name="Fixed control", exact=True).get_attribute("aria-pressed")
+            page.get_by_role("button", name="Latest preview", exact=True).get_attribute("aria-pressed")
             == "true"
         )
-        page.get_by_role("button", name="5-hour lock", exact=True).click()
-        assert (
-            page.get_by_role("button", name="5-hour lock", exact=True).get_attribute("aria-pressed") == "true"
-        )
-        page.get_by_role("button", name="First snapshot", exact=True).click()
-        page.get_by_role("button", name="v1.23", exact=True).click()
-        page.get_by_role("button", name="Latest · untracked", exact=True).click()
-        (ROOT / ".cache").mkdir(exist_ok=True)
-        page.screenshot(path=str(ROOT / ".cache" / "dashboard-desktop.png"), full_page=True)
-        page.set_viewport_size({"width": 390, "height": 844})
-        for name in ["index", "results", "performance", "methodology"]:
-            page.goto(f"http://localhost:8000/{name}.html", wait_until="networkidle")
-            page.locator("h1").wait_for()
-            assert page.evaluate("document.documentElement.scrollWidth <= window.innerWidth"), name
-        page.goto("http://localhost:8000/index.html", wait_until="networkidle")
-        page.screenshot(path=str(ROOT / ".cache" / "dashboard-mobile.png"), full_page=True)
-        page.goto("http://localhost:8000/performance.html", wait_until="networkidle")
-        assert page.get_by_role("combobox", name="Methodology version").count() == 0
-        assert page.get_by_role("heading", name="Residual defense adjustments").count() == 1
-        assert page.get_by_role("heading", name="2026–27 pooled record").count() == 1
-        assert "v1.19" not in page.locator("body").inner_text()
-        data = page.request.get("http://localhost:8000/data.json").json()
-        assert {f["methodology"] for f in data["forecasts"]} <= {"sleeper_only_v1_23"}
+        page.get_by_role("button", name="Switch light or dark theme").click()
+        assert page.evaluate("document.documentElement.dataset.theme") == "light"
+        for logo in data["games"]:
+            for team in [logo["home"], logo["away"]]:
+                for theme in ["light", "dark"]:
+                    response = page.request.get(f"{BASE_URL}/assets/teams/{team.lower()}-{theme}.webp")
+                    assert response.ok, (team, theme)
+        assert {f["methodology"] for f in data["forecasts"]} <= {data["methodology"]}
         assert set(data["grades"]) <= {f["id"] for f in data["forecasts"]}
         assert not errors, errors
         browser.close()
-    print("Four pages, desktop/mobile layout, stage/model controls and JavaScript errors: PASS")
+    print("Four pages, four widths, live filter cohorts, local logos and themes: PASS")
 
 
 if __name__ == "__main__":

@@ -138,3 +138,5 @@ Results and Performance also show the archived 117-game current-season v1.20 fir
 ### Internal research notes
 
 [v1.20 versus market and the value-underdog favorite hypothesis](docs/v1_20_market_analysis_2026-11-09.md) records the 9 November 2026 findings, matched-price comparisons, selection returns, favorite moneyline/ATS reversals, source hashes and limitations. The favorite filter is an exploratory proposal, not an active selection rule. Reproduce the archived study offline with `python research/v1_20_market_analysis.py --root .`; the input snapshot and full results are retained under `research/inputs` and `research/output`.
+
+Public reporting and branding: see [the 11 November reporting update](docs/reporting_and_assets_2026-11-11.md) for live stage/model comparisons, the matched favorites benchmark, replay labeling, mobile results and local logo provenance. This update does not change the scoring method or accepted records.

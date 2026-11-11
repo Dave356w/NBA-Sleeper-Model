@@ -16,6 +16,7 @@ from .markets import ALL_MARKETS
 from .models import active_calibration
 from .pipeline import latest_schedules
 from .projections import public_player_snapshot
+from .reporting import live_market_comparisons
 from .season import season_record
 from .storage import Ledger
 
@@ -108,6 +109,7 @@ def build_site(root):
         ],
         "grades": grades,
         "performance": summarize(public_records),
+        "market_comparisons": live_market_comparisons(public_records),
         "methodology": PUBLIC_METHOD,
         "season": season_record(records, root, config),
         "selection_markets": list(config.get("selection_markets", ALL_MARKETS)),
@@ -147,11 +149,21 @@ def build_site(root):
     env = Environment(loader=FileSystemLoader(root / "web"), autoescape=select_autoescape(["html"]))
     for page in ["index", "results", "performance", "methodology"]:
         html = env.get_template("page.html").render(
-            page=page, updated_at=data["updated_at"], methodology_version=data["methodology_version"]
+            page=page,
+            page_title={
+                "index": "Today's picks",
+                "results": "Results",
+                "performance": "Performance",
+                "methodology": "Methodology",
+            }[page],
+            canonical_url=f"https://dave356w.github.io/NBA-Sleeper-Model/{page}.html",
+            updated_at=data["updated_at"],
+            methodology_version=data["methodology_version"],
         )
         Ledger._atomic(output / (page + ".html"), html)
     for asset in ["style.css", "app.js"]:
         shutil.copyfile(root / "web" / asset, output / asset)
+    shutil.copytree(root / "web" / "assets", output / "assets", dirs_exist_ok=True)
     shutil.copyfile(root / "MODEL.md", output / "MODEL.md")
     (output / ".nojekyll").touch()
     Ledger._atomic(

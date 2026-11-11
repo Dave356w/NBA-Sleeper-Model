@@ -366,7 +366,12 @@ def _versus_market(rows):
 
 def metrics(rows, config):
     if not rows:
-        return {"n": 0, "betting": _bets([], config), "versus_market": _versus_market([])}
+        return {
+            "n": 0,
+            "betting": _bets([], config),
+            "versus_market": _versus_market([]),
+            "favorite_benchmark": favorite_benchmark([]),
+        }
     picks = [(r["margin"] > 0) == (r["actual_margin"] > 0) for r in rows if r["margin"] != 0]
     won = [r["actual_margin"] > 0 for r in rows]
     dates = sorted(r["slate_date"] for r in rows)
@@ -383,6 +388,48 @@ def metrics(rows, config):
         "total_mae": float(np.mean([abs(r["actual_total"] - r["total"]) for r in rows])),
         "betting": _bets(rows, config),
         "versus_market": _versus_market(rows),
+        "favorite_benchmark": favorite_benchmark(rows),
+    }
+
+
+def favorite_benchmark(rows):
+    """Report equal-stake model/favorite returns on the exact same priced games.
+
+    A pick'em quote has no favorite. Exclude it from both sides of this paired
+    benchmark, as well as tied model projections. This never registers a bet.
+    """
+    model, favorite, agreements, pickems = [], [], 0, 0
+    for row in rows:
+        if not row["ml"]:
+            continue
+        prices = row["ml"]
+        q_home, q_away = no_vig(prices["home"], prices["away"])
+        if q_home == q_away:
+            pickems += 1
+            continue
+        winner = row.get("winner", "home" if row["margin"] > 0 else "away" if row["margin"] < 0 else None)
+        if winner not in {"home", "away"}:
+            continue
+        side = "home" if q_home > q_away else "away"
+        actual = "home" if row["actual_margin"] > 0 else "away"
+        model.append(payout(prices[winner]) if winner == actual else -1.0)
+        favorite.append(payout(prices[side]) if side == actual else -1.0)
+        agreements += winner == side
+
+    def returns(values):
+        return {
+            "wins": sum(v > 0 for v in values),
+            "losses": sum(v < 0 for v in values),
+            "units": float(sum(values)),
+            "roi": float(np.mean(values)) if values else None,
+        }
+
+    return {
+        "n": len(model),
+        "model": returns(model),
+        "favorite": returns(favorite),
+        "agreements": agreements,
+        "pickems_excluded": pickems,
     }
 
 
