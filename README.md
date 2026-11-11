@@ -110,6 +110,8 @@ The owner wants the model to be dynamic. Until v1.24 the win-probability scale r
 
 The public pages were restyled to match the NBA Composite pages, and Today now shows live and final scores read from ESPN in the reader's browser. Scores are display only and never enter the ledger.
 
+By owner update of 11 November 2026, Results and Performance show one record: the pooled v1.24 season record (live forecasts plus earlier games replayed with the same method), game by game and in total, without sample-size labels, live-only tables or the fixed control. Those figures remain in `data.json` and the ledger. Today also shows a live win chance during games, computed in the browser from the score, the clock and the saved DraftKings spread with coefficients copied from `nba-matchups` (`web/live_wp.json`); it is display only.
+
 ## v1.23 residual defense from game 1
 
 The owner's intention is a residual-defense correction that applies from the first game of the season and is updated after each slate. v1.23 closes three gaps: locks now use the first-stage team fit (they had a separate history that needed 30 graded locks and so carried no correction), the fit no longer waits for 30 games, and it refreshes when a slate is fully graded instead of once per UTC day. Priors, decay, scoring equations and moneyline-only selections are unchanged. Confidence calibration keeps its own stage-specific histories. Statements below that locks use lock history only describe v1.20–v1.22. See [MODEL.md](MODEL.md) for the rules, evidence and limits.

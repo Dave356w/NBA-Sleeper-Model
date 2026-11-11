@@ -3,6 +3,7 @@ from __future__ import annotations
 import csv
 import io
 import json
+import math
 import shutil
 from pathlib import Path
 from statistics import median
@@ -77,6 +78,24 @@ def lock_coverage(records, retired):
     return result
 
 
+def live_win_fit(root):
+    """Display-only in-game win chance coefficients (web/live_wp.json), or None."""
+    try:
+        fit = json.loads((Path(root) / "web" / "live_wp.json").read_text())
+        knots, a, b = fit["knots"], fit["a"], fit["b"]
+    except (OSError, ValueError, KeyError, TypeError):
+        return None
+    numbers = [x for values in (knots, a, b) for x in values]
+    if (
+        len(knots) < 2
+        or not len(knots) == len(a) == len(b)
+        or not all(isinstance(x, (int, float)) and math.isfinite(x) for x in numbers)
+        or any(knots[i] >= knots[i + 1] for i in range(len(knots) - 1))
+    ):
+        return None
+    return {"knots": knots, "a": a, "b": b}
+
+
 def build_site(root):
     root = Path(root)
     records = Ledger(root).records()
@@ -136,6 +155,7 @@ def build_site(root):
         ],
         "methodology_version": PUBLIC_VERSION,
         "sample_gates": SAMPLE_GATES,
+        "live_wp": live_win_fit(root),
         "lock_coverage": lock_coverage(records, retired),
         "matchup_settings": {
             k: config["matchup"][k]

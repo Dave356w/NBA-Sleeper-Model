@@ -116,6 +116,15 @@ select,input[type=date]{min-height:42px;border:1px solid var(--line);border-radi
 .live-row span{display:grid;gap:3px;font:700 11px/1.2 var(--sans);color:var(--ink)}
 .live-row small{font:700 10px/1.2 var(--sans);letter-spacing:.05em;text-transform:uppercase;color:var(--faint)}
 .game-card[data-state="live"] .live-row small{color:rgb(var(--bad))}
+.live-wp{margin:0 16px 14px}
+.live-wp .lwp-head{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:8px}
+.live-wp .lwp-head small{font:700 10px/1.2 var(--sans);letter-spacing:.05em;text-transform:uppercase;color:rgb(var(--bad))}
+.live-wp .lwp-head span{font-size:11px;color:var(--muted);text-align:right}
+.live-wp .lwp-row{display:flex;align-items:center;gap:10px;font-size:13px}
+.live-wp .lwp-row>span{white-space:nowrap}
+.live-wp .lwp-row em{font:750 18px var(--sans);font-style:normal;letter-spacing:-.02em}
+.lwp-bar{flex:1;min-width:40px;height:6px;border-radius:3px;background:rgb(var(--accent));overflow:hidden}
+.lwp-bar i{display:block;height:100%;width:50%;background:var(--faint);transition:width .3s}
 .win-bar{margin:0 16px 16px}
 .win-labels{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-bottom:7px}
 .win-labels strong{color:var(--ink);font-family:var(--mono)}

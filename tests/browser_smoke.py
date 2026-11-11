@@ -37,21 +37,21 @@ def main():
                     assert page.locator(".results-cards").is_visible()
         page.goto(f"{BASE_URL}/performance.html", wait_until="networkidle")
         data = page.request.get(f"{BASE_URL}/data.json").json()
-        version = "v" + data["methodology_version"]
-        for stage, stage_label in [("first", "First snapshot"), ("lock", "5-hour lock")]:
-            page.get_by_role("button", name=stage_label, exact=True).click()
-            for variant, variant_label in [("adaptive", version), ("fixed", "Fixed control")]:
-                page.get_by_role("button", name=variant_label, exact=True).click()
-                comparison = page.locator("#live-market-comparison")
-                text = comparison.inner_text()
-                assert stage_label in text and variant_label in text
-                metric = data["market_comparisons"][f"{stage}:{variant}"]["versus_market"]["win_probability"]
-                if metric["n"]:
-                    assert f"{metric['model_log_loss']:.4f}" in text
-                assert page.locator("#model-diagnostics").get_attribute("open") is None
-                assert page.get_by_role(
-                    "heading", name=f"{data['season']['season']} pooled record"
-                ).is_visible()
+        season = data["season"]
+        if season and season["pooled"]["n"]:
+            pooled = season["pooled"]
+            assert page.get_by_role("heading", name=f"{season['season']} season record").is_visible()
+            text = page.locator("#content").inner_text()
+            assert f"{pooled['correct']}–{pooled['winner_count'] - pooled['correct']}" in text
+            metric = pooled["versus_market"]["win_probability"]
+            if metric["n"]:
+                assert f"{metric['model_log_loss']:.4f}" in page.locator("#market-comparison").inner_text()
+            assert page.locator("#model-details").get_attribute("open") is None
+            assert "xploratory" not in text and "Fixed control" not in text
+            page.goto(f"{BASE_URL}/results.html", wait_until="networkidle")
+            assert page.locator(".results-table tbody tr").count() == sum(
+                r["slate_date"] == season["rows"][-1]["slate_date"] for r in season["rows"]
+            )
         page.goto(f"{BASE_URL}/index.html", wait_until="networkidle")
         page.get_by_role("button", name="Latest preview", exact=True).click()
         assert (
@@ -70,7 +70,7 @@ def main():
         assert set(data["grades"]) <= {f["id"] for f in data["forecasts"]}
         assert not errors, errors
         browser.close()
-    print("Four pages, four widths, live filter cohorts, local logos and themes: PASS")
+    print("Four pages, four widths, pooled season record, local logos and themes: PASS")
 
 
 if __name__ == "__main__":
