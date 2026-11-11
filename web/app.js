@@ -71,6 +71,64 @@ function seasonStats(p) {
   const v=p.betting.directional;
   return `<div class="stats">${stat('Games',p.n,`${date(p.start_date)} – ${date(p.end_date)}`)}${stat('Winner record',`${p.correct}–${p.winner_count-p.correct}`,`${pct(p.accuracy)} of picks correct`)}${stat('Model-pick returns',v.n?`${signed(v.units,2)}u`:'—',v.n?`${pct(v.roi)} ROI · ${v.n} priced games`:'No saved moneylines')}</div>`;
 }
+function teamBlock(code,score,home) {
+  return `<div><img class="team-logo" data-team="${esc(code)}" src="${teamLogoSource(code)}" alt="" width="40" height="40" loading="lazy" decoding="async"><div class="team-code">${esc(code)}</div><div class="team-name">${home?'Home':'Away'}</div><div class="score">${num(score)}</div></div>`;
+}
+function pickSummary(output,game,forecast) {
+  if(!output) return '<div class="pick-summary"><p class="small">Model pick awaiting projection.</p></div>';
+  const side = output.winner;
+  if(side!=='home' && side!=='away') return '<div class="pick-summary"><p class="small">Even projection · no model winner.</p></div>';
+  const moneyline = output.markets?.find(m=>m.market==='moneyline'&&m.eligible);
+  const odds = moneyline?.prices?.[side];
+  const probability = output[`wp_${side}`];
+  const untracked = !!output.recommendations;
+  const source=untracked?'Live preview · untracked':forecast?.stage==='lock'?'5-hour lock · tracked':'First snapshot · tracked';
+  return `<div class="pick-summary"><div><span class="pick-label">MODEL PICK</span><strong>${esc(game[side])} moneyline</strong><small>${source}</small></div><div><strong class="green">${pct(probability)}</strong><small>${odds===undefined||odds===null?'Moneyline unavailable':`${signed(odds,0)} saved odds`}</small></div></div>`;
+}
+function lineupFor(forecast) {
+  if(forecast?.lineup?.length)return forecast.lineup;
+  return [];
+}
+function teamPlayers(team,players) {
+  const projected=players.filter(p=>p.team===team&&p.projection_status==='projected'&&p.minutes!==null).sort((a,b)=>b.minutes-a.minutes||String(a.name).localeCompare(String(b.name))).slice(0,8);
+  const flagged=players.filter(p=>p.team===team&&p.injury_status).sort((a,b)=>String(a.name).localeCompare(String(b.name)));
+  const playerRows=projected.length?projected.map(p=>`<div class="player-row"><span><strong>${esc(p.name||'Unknown player')}</strong>${p.injury_status?` <em>${esc(p.injury_status)}</em>`:''}</span><span>${num(p.minutes,0)} min · ${num(p.points)} pts</span></div>`).join(''):'<p class="small">No player projections saved.</p>';
+  const availability=flagged.length?`<div class="availability"><span>Availability</span>${flagged.map(p=>`<small><strong>${esc(p.name||'Unknown player')}</strong> · ${esc(p.injury_status)}</small>`).join('')}</div>`:'<div class="availability"><span>Availability</span><small>No Sleeper injury flags at this snapshot.</small></div>';
+  return `<section class="team-players"><h4>${esc(team)} · projected rotation · top 8 by minutes</h4>${playerRows}${availability}</section>`;
+}
+function gameDetails(forecast,game,output,ats,totals) {
+  const players=lineupFor(forecast);
+  const flags=players.filter(p=>p.injury_status).length;
+  const scoring=output?.scoring||forecast?.raw;
+  const spread=ats?`${esc(game.home)} ${signed(ats.line)}`:'No spread saved';
+  const total=totals?`O/U ${num(totals.line)}`:'No total saved';
+  const correction=output?.matchup_adjustment?`${esc(game.away)} ${signed(output.matchup_adjustment.away_correction)} · ${esc(game.home)} ${signed(output.matchup_adjustment.home_correction)}`:'—';
+  const playerNote=players.length?'Sleeper does not identify confirmed starters. The eight players with the most projected minutes are shown as the projected rotation. Availability reflects the saved snapshot.':'Player details were not retained with this snapshot. Model and market context remain available.';
+  return `<details class="game-details"><summary><span>Players, availability & model details</span><small>${players.length?(flags?`${flags} injury flag${flags===1?'':'s'}`:'No injury flags'):'Player detail unavailable'}</small></summary><div class="details-body"><p class="details-note">${playerNote}</p>${players.length?`<div class="player-grid">${teamPlayers(game.away,players)}${teamPlayers(game.home,players)}</div>`:''}<div class="context-grid"><div><span>Model margin</span><strong>${scoring?signed(scoring.margin):'—'}</strong></div><div><span>Saved spread</span><strong>${spread}</strong></div><div><span>Model total</span><strong>${scoring?num(scoring.total):'—'}</strong></div><div><span>Saved total</span><strong>${total}</strong></div><div><span>Raw Sleeper</span><strong>${forecast?`${num(forecast.raw.away_score)}–${num(forecast.raw.home_score)}`:'—'}</strong></div><div><span>Defense adjustment</span><strong>${correction}</strong></div></div></div></details>`;
+}
+
+// The latest DraftKings home spread saved with any forecast or preview of the game.
+function savedSpread(game) {
+  const saved=[...state.data.forecasts,...state.data.previews].filter(f=>f.instance_id===game.instance_id&&!f.retired).sort((a,b)=>new Date(b.captured_at)-new Date(a.captured_at));
+  for(const f of saved){const m=f.variants?.adaptive?.markets?.find(m=>m.market==='ats'&&Number.isFinite(m.line)&&new Date(m.captured_at)<new Date(game.tip_utc));if(m)return m.line;}
+  return null;
+}
+function card(game,forecast) {
+  const out = forecast?.variants[state.variant];
+  const market = kind => out?.markets.find(m=>m.market===kind);
+  const ats=market('ats'), totals=market('totals');
+  const missed = state.data.missed_locks.some(x=>x.instance_id===game.instance_id);
+  const status = forecast ? (forecast.stage==='lock'?`Tracked · ${num(forecast.lead_hours,1)}h lock`:forecast.stage==='latest'?'Preview · untracked':'Tracked · first snapshot') : (state.stage==='latest'?(game.status==='pre'?'Awaiting preview':'Preview closed'):state.stage==='lock'&&missed?'Missed lock':game.status!=='pre'||new Date(game.tip_utc)<=new Date()?'No {V} capture':'Awaiting projection');
+  return `<article class="game-card" data-gid="${esc(game.game_id)}" data-state="upcoming" data-live-spread="${savedSpread(game)??''}"><div class="card-head"><span>${time(game.tip_utc)} · ${esc(game.away)} at ${esc(game.home)}</span><span class="badge live" data-live-status hidden></span><span class="badge ${forecast?'valid':''}" data-track-status>${status}</span></div>${pickSummary(out,game,forecast)}<div class="matchup">${teamBlock(game.away,out?.scoring?.away_score ?? forecast?.raw.away_score,false)}<div class="versus">AT<small>PROJECTED</small></div>${teamBlock(game.home,out?.scoring?.home_score ?? forecast?.raw.home_score,true)}</div><div class="live-row" data-live-row hidden><b data-side="away"></b><span><small data-live-label>Live score</small><i data-live-clock style="font-style:normal"></i></span><b data-side="home"></b></div><div class="live-wp" data-live-wp hidden><div class="lwp-head"><small>Live win chance</small><span>Score, clock and saved spread</span></div><div class="lwp-row"><span>${esc(game.away)} <em data-wp="away"></em></span><div class="lwp-bar"><i></i></div><span><em data-wp="home"></em> ${esc(game.home)}</span></div></div>${out?`<div class="win-bar"><div class="win-labels"><span>${esc(game.away)} <strong>${pct(out.wp_away)}</strong></span><span>${esc(game.home)} <strong class="green">${pct(out.wp_home)}</strong></span></div><div class="bar" aria-label="${esc(game.away)} win probability ${pct(out.wp_away)}; ${esc(game.home)} win probability ${pct(out.wp_home)}"><span style="width:${out.wp_away*100}%"></span><span style="width:${out.wp_home*100}%"></span></div></div>`:''}${gameDetails(forecast,game,out,ats,totals)}<div class="card-foot"><span>${forecast?`${time(forecast.captured_at)} snapshot · ${esc(state.variant)} {V}`:'No accepted forecast for this stage'}</span><span>${forecast?`${num(forecast.lead_hours,2)}h before tip`:'No betting record'}</span></div></article>`;
+}
+function today() {
+  const games=state.data.games.filter(g=>g.slate_date===state.date).sort((a,b)=>a.tip_utc.localeCompare(b.tip_utc));
+  const forecasts=(state.stage==='latest'?state.data.previews:state.data.forecasts).filter(f=>!f.retired&&f.stage===state.stage&&f.game.slate_date===state.date);
+  const firstCount=state.data.forecasts.filter(f=>!f.retired&&f.stage==='first'&&f.game.slate_date===state.date).length;
+  const lockCount=state.data.forecasts.filter(f=>!f.retired&&f.stage==='lock'&&f.game.slate_date===state.date).length;
+  const viewNote=state.stage==='latest'?'Latest previews update with Sleeper and are not added to the tracked record.':'Tracked picks are frozen before tip and graded after the final score.';
+  content.innerHTML=hero('{VU} · SLEEPER NBA',"Today's model picks",'Every game’s projected winner, win probability and recorded moneyline. Open a game for player projections, availability and model context.')+`<div class="stats">${stat('Games',games.length,'On this slate')}${stat('Tracked',`${firstCount} <span class="small">/ ${games.length}</span>`,'First snapshots frozen','green')}${stat('5-hour locks',`${lockCount} <span class="small">/ ${games.length}</span>`,'Captured near T−5h')}</div><div class="toolbar"><h2>Today’s games</h2>${controls()}</div><p class="section-note">${viewNote} Tip times use your local time zone; slate dates use Eastern Time. <span data-scores-asof hidden>Live scores from ESPN, updated <time></time>; they are display only and never change a frozen forecast.</span></p><div class="grid">${games.length?games.map(g=>{let f=forecasts.find(f=>f.instance_id===g.instance_id);if(state.stage==='best'){const saved=state.data.forecasts.filter(f=>!f.retired&&f.instance_id===g.instance_id).sort((a,b)=>new Date(b.captured_at)-new Date(a.captured_at));const previews=state.data.previews.filter(f=>f.instance_id===g.instance_id).sort((a,b)=>new Date(b.captured_at)-new Date(a.captured_at));f=saved.find(f=>f.stage==='lock')||saved.find(f=>f.stage==='first')||previews[0];}return card(g,f);}).join(''):empty('No recorded games','The next successful schedule capture will populate this slate.')}</div><div class="notice">Projected scores use Sleeper player projections plus the {V} defense adjustment. Saved DraftKings lines provide context. Picks are research records; no wagers are placed.</div>`;
+}
 function results() {
   const season=state.data.season;
   if(!season?.pooled?.n){content.innerHTML=hero('{VU} · RESULTS','Predictions, resolved.','Every {V} model pick against the final score.')+empty('No results yet','Results appear once the first games are final.');return;}

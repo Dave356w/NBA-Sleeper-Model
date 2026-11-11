@@ -351,3 +351,14 @@ def test_site_exports_pooled_rows_and_display_only_live_win_chance(root):
     (root / "web" / "live_wp.json").write_text("{}")
     assert live_win_fit(root) is None
     assert Ledger(root).records() == before
+
+
+def test_page_script_defines_every_renderer_it_dispatches_to():
+    import re
+
+    script = (BASE / "web" / "app.js").read_text()
+    dispatched = re.search(r"\(\{index:today,([a-z,]+)\}\[page\]", script).group(1).split(",")
+    for name in ["today", *dispatched]:
+        assert f"function {name}(" in script, name
+    for helper in ["card", "teamBlock", "pickSummary", "gameDetails", "seasonStats", "rowRecord"]:
+        assert f"function {helper}(" in script, helper
