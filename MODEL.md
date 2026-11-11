@@ -1,13 +1,35 @@
 # Sleeper-Only NBA Prediction Model
 
-Implementation specification · v1.23 · 10 November 2026
+Implementation specification · v1.24 · 11 November 2026
 
 Suggested repository: `sleeper-nba-model`  
 Runtime: Python 3.12  
 Deployment: GitHub Actions and GitHub Pages  
 Status: Build specification for a new, independent model. No existing production repository is to be changed.
 
-## Active methodology — v1.23 residual defense from game 1, on locks, refit each slate
+## Active methodology — v1.24 confidence calibration from the season history
+
+Owner update, 11 November 2026. The owner's stated intention is a dynamic model: the win-probability scale should move with results instead of restarting at 10 with every methodology tag. This section overrides conflicting text below, including the v1.20–v1.23 rules that confidence calibration "learns only from completed native forecasts" of the current tag, "never uses the seed" and is stage-specific for locks. Everything not named here is unchanged from v1.23, including scoring, team residuals, moneyline-only selections, the fixed control and the calibration equations of Sections 6–8. New forecasts are tagged `sleeper_only_v1_24`; frozen records of every earlier version, and their grades, are never rewritten.
+
+### What changed
+
+1. **The confidence history starts from the season replay** (`calibration.history: season`). First-stage calibration observations are the season's earlier games replayed walk-forward under the current methodology (`season.calibration_observations`: the pinned 117-game seed and resolved first snapshots of earlier tags, each margin scored from team fits that used earlier results only), followed by completed native forecasts of the current tag on fully resolved slates. A native game supersedes its replay. Replay results are usable at their recorded verification time, or at 12:00 UTC on the day after the Eastern tip date for seed games. The replay is computed at refit time and writes no forecast, selection or grade.
+2. **Locks use the first-stage calibration** (`calibration.stage_source: {lock: first}`), as v1.23 did for the team fit. No lock-only confidence version is created.
+3. **Unchanged safeguards.** The 30-game minimum, 75-game half-life, shrinkage toward 10 with prior strength 100, bounds, at most one accepted refit per UTC day, and the ±10% daily cap all apply. The v1.24 history therefore starts at 10 and moves at most 10% per accepted refit; a refit needs a changed observation manifest.
+
+A configuration frozen without these keys keeps the earlier behavior on replay and validation.
+
+### Evidence and its limits
+
+- The margins are compressed: on 145 season games the actual margin is 1.46 times the projected margin (standard error 0.23), and the in-sample best scale is 7.0 against the default 10.
+- Before v1.24 no confidence version had ever been accepted: five tags in three weeks each restarted the 30-game count.
+- Sequential test, set before it was run: the registered procedure fitted from earlier games only, against fixed a=10, on the 139 replayed games of this season (18 slates). Log loss 0.5618 against 0.5637, difference −0.0019, slate-bootstrap 95% interval −0.0057 to +0.0025. The criterion was an interval excluding zero; **it was not met**. The 2025–26 replay in the v1.22 section points the same way (−0.0043, interval −0.0093 to +0.0004) and also includes zero.
+- The owner adopted the change knowingly as a design choice, not on a demonstrated gain. Learned sequentially the scale reached 8.8, not 7.0, because of the shrinkage and the daily cap.
+- At adoption the first refit on 145 observations fits 7.01, targets 8.20 and is capped at 9.0.
+- Using first-snapshot calibration on locks is not tested; only ten graded locks exist. ATS and totals sigmas are refit from the same history and remain context only.
+- The seed sample was inspected before this choice, and its result-availability times are assumed.
+
+## v1.23 methodology — residual defense from game 1, on locks, refit each slate (still current)
 
 Owner update, 10 November 2026. The owner's stated intention is that the residual-defense correction applies from the first game of a season, to every forecast, and is updated after each slate. v1.22 did not do that in three places. This section overrides conflicting text below, including the v1.20 rules that the lock stage "cannot use first-stage seed observations" and "waits for 30 native lock outcomes", the 30-game requirement for team residuals, and one refit per UTC day for team residuals. Everything not named here is unchanged from v1.22, including moneyline-only selections, the priors, the 25-calendar-day decay and the scoring equations. New forecasts are tagged `sleeper_only_v1_23`; frozen records of every earlier version, and their grades, are never rewritten.
 
@@ -17,7 +39,7 @@ Owner update, 10 November 2026. The owner's stated intention is that the residua
 2. **No 30-game wait** (`matchup.minimum_games: 1`). The fit runs from the first graded game of a season. The zero-centered priors (defense 40, offense control 20, global and venue 100) do the shrinking: one game moves a team's defensive term by a fraction of a point. With no graded game the correction is zero.
 3. **Refit after each slate** (`matchup.refit: slate`). Under v1.22 the team fit was refreshed at most once per UTC day, at the first pass after 00:00 UTC. That is mid-evening in the Eastern slate, so games finishing later waited a day: the first snapshots captured at 10:35 UTC on 10 November used a fit missing five games of the previous night. From v1.23 a new team version is created when the eligible observation manifest has changed and no started slate still has an ungraded forecast game. A slate has started once one of its forecast games has tipped; a game still ungraded 24 hours after its tip stops holding the refit back, and a retired instance never does. The first version of a methodology is fitted at once. A day without new results creates no version.
 
-Confidence calibration (the win-probability scale and the context sigmas) is unchanged: stage-specific, native forecasts of the current methodology only, 30-game minimum, at most one accepted refit per UTC day. The v1.23 tag starts that history at defaults, as every tag does.
+Confidence calibration (the win-probability scale and the context sigmas) is unchanged in v1.23 (v1.24 changes its history, above): stage-specific, native forecasts of the current methodology only, 30-game minimum, at most one accepted refit per UTC day. The v1.23 tag starts that history at defaults, as every tag does.
 
 A configuration frozen without these keys keeps the earlier behavior on replay and validation: a 30-game minimum, stage-specific team fits and one refit per UTC day.
 

@@ -127,7 +127,8 @@ def build_site(root):
         else {},
         "clv": closing_line_values(public_records),
         "calibrations": {
-            stage: active_calibration(records, stage, iso(), PUBLIC_METHOD) for stage in ["first", "lock"]
+            stage: active_calibration(records, stage, iso(), PUBLIC_METHOD, config)
+            for stage in ["first", "lock"]
         },
         "missed_locks": [r for r in records if r["kind"] == "quality" and r["code"] == "missed_lock"],
         "quality": [

@@ -1,4 +1,4 @@
-methodology: sleeper_only_v1_23
+methodology: sleeper_only_v1_24
 sleeper_company: rotowire
 wp_initial: 10.0
 ats_bias_initial: 0.0
@@ -28,6 +28,12 @@ value_probability_edge: 0.05
 # Markets that create tracked selections. Spread and totals are context only.
 selection_markets: [moneyline]
 book: draftkings
+
+# v1.24: confidence calibration starts from the season's walk-forward replay
+# plus live games, and locks are scored with the first-stage calibration.
+calibration:
+  history: season
+  stage_source: {lock: first}
 
 # Team residual decay is calendar time, distinct from confidence calibration.
 learn_scalar_biases: false
