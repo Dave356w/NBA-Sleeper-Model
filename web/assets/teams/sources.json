@@ -1,0 +1,607 @@
+{
+  "retrieved_on": "2026-11-11",
+  "provider": "ESPN team metadata and image CDN",
+  "size": "96x96",
+  "assets": [
+    {
+      "team": "ATL",
+      "name": "Atlanta Hawks",
+      "theme": "light",
+      "file": "atl-light.webp",
+      "source": "https://a.espncdn.com/i/teamlogos/nba/500/atl.png",
+      "source_sha256": "aacfe9bb2e3f69321bcd0b415a72d860fc97609c6c1f25985c6e70b78bd7f3cc",
+      "source_bytes": 44138,
+      "bytes": 3802
+    },
+    {
+      "team": "ATL",
+      "name": "Atlanta Hawks",
+      "theme": "dark",
+      "file": "atl-dark.webp",
+      "source": "https://a.espncdn.com/i/teamlogos/nba/500-dark/atl.png",
+      "source_sha256": "aaf09351b4f604b2f86da3bbffcaf5f0adab3bda424f9b838b0bee1956e682fe",
+      "source_bytes": 44138,
+      "bytes": 3802
+    },
+    {
+      "team": "BKN",
+      "name": "Brooklyn Nets",
+      "theme": "light",
+      "file": "bkn-light.webp",
+      "source": "https://a.espncdn.com/i/teamlogos/nba/500/bkn.png",
+      "source_sha256": "a407016d7c6a93b8b7b580b0de3f76caf80801bfd4fa66dc5badecc031164779",
+      "source_bytes": 38184,
+      "bytes": 3340
+    },
+    {
+      "team": "BKN",
+      "name": "Brooklyn Nets",
+      "theme": "dark",
+      "file": "bkn-dark.webp",
+      "source": "https://a.espncdn.com/i/teamlogos/nba/500-dark/bkn.png",
+      "source_sha256": "778864aa98b4d803d2ba7f5ddc09e8755c326d65f9457283aec2a951f9c5f8d8",
+      "source_bytes": 38184,
+      "bytes": 3340
+    },
+    {
+      "team": "BOS",
+      "name": "Boston Celtics",
+      "theme": "light",
+      "file": "bos-light.webp",
+      "source": "https://a.espncdn.com/i/teamlogos/nba/500/bos.png",
+      "source_sha256": "0d0d6b85971b1d18428ba1161772b8c2f7e3ee103846ec4b4763bf0cc849ece0",
+      "source_bytes": 45561,
+      "bytes": 4278
+    },
+    {
+      "team": "BOS",
+      "name": "Boston Celtics",
+      "theme": "dark",
+      "file": "bos-dark.webp",
+      "source": "https://a.espncdn.com/i/teamlogos/nba/500-dark/bos.png",
+      "source_sha256": "3c0acea2e6aaa797b8ca2fc3a8733bf250880eb2d0ea3471e32b02d2b5630eb2",
+      "source_bytes": 45561,
+      "bytes": 4278
+    },
+    {
+      "team": "CHA",
+      "name": "Charlotte Hornets",
+      "theme": "light",
+      "file": "cha-light.webp",
+      "source": "https://a.espncdn.com/i/teamlogos/nba/500/cha.png",
+      "source_sha256": "95b3fe42c24e262fb5ce4f52c50f634ba9b7daeae88d090555f1ef301aa0a451",
+      "source_bytes": 95626,
+      "bytes": 5074
+    },
+    {
+      "team": "CHA",
+      "name": "Charlotte Hornets",
+      "theme": "dark",
+      "file": "cha-dark.webp",
+      "source": "https://a.espncdn.com/i/teamlogos/nba/500-dark/cha.png",
+      "source_sha256": "70e0cd7ffdf3e9521b092c8e3c334b0a5d80521ec5ddad851830e5101f224965",
+      "source_bytes": 95626,
+      "bytes": 5074
+    },
+    {
+      "team": "CHI",
+      "name": "Chicago Bulls",
+      "theme": "light",
+      "file": "chi-light.webp",
+      "source": "https://a.espncdn.com/i/teamlogos/nba/500/chi.png",
+      "source_sha256": "3d70e58419859b30a8f2599f930ca502b175f9110c7cc1b2ab496787b8d445c2",
+      "source_bytes": 51667,
+      "bytes": 3868
+    },
+    {
+      "team": "CHI",
+      "name": "Chicago Bulls",
+      "theme": "dark",
+      "file": "chi-dark.webp",
+      "source": "https://a.espncdn.com/i/teamlogos/nba/500-dark/chi.png",
+      "source_sha256": "ffdd76842abe11d40ab42ca8334c6eb0b84240b05705a69225fb861f1a2d0178",
+      "source_bytes": 51667,
+      "bytes": 3868
+    },
+    {
+      "team": "CLE",
+      "name": "Cleveland Cavaliers",
+      "theme": "light",
+      "file": "cle-light.webp",
+      "source": "https://a.espncdn.com/i/teamlogos/nba/500/cle.png",
+      "source_sha256": "f6eeede7fb286c450b80436ad8c21e430ff1eec73adb187d285cb2b8f681e063",
+      "source_bytes": 37308,
+      "bytes": 4598
+    },
+    {
+      "team": "CLE",
+      "name": "Cleveland Cavaliers",
+      "theme": "dark",
+      "file": "cle-dark.webp",
+      "source": "https://a.espncdn.com/i/teamlogos/nba/500-dark/cle.png",
+      "source_sha256": "ebb72627b728b75add2693924afa5fb12871a5b247294c8af1ea0066f48a8d84",
+      "source_bytes": 37308,
+      "bytes": 4598
+    },
+    {
+      "team": "DAL",
+      "name": "Dallas Mavericks",
+      "theme": "light",
+      "file": "dal-light.webp",
+      "source": "https://a.espncdn.com/i/teamlogos/nba/500/dal.png",
+      "source_sha256": "d0d526f5400b7266883476071df0d24cdea0655a1641f0e5a2ea212e6c1b2b09",
+      "source_bytes": 83889,
+      "bytes": 5168
+    },
+    {
+      "team": "DAL",
+      "name": "Dallas Mavericks",
+      "theme": "dark",
+      "file": "dal-dark.webp",
+      "source": "https://a.espncdn.com/i/teamlogos/nba/500-dark/dal.png",
+      "source_sha256": "29cbc8bf38b752f0e241ee812bdd26d5323148b388fbaf060aaaf926e453adef",
+      "source_bytes": 83889,
+      "bytes": 5168
+    },
+    {
+      "team": "DEN",
+      "name": "Denver Nuggets",
+      "theme": "light",
+      "file": "den-light.webp",
+      "source": "https://a.espncdn.com/i/teamlogos/nba/500/den.png",
+      "source_sha256": "33f295fabf1bc3ddb60dfcbefb35ab9a3a91c865752e4539778495aab27f535d",
+      "source_bytes": 81056,
+      "bytes": 5786
+    },
+    {
+      "team": "DEN",
+      "name": "Denver Nuggets",
+      "theme": "dark",
+      "file": "den-dark.webp",
+      "source": "https://a.espncdn.com/i/teamlogos/nba/500-dark/den.png",
+      "source_sha256": "363443f85ba843eb4f4432398c3b1737e3a81ccebffee82bb5ad539b2d13ab4f",
+      "source_bytes": 81056,
+      "bytes": 5786
+    },
+    {
+      "team": "DET",
+      "name": "Detroit Pistons",
+      "theme": "light",
+      "file": "det-light.webp",
+      "source": "https://a.espncdn.com/i/teamlogos/nba/500/det.png",
+      "source_sha256": "e5bcfd905add9ef97e06a9cc6bfdde49864fe91731625501c14bf861e84b8853",
+      "source_bytes": 76673,
+      "bytes": 5802
+    },
+    {
+      "team": "DET",
+      "name": "Detroit Pistons",
+      "theme": "dark",
+      "file": "det-dark.webp",
+      "source": "https://a.espncdn.com/i/teamlogos/nba/500-dark/det.png",
+      "source_sha256": "c0084b40eb77c346f82712e6b3b35fd1fee38b0353fb9325419d893638786504",
+      "source_bytes": 76673,
+      "bytes": 5802
+    },
+    {
+      "team": "GSW",
+      "name": "Golden State Warriors",
+      "theme": "light",
+      "file": "gsw-light.webp",
+      "source": "https://a.espncdn.com/i/teamlogos/nba/500/gs.png",
+      "source_sha256": "b623681ece167224ad4f51aef1ffa5a6f9e072af1cf1d6a6c158fd796e8d33ab",
+      "source_bytes": 82070,
+      "bytes": 5308
+    },
+    {
+      "team": "GSW",
+      "name": "Golden State Warriors",
+      "theme": "dark",
+      "file": "gsw-dark.webp",
+      "source": "https://a.espncdn.com/i/teamlogos/nba/500-dark/gs.png",
+      "source_sha256": "02988a555373a7dbea3536ea37689c9e806c80d5405547db07f3e900113ada36",
+      "source_bytes": 82070,
+      "bytes": 5308
+    },
+    {
+      "team": "HOU",
+      "name": "Houston Rockets",
+      "theme": "light",
+      "file": "hou-light.webp",
+      "source": "https://a.espncdn.com/i/teamlogos/nba/500/hou.png",
+      "source_sha256": "720e35c0d3b39af8d57ae66f00ae1058bd0f32b41fba1137f779af5bc439e011",
+      "source_bytes": 48428,
+      "bytes": 4102
+    },
+    {
+      "team": "HOU",
+      "name": "Houston Rockets",
+      "theme": "dark",
+      "file": "hou-dark.webp",
+      "source": "https://a.espncdn.com/i/teamlogos/nba/500-dark/hou.png",
+      "source_sha256": "720e35c0d3b39af8d57ae66f00ae1058bd0f32b41fba1137f779af5bc439e011",
+      "source_bytes": 48428,
+      "bytes": 4102
+    },
+    {
+      "team": "IND",
+      "name": "Indiana Pacers",
+      "theme": "light",
+      "file": "ind-light.webp",
+      "source": "https://a.espncdn.com/i/teamlogos/nba/500/ind.png",
+      "source_sha256": "8dc8165d842c4b0d3b6f607ac9494a68189b2b06f48a3d820cd5b3997ae7c9da",
+      "source_bytes": 58101,
+      "bytes": 3664
+    },
+    {
+      "team": "IND",
+      "name": "Indiana Pacers",
+      "theme": "dark",
+      "file": "ind-dark.webp",
+      "source": "https://a.espncdn.com/i/teamlogos/nba/500-dark/ind.png",
+      "source_sha256": "8dc8165d842c4b0d3b6f607ac9494a68189b2b06f48a3d820cd5b3997ae7c9da",
+      "source_bytes": 58101,
+      "bytes": 3664
+    },
+    {
+      "team": "LAC",
+      "name": "LA Clippers",
+      "theme": "light",
+      "file": "lac-light.webp",
+      "source": "https://a.espncdn.com/i/teamlogos/nba/500/lac.png",
+      "source_sha256": "d43253c0630f0d3d3a4c3c50ce92c9dbe8d5bf21e3bfd5326920c9487b26dbec",
+      "source_bytes": 60835,
+      "bytes": 4236
+    },
+    {
+      "team": "LAC",
+      "name": "LA Clippers",
+      "theme": "dark",
+      "file": "lac-dark.webp",
+      "source": "https://a.espncdn.com/i/teamlogos/nba/500-dark/lac.png",
+      "source_sha256": "d85811d7d473c8bacc091817f9015ce0c9ce2b4fb9373deeb661a0609906f8af",
+      "source_bytes": 60835,
+      "bytes": 4236
+    },
+    {
+      "team": "LAL",
+      "name": "Los Angeles Lakers",
+      "theme": "light",
+      "file": "lal-light.webp",
+      "source": "https://a.espncdn.com/i/teamlogos/nba/500/lal.png",
+      "source_sha256": "82fda3df51058c5aad8a52123868f43959017be0c39c886e9aefbb77e6c69c89",
+      "source_bytes": 64550,
+      "bytes": 3296
+    },
+    {
+      "team": "LAL",
+      "name": "Los Angeles Lakers",
+      "theme": "dark",
+      "file": "lal-dark.webp",
+      "source": "https://a.espncdn.com/i/teamlogos/nba/500-dark/lal.png",
+      "source_sha256": "44aa9bf96b542ca9cb579fd00a7e1c7ca1c2d24636b0f698b07fbb7b9193eb79",
+      "source_bytes": 64550,
+      "bytes": 3296
+    },
+    {
+      "team": "MEM",
+      "name": "Memphis Grizzlies",
+      "theme": "light",
+      "file": "mem-light.webp",
+      "source": "https://a.espncdn.com/i/teamlogos/nba/500/mem.png",
+      "source_sha256": "eb3f14246f67bccd4d8dd44be2f431992115beac8837c4b1be51d098b0a388bd",
+      "source_bytes": 71654,
+      "bytes": 3904
+    },
+    {
+      "team": "MEM",
+      "name": "Memphis Grizzlies",
+      "theme": "dark",
+      "file": "mem-dark.webp",
+      "source": "https://a.espncdn.com/i/teamlogos/nba/500-dark/mem.png",
+      "source_sha256": "93933104e37b5260946817be8055eb4b6c0cedb8e941ee224d86f717abc39417",
+      "source_bytes": 71654,
+      "bytes": 3904
+    },
+    {
+      "team": "MIA",
+      "name": "Miami Heat",
+      "theme": "light",
+      "file": "mia-light.webp",
+      "source": "https://a.espncdn.com/i/teamlogos/nba/500/mia.png",
+      "source_sha256": "3ba9ff33e65ea12cef33cbf445163a8ec4063b4cbd42c6d2c63109b6d438575f",
+      "source_bytes": 55105,
+      "bytes": 4444
+    },
+    {
+      "team": "MIA",
+      "name": "Miami Heat",
+      "theme": "dark",
+      "file": "mia-dark.webp",
+      "source": "https://a.espncdn.com/i/teamlogos/nba/500-dark/mia.png",
+      "source_sha256": "eefa0bcbcd520d5bd687db2745f02afbadb13b2848658334ce60a76e8f96fdb9",
+      "source_bytes": 55105,
+      "bytes": 4444
+    },
+    {
+      "team": "MIL",
+      "name": "Milwaukee Bucks",
+      "theme": "light",
+      "file": "mil-light.webp",
+      "source": "https://a.espncdn.com/i/teamlogos/nba/500/mil.png",
+      "source_sha256": "84fbddec67f59fa143f4fde9c2745ca15f3ad03594da4e677a4a1034aefa6f33",
+      "source_bytes": 74663,
+      "bytes": 5090
+    },
+    {
+      "team": "MIL",
+      "name": "Milwaukee Bucks",
+      "theme": "dark",
+      "file": "mil-dark.webp",
+      "source": "https://a.espncdn.com/i/teamlogos/nba/500-dark/mil.png",
+      "source_sha256": "6d6a8a29191ad0f5cc12ba6223eb841d611caf566ff52ed9c704378e1bb5ff58",
+      "source_bytes": 74663,
+      "bytes": 5090
+    },
+    {
+      "team": "MIN",
+      "name": "Minnesota Timberwolves",
+      "theme": "light",
+      "file": "min-light.webp",
+      "source": "https://a.espncdn.com/i/teamlogos/nba/500/min.png",
+      "source_sha256": "ff53859dd29fb795e2f9c0a7fbaf808548731526d3fbcbb2fdfb842224c36979",
+      "source_bytes": 81082,
+      "bytes": 5132
+    },
+    {
+      "team": "MIN",
+      "name": "Minnesota Timberwolves",
+      "theme": "dark",
+      "file": "min-dark.webp",
+      "source": "https://a.espncdn.com/i/teamlogos/nba/500-dark/min.png",
+      "source_sha256": "ff53859dd29fb795e2f9c0a7fbaf808548731526d3fbcbb2fdfb842224c36979",
+      "source_bytes": 81082,
+      "bytes": 5132
+    },
+    {
+      "team": "NOP",
+      "name": "New Orleans Pelicans",
+      "theme": "light",
+      "file": "nop-light.webp",
+      "source": "https://a.espncdn.com/i/teamlogos/nba/500/no.png",
+      "source_sha256": "2c2bf09a59358e024c442d80f16707cd8b705863df9b6aa0ee478346561dc18a",
+      "source_bytes": 65947,
+      "bytes": 3120
+    },
+    {
+      "team": "NOP",
+      "name": "New Orleans Pelicans",
+      "theme": "dark",
+      "file": "nop-dark.webp",
+      "source": "https://a.espncdn.com/i/teamlogos/nba/500-dark/no.png",
+      "source_sha256": "e864875ad3c62c8c4dad878fad7af52a8d64d322062c1c79c5d9f79eafdbdaac",
+      "source_bytes": 65947,
+      "bytes": 3120
+    },
+    {
+      "team": "NYK",
+      "name": "New York Knicks",
+      "theme": "light",
+      "file": "nyk-light.webp",
+      "source": "https://a.espncdn.com/i/teamlogos/nba/500/ny.png",
+      "source_sha256": "35d2cc3780d172d427ed9bec8300bdcb91dd1065a3e1b6b015d46bb065ea35f5",
+      "source_bytes": 98474,
+      "bytes": 4238
+    },
+    {
+      "team": "NYK",
+      "name": "New York Knicks",
+      "theme": "dark",
+      "file": "nyk-dark.webp",
+      "source": "https://a.espncdn.com/i/teamlogos/nba/500-dark/ny.png",
+      "source_sha256": "a713356affa522652a554ac76db309fb651fca785e7ef2a0939d71f6c4db8040",
+      "source_bytes": 98474,
+      "bytes": 4238
+    },
+    {
+      "team": "OKC",
+      "name": "Oklahoma City Thunder",
+      "theme": "light",
+      "file": "okc-light.webp",
+      "source": "https://a.espncdn.com/i/teamlogos/nba/500/okc.png",
+      "source_sha256": "6b4801ae99c7dac7240d3b6ab3fbd4249a371473fc06517384e891834164a76e",
+      "source_bytes": 62595,
+      "bytes": 3878
+    },
+    {
+      "team": "OKC",
+      "name": "Oklahoma City Thunder",
+      "theme": "dark",
+      "file": "okc-dark.webp",
+      "source": "https://a.espncdn.com/i/teamlogos/nba/500-dark/okc.png",
+      "source_sha256": "ba24765fec53ad8619534bf65b928d797489bfae5e69fedd6ba463f3cb546dfe",
+      "source_bytes": 66389,
+      "bytes": 3746
+    },
+    {
+      "team": "ORL",
+      "name": "Orlando Magic",
+      "theme": "light",
+      "file": "orl-light.webp",
+      "source": "https://a.espncdn.com/i/teamlogos/nba/500/orl.png",
+      "source_sha256": "ccb08b4b69603f4d41e6494b4a35dba8fd2e6a2a75012559d6844c2fc93e0963",
+      "source_bytes": 71926,
+      "bytes": 4302
+    },
+    {
+      "team": "ORL",
+      "name": "Orlando Magic",
+      "theme": "dark",
+      "file": "orl-dark.webp",
+      "source": "https://a.espncdn.com/i/teamlogos/nba/500-dark/orl.png",
+      "source_sha256": "ccb08b4b69603f4d41e6494b4a35dba8fd2e6a2a75012559d6844c2fc93e0963",
+      "source_bytes": 71926,
+      "bytes": 4302
+    },
+    {
+      "team": "PHI",
+      "name": "Philadelphia 76ers",
+      "theme": "light",
+      "file": "phi-light.webp",
+      "source": "https://a.espncdn.com/i/teamlogos/nba/500/phi.png",
+      "source_sha256": "3b96bf98838e3ea9e5d4fcccda3a98b69636346d2e50aabf1a5a4ba5aad7585e",
+      "source_bytes": 29120,
+      "bytes": 4814
+    },
+    {
+      "team": "PHI",
+      "name": "Philadelphia 76ers",
+      "theme": "dark",
+      "file": "phi-dark.webp",
+      "source": "https://a.espncdn.com/i/teamlogos/nba/500-dark/phi.png",
+      "source_sha256": "f8f77ccb99bb2e55d3489ee4b3bf7f5cd4d5b502d4903f6ee2538ec6150d826d",
+      "source_bytes": 27185,
+      "bytes": 3486
+    },
+    {
+      "team": "PHX",
+      "name": "Phoenix Suns",
+      "theme": "light",
+      "file": "phx-light.webp",
+      "source": "https://a.espncdn.com/i/teamlogos/nba/500/phx.png",
+      "source_sha256": "5f8932efdb7595069610b11ec2f417d78a9213691c2ba21e2bd491c172397ead",
+      "source_bytes": 40162,
+      "bytes": 4548
+    },
+    {
+      "team": "PHX",
+      "name": "Phoenix Suns",
+      "theme": "dark",
+      "file": "phx-dark.webp",
+      "source": "https://a.espncdn.com/i/teamlogos/nba/500-dark/phx.png",
+      "source_sha256": "11a7e21b3b94a9f2cb5d4e43b4f9c7a3abbed5814eb7a92d2e19ba8c62f55872",
+      "source_bytes": 40162,
+      "bytes": 4548
+    },
+    {
+      "team": "POR",
+      "name": "Portland Trail Blazers",
+      "theme": "light",
+      "file": "por-light.webp",
+      "source": "https://a.espncdn.com/i/teamlogos/nba/500/por.png",
+      "source_sha256": "635515bc924cef7432e9b362da558c41032daf6f4c41be2e1dc80a34360b6f18",
+      "source_bytes": 62286,
+      "bytes": 4152
+    },
+    {
+      "team": "POR",
+      "name": "Portland Trail Blazers",
+      "theme": "dark",
+      "file": "por-dark.webp",
+      "source": "https://a.espncdn.com/i/teamlogos/nba/500-dark/por.png",
+      "source_sha256": "a7659220f84c4efa5f0b5f529a397043c7ecdb84469cb344b554546ba9634086",
+      "source_bytes": 62286,
+      "bytes": 4152
+    },
+    {
+      "team": "SAC",
+      "name": "Sacramento Kings",
+      "theme": "light",
+      "file": "sac-light.webp",
+      "source": "https://a.espncdn.com/i/teamlogos/nba/500/sac.png",
+      "source_sha256": "38728eaaf98d73d00363ee570601d64a4caa7fe2590fb0df5afb1b9129d6e20b",
+      "source_bytes": 42990,
+      "bytes": 3922
+    },
+    {
+      "team": "SAC",
+      "name": "Sacramento Kings",
+      "theme": "dark",
+      "file": "sac-dark.webp",
+      "source": "https://a.espncdn.com/i/teamlogos/nba/500-dark/sac.png",
+      "source_sha256": "6e7e2783d1edad7001ad077175dabad3404187da53861b8108e0f24b4ce9a104",
+      "source_bytes": 42990,
+      "bytes": 3922
+    },
+    {
+      "team": "SAS",
+      "name": "San Antonio Spurs",
+      "theme": "light",
+      "file": "sas-light.webp",
+      "source": "https://a.espncdn.com/i/teamlogos/nba/500/sa.png",
+      "source_sha256": "cc3d33fa8faf34874258b10a8e0377d70b80c7900b4d90698f35edba9952fa1c",
+      "source_bytes": 40623,
+      "bytes": 3736
+    },
+    {
+      "team": "SAS",
+      "name": "San Antonio Spurs",
+      "theme": "dark",
+      "file": "sas-dark.webp",
+      "source": "https://a.espncdn.com/i/teamlogos/nba/500-dark/sa.png",
+      "source_sha256": "e6cdbeb0a430dfe63021fb4a34d1923e4d1ae2d49c22d5a4498bbae325539ed7",
+      "source_bytes": 40623,
+      "bytes": 3736
+    },
+    {
+      "team": "TOR",
+      "name": "Toronto Raptors",
+      "theme": "light",
+      "file": "tor-light.webp",
+      "source": "https://a.espncdn.com/i/teamlogos/nba/500/tor.png",
+      "source_sha256": "9b466dfc1c47b22d6692569ea7f6cb1075a5bb3a35296b5053d6562842850b13",
+      "source_bytes": 22692,
+      "bytes": 4760
+    },
+    {
+      "team": "TOR",
+      "name": "Toronto Raptors",
+      "theme": "dark",
+      "file": "tor-dark.webp",
+      "source": "https://a.espncdn.com/i/teamlogos/nba/500-dark/tor.png",
+      "source_sha256": "3bf7fcab948340be21b7253b7a22c11e4db8c235401cc393ab3937c84bf23e41",
+      "source_bytes": 23371,
+      "bytes": 2946
+    },
+    {
+      "team": "UTA",
+      "name": "Utah Jazz",
+      "theme": "light",
+      "file": "uta-light.webp",
+      "source": "https://a.espncdn.com/i/teamlogos/nba/500/utah.png",
+      "source_sha256": "eb20ed36a17b49f65fa30627a2ab2aae5c6e3ee31ab9f03983c15c05270016e1",
+      "source_bytes": 18467,
+      "bytes": 2242
+    },
+    {
+      "team": "UTA",
+      "name": "Utah Jazz",
+      "theme": "dark",
+      "file": "uta-dark.webp",
+      "source": "https://a.espncdn.com/i/teamlogos/nba/500-dark/utah.png",
+      "source_sha256": "6fef53965983004073d50919f7da6a2d9b9bbf78238b2baac2015a1d2c26bb72",
+      "source_bytes": 10102,
+      "bytes": 1284
+    },
+    {
+      "team": "WAS",
+      "name": "Washington Wizards",
+      "theme": "light",
+      "file": "was-light.webp",
+      "source": "https://a.espncdn.com/i/teamlogos/nba/500/wsh.png",
+      "source_sha256": "33977129ba2139eaee1611f55570c347c9ce4223fbeef413294cbdf66497bc55",
+      "source_bytes": 65691,
+      "bytes": 4650
+    },
+    {
+      "team": "WAS",
+      "name": "Washington Wizards",
+      "theme": "dark",
+      "file": "was-dark.webp",
+      "source": "https://a.espncdn.com/i/teamlogos/nba/500-dark/wsh.png",
+      "source_sha256": "adabbdd96f1e5332f6649db6d9a1ec43c71cfc6e8b0f72d11923000cd78b35a5",
+      "source_bytes": 65691,
+      "bytes": 4650
+    }
+  ]
+}

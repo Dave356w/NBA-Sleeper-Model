@@ -612,3 +612,13 @@ New captures use their actual retrieval time and current parameters; saved
 untracked previews are never promoted or backdated. Locks still require the
 registered window. The pooled record counts each game once, with a graded live
 current-methodology forecast superseding its retrospective replay.
+
+## Public reporting clarification — 11 November 2026
+
+This is a reporting and asset update, with no methodology change. Live market comparisons use the latest nonvoid grade and the exact frozen forecast and paired capture-time quotes, separately for each first/lock stage and adaptive/fixed variant. Each measure retains its own eligible-game count. Margin and total comparisons use the frozen calibrated predictions. Live controls do not change the separately labeled pooled season overview, which remains the current method's first snapshots with every replay and live part listed.
+
+A read-only market-favorite benchmark compares one-unit model-winner and favorite returns on the same priced games and quotes. The favorite is the side with the higher two-sided no-vig probability, including when both offered prices are negative. Equal-probability pick'em quotes and tied model forecasts are excluded from both benchmark rows. The benchmark reports selection agreement and never creates a forecast, selection, bet, grade or training observation. Positive returns and sample-count thresholds alone do not establish an edge.
+
+The public Results page puts date/stage/model controls before its live scorecards and shows picked teams, probabilities, eligible saved moneylines, market favorites, finals and settled directional moneyline units. Phone layouts use game cards. Calibration details and historical market comparisons remain available in labeled disclosures. Research subsets remain in the ledger.
+
+Brand assets and 30 teams' light/dark logos are served locally. The source manifest records ESPN metadata URLs and source-image hashes; New Orleans uses ESPN's `no` asset. SVG navigation icons replace font-dependent symbols. Asset failure falls back to a local basketball placeholder while the team code remains readable. Favicons, touch icons, a manifest and static social metadata are included; the share image deliberately contains no changing performance claim.
