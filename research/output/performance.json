@@ -1465,17 +1465,17 @@
       "adaptive_minus_fixed_log_loss": 0.0159660216500378,
       "confidence_interval_95": [
         -0.044633542103412756,
-        0.04595108344475894
+        0.045951083444758935
       ],
       "exploratory": true
     },
     "lock": {
       "n": 24,
       "slates": 5,
-      "adaptive_minus_fixed_log_loss": 0.0026516385142312062,
+      "adaptive_minus_fixed_log_loss": 0.002651638514231204,
       "confidence_interval_95": [
         -0.030054407697800514,
-        0.0179769174754949
+        0.017976917475494895
       ],
       "exploratory": true
     }
