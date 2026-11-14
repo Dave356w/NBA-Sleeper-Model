@@ -553,7 +553,7 @@
     },
     "lock:adaptive:totals": {
       "n": 33,
-      "log_loss": 0.7031681567221313,
+      "log_loss": 0.7031681567221314,
       "brier": 0.2550461731364306
     },
     "lock:fixed:ats": {
@@ -563,7 +563,7 @@
     },
     "lock:fixed:totals": {
       "n": 33,
-      "log_loss": 0.6986329095728978,
+      "log_loss": 0.6986329095728979,
       "brier": 0.25286997456510196
     }
   },
@@ -1490,7 +1490,7 @@
     "first": {
       "n": 81,
       "slates": 7,
-      "adaptive_minus_fixed_log_loss": 0.021762888725849472,
+      "adaptive_minus_fixed_log_loss": 0.02176288872584947,
       "confidence_interval_95": [
         -0.03288360658855663,
         0.05144788090375868
@@ -1500,9 +1500,9 @@
     "lock": {
       "n": 33,
       "slates": 6,
-      "adaptive_minus_fixed_log_loss": 0.01808906562139227,
+      "adaptive_minus_fixed_log_loss": 0.018089065621392265,
       "confidence_interval_95": [
-        -0.018837156017192516,
+        -0.01883715601719252,
         0.04102306470495353
       ],
       "exploratory": true
