@@ -88,7 +88,7 @@ class FixtureHTTP:
         }
 
 
-def test_full_capture_grade_report_and_correction(root, rows, config):
+def test_full_capture_grade_report_and_correction(root, rows, config, monkeypatch):
     http = FixtureHTTP(rows)
     result = capture(root, config, http=http, now=dt(AT))
     assert result["forecasts"] == 2  # First and lock share the same valid capture.
@@ -104,6 +104,8 @@ def test_full_capture_grade_report_and_correction(root, rows, config):
     assert validate(root)["status"] == "valid"
     # No outcomes exist before verified completion.
     assert summarize(ledger.records())["forecast"] == {}
+    # Pin grading's wall clock inside the 7-day correction window so this fixture never ages out.
+    monkeypatch.setattr("sleeper_nba.pipeline.utcnow", lambda: dt("2026-11-08T03:00:00+00:00"))
     http.final = True
     http.at = "2026-11-08T02:00:00+00:00"
     assert grade(root, config, http=http)["graded"] == 2
