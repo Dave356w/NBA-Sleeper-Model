@@ -173,6 +173,24 @@ def replay_observations(records, root, config, season):
                 "provenance": "legacy-first",
                 "markets": _seed_markets(quotes.get(o["game_id"]), o, config),
             }
+        # Owner-authorized outage backfill (17 November 2026): archived early-day snapshots for
+        # games with no native forecast, scored and timed exactly like the legacy seed games.
+        for backfill in matchup.backfill_files(root, config):
+            for o in backfill["observations"]:
+                if o["stage"] != "first" or o["season"] != season or o["game_id"] in observations:
+                    continue
+                day = dt(o["tip_utc"]).astimezone(ET).date() + timedelta(days=1)
+                observations[o["game_id"]] = {
+                    **{k: o[k] for k in ["game_id", "home", "away", "tip_utc", "snapshot_utc"]},
+                    "projected_home_score": o["projected_home_score"],
+                    "projected_away_score": o["projected_away_score"],
+                    "actual_home_score": o["actual_home_score"],
+                    "actual_away_score": o["actual_away_score"],
+                    "available_at": iso(datetime.combine(day, time(12), UTC)),
+                    "segment": "replay_legacy",
+                    "provenance": o["provenance"],
+                    "markets": _seed_markets(o.get("quotes"), o, config),
+                }
     retired = {r["instance_id"] for r in records if r["kind"] == "retired"}
     results, revisions = _latest_results(records), _result_revisions(records)
     for f in records:
