@@ -6,6 +6,7 @@
 --accent:9,120,94;--accent-tx:6,102,79;--accent-on:#ffffff;
 --warm:198,84,44;--warm-tx:164,69,36;--lean:176,124,16;--lean-tx:130,92,12;
 --good:25,121,62;--bad:184,60,40;
+--series-1:#2a78d6;--series-2:#eb6834;
 --mono:"JetBrains Mono",ui-monospace,"SF Mono","Cascadia Mono",Menlo,Consolas,monospace;
 --sans:"Archivo",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
 --shadow:0 1px 2px rgba(19,32,47,.04),0 6px 20px -12px rgba(19,32,47,.18);
@@ -16,6 +17,7 @@
 --accent:61,192,151;--accent-tx:110,218,184;--accent-on:#0c141d;
 --warm:236,122,72;--warm-tx:240,140,98;--lean:244,196,96;--lean-tx:244,196,96;
 --good:88,194,125;--bad:239,127,98;
+--series-1:#3987e5;--series-2:#d95926;
 --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 28px -18px rgba(0,0,0,.8);color-scheme:dark}
 
 *{box-sizing:border-box}[hidden]{display:none!important}
@@ -243,3 +245,30 @@ tr:last-child td{border-bottom:0}tbody tr:hover{background:var(--surface-2)}
   .brand-version{display:none}
   .nav a{font-size:clamp(11px,3.1vw,13px)}
 }
+
+/* Rolling ROI chart (Performance). Series colors validated for CVD and contrast in both themes. */
+.roi-title{font-size:15px;margin:26px 0 0}
+.roi-legend{display:flex;gap:18px;flex-wrap:wrap;font-size:13px;color:var(--muted);margin:4px 0 6px}
+.roi-legend span{display:inline-flex;align-items:center;gap:7px}
+.key{display:inline-block;width:16px;height:2px;border-radius:2px;vertical-align:middle}
+.key.season{background:var(--series-1)}.key.rolling{background:var(--series-2)}
+.roi-chart{position:relative;width:100%;min-width:0}
+.roi-chart svg{display:block;overflow:visible}
+.roi-grid{stroke:var(--line-2);stroke-width:1}
+.roi-zero{stroke:var(--faint);stroke-width:1}
+.roi-axis{font:500 11px var(--mono);fill:var(--faint)}
+.roi-end{font:600 12px var(--mono)}
+.roi-end-value{fill:var(--ink)}
+.roi-line{fill:none;stroke-width:2;stroke-linejoin:round;stroke-linecap:round}
+.roi-line.season{stroke:var(--series-1)}.roi-line.rolling{stroke:var(--series-2)}
+.roi-cross{stroke:var(--faint);stroke-width:1}
+.roi-dot{stroke:var(--surface);stroke-width:2}
+.roi-dot.season{fill:var(--series-1)}.roi-dot.rolling{fill:var(--series-2)}
+.roi-hit{fill:transparent;cursor:crosshair;outline:none}
+.roi-hit:focus-visible{stroke:rgb(var(--accent));stroke-width:2}
+.roi-tip{position:absolute;pointer-events:none;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-s);box-shadow:var(--shadow);padding:8px 10px;font-size:12px;color:var(--muted);min-width:180px;z-index:2}
+.roi-tip-head{color:var(--ink);font-weight:600;margin-bottom:2px}
+.roi-tip-row{display:flex;align-items:center;gap:7px;margin-top:4px}
+.roi-tip-row strong{color:var(--ink);font-family:var(--mono)}
+.roi-table{margin-top:12px}
+.roi-table summary{cursor:pointer;font-size:13px;color:var(--muted)}

@@ -139,6 +139,71 @@ function results() {
   const table=`<div class="table-wrap results-table"><table><caption class="sr-only">Results for ${date(state.date)}</caption><thead><tr><th>Matchup</th><th>Model pick · probability</th><th>Saved odds</th><th>Market favorite · fair probability</th><th>Final · away / home</th><th>Net units</th><th>Result</th></tr></thead><tbody>${records.map(r=>`<tr><td>${r.matchup}</td><td>${r.pick}</td><td>${r.price}</td><td>${r.favorite}</td><td>${r.final}</td><td>${r.unitsText}</td><td class="${r.accent}">${r.status}</td></tr>`).join('')}</tbody></table></div><div class="results-cards">${records.map(r=>`<article class="result-card"><div class="result-card-head"><h3>${r.matchup}</h3><span class="${r.accent}">${r.status}</span></div><dl><div><dt>Model pick</dt><dd>${r.pick}</dd></div><div><dt>Saved odds</dt><dd>${r.price}</dd></div><div><dt>Market favorite</dt><dd>${r.favorite}</dd></div><div><dt>Net units</dt><dd>${r.unitsText}</dd></div><div><dt>Final · away / home</dt><dd>${r.final}</dd></div></dl></article>`).join('')}</div>`;
   content.innerHTML=hero('{VU} · RESULTS','Predictions, resolved.','Every {V} model pick against the final score, one slate at a time.')+`<section aria-labelledby="results-title"><div class="toolbar filters-first"><h2 id="results-title">${date(state.date)}</h2><div class="controls">${dateSelect(dates)}</div></div><div class="stats">${stat('Games',records.length,'On this slate')}${stat('Winner record',picks.length?`${correct}–${picks.length-correct}`:'—',picks.length?`${pct(correct/picks.length)} of picks correct`:'No picks')}${stat('Model-pick returns',bets.length?`${signed(units,2)}u`:'—',bets.length?`${pct(units/bets.length)} ROI · ${bets.length} priced games`:'No saved moneylines')}</div>${table}<p class="section-note">One unit on each pick at the saved DraftKings moneyline. A dash means no moneyline was saved with the forecast; the pick still counts in the winner record. Slate dates use Eastern Time.</p></section><section aria-labelledby="season-title"><div class="toolbar"><h2 id="season-title">${esc(season.season)} season to date</h2><a href="performance.html">Full performance</a></div>${seasonStats(season.pooled)}</section>`;
 }
+// Rolling ROI of the model-pick series: one unit per pick at the saved moneyline, in tip order.
+const ROI_WINDOW=50, ROI_SEASON_MIN=20;
+function roiPoints() {
+  const rows=seasonRows().slice().sort((a,b)=>a.tip_utc<b.tip_utc?-1:a.tip_utc>b.tip_utc?1:a.game_id<b.game_id?-1:1);
+  const bets=[];
+  for(const r of rows){const rec=rowRecord(r);if(rec.units!==null)bets.push({date:r.slate_date,matchup:`${r.away} @ ${r.home}`,units:rec.units});}
+  let cum=0;
+  return bets.map((b,i)=>{
+    cum+=b.units;
+    const k=i+1, recent=k>=ROI_WINDOW?bets.slice(k-ROI_WINDOW,k).reduce((a,x)=>a+x.units,0)/ROI_WINDOW:null;
+    return {...b,k,cum,season:k>=ROI_SEASON_MIN?cum/k:null,rolling:recent};
+  });
+}
+function roiPanel() {
+  const pts=roiPoints(); if(pts.length<ROI_WINDOW)return '';
+  const ends=[], seen=new Set();
+  for(let i=pts.length-1;i>=0;i--)if(!seen.has(pts[i].date)){seen.add(pts[i].date);ends.unshift(pts[i]);}
+  const roiText=v=>v===null?'—':`${v>0?'+':''}${(v*100).toFixed(1)}%`;
+  const table=`<details class="roi-table"><summary>Show as table</summary><div class="table-wrap"><table><caption class="sr-only">Model-pick ROI by slate</caption><thead><tr><th>Slate</th><th>Bets to date</th><th>Net units</th><th>Season ROI</th><th>Last ${ROI_WINDOW} bets</th></tr></thead><tbody>${ends.slice().reverse().map(p=>`<tr><td>${date(p.date)}</td><td>${p.k}</td><td>${signed(p.cum,2)}u</td><td>${roiText(p.k>=ROI_SEASON_MIN?p.cum/p.k:null)}</td><td>${roiText(p.rolling)}</td></tr>`).join('')}</tbody></table></div></details>`;
+  return `<h3 class="roi-title">Rolling return on investment</h3><p class="section-note">Model-pick ROI after each bet, in tip order. Season to date starts at bet ${ROI_SEASON_MIN}; the rolling line covers the latest ${ROI_WINDOW} bets.</p><div class="roi-legend" aria-hidden="true"><span><i class="key season"></i>Season to date</span><span><i class="key rolling"></i>Last ${ROI_WINDOW} bets</span></div><div class="roi-chart" id="roi-chart" role="img" aria-label="Line chart of model-pick ROI by bet. Season to date ${roiText(pts.at(-1).season)}, last ${ROI_WINDOW} bets ${roiText(pts.at(-1).rolling)}."></div>${table}`;
+}
+function drawRoi() {
+  const host=document.querySelector('#roi-chart'); if(!host)return;
+  const pts=roiPoints(), W=Math.max(300,host.clientWidth), H=W<560?220:260;
+  const m={l:46,r:W<560?14:104,t:12,b:28}, iw=W-m.l-m.r, ih=H-m.t-m.b, n=pts.length;
+  const vals=pts.flatMap(p=>[p.season,p.rolling]).filter(v=>v!==null);
+  let lo=Math.min(0,...vals), hi=Math.max(0,...vals);
+  const step=(hi-lo)>0.3?0.1:0.05; lo=Math.floor(lo/step-0.25)*step; hi=Math.ceil(hi/step+0.25)*step;
+  const x=k=>m.l+(n<=1?0:(k-1)/(n-1)*iw), y=v=>m.t+(hi-v)/(hi-lo)*ih;
+  const path=key=>{let d='',on=false;for(const p of pts){if(p[key]===null){on=false;continue;}d+=`${on?'L':'M'}${x(p.k).toFixed(1)},${y(p[key]).toFixed(1)}`;on=true;}return d;};
+  const pctLabel=v=>`${v>0?'+':''}${Math.round(v*100)}%`;
+  let grid='';
+  for(let v=lo;v<=hi+1e-9;v+=step){const yy=y(v).toFixed(1), zero=Math.abs(v)<1e-9;grid+=`<line x1="${m.l}" x2="${m.l+iw}" y1="${yy}" y2="${yy}" class="${zero?'roi-zero':'roi-grid'}"/><text x="${m.l-8}" y="${yy}" dy="0.32em" text-anchor="end" class="roi-axis">${pctLabel(Math.abs(v)<1e-9?0:v)}</text>`;}
+  const starts=[];let last=null;for(const p of pts){if(p.date!==last){starts.push(p);last=p.date;}}
+  const tickEvery=Math.max(1,Math.ceil(starts.length/(W<560?3:6)));
+  let xt='';starts.filter((_,i)=>i%tickEvery===0).forEach(p=>{xt+=`<text x="${x(p.k).toFixed(1)}" y="${m.t+ih+18}" text-anchor="middle" class="roi-axis">${new Date(p.date+'T12:00:00Z').toLocaleDateString([],{month:'short',day:'numeric'})}</text>`;});
+  const end=pts.at(-1); let labels='';
+  if(W>=560){
+    let ys=y(end.season), yr=y(end.rolling); const gap=16;
+    if(Math.abs(ys-yr)<gap){const mid=(ys+yr)/2, up=ys<=yr;ys=mid+(up?-gap/2:gap/2);yr=mid+(up?gap/2:-gap/2);}
+    const lab=(yy,v,name)=>`<text x="${m.l+iw+10}" y="${yy.toFixed(1)}" dy="0.32em" class="roi-end"><tspan class="roi-end-value">${(v>0?'+':'')+(v*100).toFixed(1)}%</tspan> <tspan class="roi-axis">${name}</tspan></text>`;
+    labels=lab(ys,end.season,'Season')+lab(yr,end.rolling,`Last ${ROI_WINDOW}`);
+  }
+  host.innerHTML=`<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" focusable="false" aria-hidden="true">${grid}${xt}<path d="${path('season')}" class="roi-line season"/><path d="${path('rolling')}" class="roi-line rolling"/>${labels}<line class="roi-cross" y1="${m.t}" y2="${m.t+ih}" x1="0" x2="0" visibility="hidden"/><circle class="roi-dot season" r="4" visibility="hidden"/><circle class="roi-dot rolling" r="4" visibility="hidden"/><rect class="roi-hit" x="${m.l}" y="${m.t}" width="${iw}" height="${ih}" tabindex="0" aria-label="ROI by bet; use arrow keys"/></svg><div class="roi-tip" hidden></div>`;
+  const svg=host.querySelector('svg'), hit=host.querySelector('.roi-hit'), cross=host.querySelector('.roi-cross'), tip=host.querySelector('.roi-tip');
+  const dots={season:host.querySelector('.roi-dot.season'),rolling:host.querySelector('.roi-dot.rolling')};
+  const fmt=v=>v===null?'—':`${v>0?'+':''}${(v*100).toFixed(1)}%`;
+  let idx=n-1;
+  const show=i=>{
+    idx=Math.max(0,Math.min(n-1,i)); const p=pts[idx], xx=x(p.k);
+    cross.setAttribute('x1',xx);cross.setAttribute('x2',xx);cross.setAttribute('visibility','visible');
+    for(const key of ['season','rolling']){const d=dots[key];if(p[key]===null){d.setAttribute('visibility','hidden');continue;}d.setAttribute('cx',xx);d.setAttribute('cy',y(p[key]));d.setAttribute('visibility','visible');}
+    tip.innerHTML=`<div class="roi-tip-head">Bet ${p.k} · ${esc(date(p.date))}</div><div class="small">${esc(p.matchup)} · ${p.units>0?'+':''}${p.units.toFixed(2)}u</div><div class="roi-tip-row"><i class="key season"></i><strong>${fmt(p.season)}</strong> Season to date</div><div class="roi-tip-row"><i class="key rolling"></i><strong>${fmt(p.rolling)}</strong> Last ${ROI_WINDOW} bets</div>`;
+    tip.hidden=false;
+    const tw=tip.offsetWidth, left=xx+12+tw>W?xx-12-tw:xx+12; tip.style.left=`${Math.max(0,left)}px`; tip.style.top=`${m.t}px`;
+  };
+  const hide=()=>{cross.setAttribute('visibility','hidden');Object.values(dots).forEach(d=>d.setAttribute('visibility','hidden'));tip.hidden=true;};
+  hit.addEventListener('pointermove',e=>{const r=svg.getBoundingClientRect();show(Math.round((e.clientX-r.left-m.l)/iw*(n-1)));});
+  hit.addEventListener('pointerleave',hide);
+  hit.addEventListener('focus',()=>show(idx));
+  hit.addEventListener('blur',hide);
+  hit.addEventListener('keydown',e=>{const d={ArrowLeft:-1,ArrowRight:1,Home:-n,End:n}[e.key];if(d!==undefined){e.preventDefault();show(idx+d);}});
+}
+let roiResize=null;
+window.addEventListener('resize',()=>{clearTimeout(roiResize);roiResize=setTimeout(drawRoi,150);});
 function performance() {
   const season=state.data.season;
   const head=hero('{VU} · PERFORMANCE','Model versus market.','The {V} season record against final scores and saved DraftKings prices.');
@@ -147,7 +212,7 @@ function performance() {
   const defaults={wp_a:10,ats_bias:0,ats_sigma:14,totals_bias:0,totals_sigma:19};
   const param=state.data.calibrations?.first?.params||defaults;
   const series=(name,m)=>`<tr><td>${name}</td><td>${m.n}</td><td>${m.n?`${m.wins}–${m.losses}`:'—'}</td><td>${m.n?signed(m.units,2)+'u':'—'}</td><td>${pct(m.roi)}</td></tr>`;
-  content.innerHTML=head+`<section aria-labelledby="season-title"><div class="toolbar filters-first"><h2 id="season-title">${esc(season.season)} season record</h2></div>${seasonStats(p)}<div class="stats">${stat('Log loss',num(p.log_loss,4),'Win probability · lower is better')}${stat('Margin error',num(p.margin_mae,2),'Mean absolute error · points')}${stat('Total error',num(p.total_mae,2),'Mean absolute error · points')}</div></section>${versusMarket(p.versus_market)}<section class="panel"><h2>Moneyline returns</h2><p class="section-note">One unit per bet at the saved DraftKings price. The value series needs a win probability at least five points above the market’s and a positive expected return.</p><div class="table-wrap"><table><thead><tr><th>Series</th><th>Bets</th><th>W–L</th><th>Net units</th><th>ROI</th></tr></thead><tbody>${series('Model winner',b.directional)}${series('Value',b.value)}</tbody></table></div></section>${favoriteBenchmark(p.favorite_benchmark)}<details class="technical-details" id="model-details"><summary>Model details</summary><h2>Parameters in use</h2><div class="parameter-grid">${[['WP scale',param.wp_a],['ATS bias',param.ats_bias],['ATS SD',param.ats_sigma],['Total bias',param.totals_bias],['Total SD',param.totals_sigma]].map(([name,value])=>stat(name,num(value),'points')).join('')}</div>${coverageTable()}${defenseTable()}</details>`;
+  content.innerHTML=head+`<section aria-labelledby="season-title"><div class="toolbar filters-first"><h2 id="season-title">${esc(season.season)} season record</h2></div>${seasonStats(p)}<div class="stats">${stat('Log loss',num(p.log_loss,4),'Win probability · lower is better')}${stat('Margin error',num(p.margin_mae,2),'Mean absolute error · points')}${stat('Total error',num(p.total_mae,2),'Mean absolute error · points')}</div></section>${versusMarket(p.versus_market)}<section class="panel"><h2>Moneyline returns</h2><p class="section-note">One unit on each model pick at the saved DraftKings price.</p><div class="table-wrap"><table><thead><tr><th>Series</th><th>Bets</th><th>W–L</th><th>Net units</th><th>ROI</th></tr></thead><tbody>${series('Model winner',b.directional)}</tbody></table></div>${roiPanel()}</section>${favoriteBenchmark(p.favorite_benchmark)}<details class="technical-details" id="model-details"><summary>Model details</summary><h2>Parameters in use</h2><div class="parameter-grid">${[['WP scale',param.wp_a],['ATS bias',param.ats_bias],['ATS SD',param.ats_sigma],['Total bias',param.totals_bias],['Total SD',param.totals_sigma]].map(([name,value])=>stat(name,num(value),'points')).join('')}</div>${coverageTable()}${defenseTable()}</details>`;
 }
 function coverageTable() {
   const rows=(state.data.lock_coverage||[]).slice(-10).reverse(); if(!rows.length)return '';
@@ -266,6 +331,7 @@ function render() {
   ({index:today,results,performance,methodology}[page] || today)();
   content.innerHTML=label(content.innerHTML); // One pass fills the version tokens before handlers attach.
   syncLive();
+  drawRoi();
   document.querySelectorAll('[data-stage]').forEach(b=>b.onclick=()=>{state.stage=b.dataset.stage;render();});
   const select=document.querySelector('#date-select');if(select) select.onchange=()=>{state.date=select.value;render();};
 }
