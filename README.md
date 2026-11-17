@@ -5,7 +5,7 @@
 
 **[Open the dashboard](https://dave356w.github.io/NBA-Sleeper-Model/)** · [Build specification](MODEL.md) · [Actions](https://github.com/Dave356w/NBA-Sleeper-Model/actions)
 
-An independent NBA forecasting system. Raw home/away scores are the sums of every valid Sleeper projected player's points. Version 1.20 added a learned opponent-defense correction to adaptive scoring; version 1.21 shrinks it harder; version 1.22 picks moneylines only and reports one pooled season record; version 1.23 applies the correction from the first graded game, on locks as well as first snapshots, and refits it after each slate. No Four Factors, efficiency, BPM, production-model outputs, or independent injury adjustments are used.
+An independent NBA forecasting system. Raw home/away scores are the sums of every valid Sleeper projected player's points. Version 1.20 added a learned opponent-defense correction to adaptive scoring; version 1.21 shrinks it harder; version 1.22 picks moneylines only and reports one pooled season record; version 1.23 applies the correction from the first graded game, on locks as well as first snapshots, and refits it after each slate; version 1.24 starts confidence calibration from the season's replayed games so the win-probability scale moves with results. A one-page summary of the current model is at the top of [MODEL.md](MODEL.md#current-model-at-a-glance-v124-as-of-17-november-2026). No Four Factors, efficiency, BPM, production-model outputs, or independent injury adjustments are used.
 
 ## What runs
 
@@ -17,10 +17,10 @@ An independent NBA forecasting system. Raw home/away scores are the sums of ever
 - **25-calendar-day residual-defense decay**, separate zero-centered ridge priors: defense 40 games (5 in v1.20), offense nuisance control 20, global/venue 100. Offensive coefficients help estimate defense but are not applied to scores.
 - Raw and adjusted scores, component corrections, and an untracked Latest view alongside immutable first/lock tabs.
 - Winner probabilities, margin and total forecasts, no-vig edges, offered-price EV, moneyline selections, grades and public results. Spread and totals picks were retired in v1.22; their lines are kept to compare the forecasts with the market.
-- Stage-specific weighted calibration with 75-game half-life, 30-game minimum, shrinkage, daily caps, rejection safeguards and complete training manifests.
+- Weighted confidence calibration with a 75-game half-life, 30-game minimum, shrinkage toward a = 10, a 10% daily cap, rejection safeguards and complete training manifests. From v1.24 its history starts with the season's replayed games and locks use the first-stage calibration.
 - An atomic, hash-verified transaction ledger; CSV and public JSON are derived exports.
 
-Version 1.19 started without historical seeding. For v1.20, the first-stage team correction is explicitly initialized from 117 audited current-season legacy first snapshots, stored with a pinned hash in `data/calibration_seeds`. They are training history, never native forward results. New-version confidence calibration starts at defaults. Until v1.23, lock-stage corrections also started at zero; from v1.23 locks use the first-stage team fit. Historical reference claims are not imported as forward performance. No actual wagers are executed.
+Version 1.19 started without historical seeding. For v1.20, the first-stage team correction is explicitly initialized from 117 audited current-season legacy first snapshots, stored with a pinned hash in `data/calibration_seeds`. From 17 November 2026 (owner update) it also includes the games missed in the 14–17 November capture outage, from nba-matchups' archived early-day snapshots, in a second pinned file; they are training and replay history only. They are training history, never native forward results. New-version confidence calibration starts at defaults. Until v1.23, lock-stage corrections also started at zero; from v1.23 locks use the first-stage team fit. Historical reference claims are not imported as forward performance. No actual wagers are executed.
 
 ## Local setup
 
