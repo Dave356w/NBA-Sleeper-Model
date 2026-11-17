@@ -362,3 +362,35 @@ def test_v1_23_ungraded_game_stops_blocking_after_a_day(config):
     # A retired instance never blocks.
     retired = records + [{"id": "retired:g2", "kind": "retired", "instance_id": "g2"}]
     assert not matchup.slate_pending(retired, "first", 2026, "2026-10-22T03:00:00+00:00")
+
+
+def test_outage_backfill_is_pinned_prospective_and_replayed(root, config):
+    """Owner update, 17 November 2026: missed-capture games from archived early-day snapshots."""
+    from sleeper_nba import season
+
+    entry = config["matchup"]["backfill_files"][0]
+    path = root / entry["file"]
+    data = json.loads(path.read_text())
+    legacy = seed(root, config)
+    assert data["provenance"] == "gap-backfill-first" and data["observations"]
+    assert not {o["game_id"] for o in data["observations"]} & {o["game_id"] for o in legacy["observations"]}
+    assert all(dt(o["snapshot_utc"]) < dt(o["tip_utc"]) for o in data["observations"])
+    # Never visible to a fit before the backfill existed.
+    assert len(matchup.seed_observations(root, config, "first", 2026, iso(after_seed(root, config)))) == 117
+    at = iso(
+        max(dt(data["created_at"]), *(dt(o["verified_at"]) for o in data["observations"]))
+        + timedelta(minutes=1)
+    )
+    observations = matchup.seed_observations(root, config, "first", 2026, at)
+    assert len(observations) == 117 + len(data["observations"])
+    fitted = matchup.fit(observations, config["matchup"], at)
+    assert fitted["backfill_count"] == len(data["observations"]) and fitted["seed_count"] == 117
+    # Replay scores them like legacy seed games; nothing reaches the ledger.
+    replayed = season.replay_observations([], root, config, 2026)
+    backfilled = [o for o in replayed if o["provenance"] == "gap-backfill-first"]
+    assert len(backfilled) == len(data["observations"])
+    assert all(o["segment"] == "replay_legacy" for o in backfilled)
+    data["observations"][0]["actual_home_score"] += 1
+    path.write_text(json.dumps(data))
+    with pytest.raises(ValueError, match="integrity"):
+        matchup.seed_observations(root, config, "first", 2026, at)

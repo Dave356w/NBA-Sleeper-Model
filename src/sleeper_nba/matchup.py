@@ -64,20 +64,34 @@ def calendar_weights(observations, cutoff, half_life_days):
     return 2.0 ** (-ages / half_life_days)
 
 
+def _pinned(root, file, sha256, label):
+    path = Path(root) / file
+    if not path.exists():
+        raise ValueError(f"Configured matchup {label} file is missing")
+    seed = json.loads(path.read_text())
+    body = {k: v for k, v in seed.items() if k != "sha256"}
+    if digest(body) != seed["sha256"] or seed["sha256"] != sha256:
+        raise ValueError(f"Residual-defense {label} integrity failure")
+    return seed
+
+
+def backfill_files(root, config):
+    """Owner-authorized outage backfills (17 November 2026), each hash-pinned in config."""
+    return [
+        _pinned(root, entry["file"], entry["sha256"], "backfill")
+        for entry in config.get("matchup", {}).get("backfill_files", [])
+    ]
+
+
 def seed_observations(root, config, stage, season, cutoff):
     if stage != "first" or not config.get("matchup", {}).get("seed_file"):
         return []
-    path = Path(root) / config["matchup"]["seed_file"]
-    if not path.exists():
-        raise ValueError("Configured matchup seed file is missing")
-    seed = json.loads(path.read_text())
-    body = {k: v for k, v in seed.items() if k != "sha256"}
-    if digest(body) != seed["sha256"] or seed["sha256"] != config["matchup"]["seed_sha256"]:
-        raise ValueError("Residual-defense seed integrity failure")
-    if dt(seed["created_at"]) > dt(cutoff):
-        return []
+    seeds = [_pinned(root, config["matchup"]["seed_file"], config["matchup"]["seed_sha256"], "seed")]
+    seeds += backfill_files(root, config)
     return [
         o
+        for seed in seeds
+        if dt(seed["created_at"]) <= dt(cutoff)
         for o in seed["observations"]
         if o["stage"] == stage and o["season"] == season and dt(o["verified_at"]) <= dt(cutoff)
     ]
@@ -187,6 +201,7 @@ def fit(observations, settings, cutoff):
         "params": params,
         "training_count": len(observations),
         "seed_count": sum(o["provenance"] == "legacy-first" for o in observations),
+        "backfill_count": sum(o["provenance"] == "gap-backfill-first" for o in observations),
         "native_count": sum(o["provenance"] == "native" for o in observations),
         "team_counts": team_counts,
         "weight_sum": float(w.sum()),

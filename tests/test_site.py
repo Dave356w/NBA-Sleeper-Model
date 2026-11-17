@@ -8,6 +8,7 @@ import shutil
 from pathlib import Path
 
 import pytest
+import yaml
 from test_pipeline import AT, FixtureHTTP
 
 from sleeper_nba.common import dt
@@ -78,7 +79,18 @@ def copy_quotes(root):
     return target
 
 
+def legacy_only(root, config=None):
+    """These tests pin the 117-game legacy seed; the outage backfill has its own tests."""
+    path = root / "config.yaml"
+    data = yaml.safe_load(path.read_text())
+    data["matchup"].pop("backfill_files", None)
+    path.write_text(yaml.safe_dump(data, sort_keys=False))
+    if config is not None:
+        config["matchup"].pop("backfill_files", None)
+
+
 def test_season_record_pools_replay_without_entering_live_metrics_or_ledger(root):
+    legacy_only(root)
     copy_quotes(root)
     before = Ledger(root).records()
     build_site(root)
@@ -108,6 +120,7 @@ def test_season_record_pools_replay_without_entering_live_metrics_or_ledger(root
 
 
 def test_season_record_works_without_retained_quotes_and_rejects_altered_ones(root):
+    legacy_only(root)
     build_site(root)
     legacy = json.loads((root / "site" / "data.json").read_text())["season"]["segments"][0]
     assert legacy["n"] == 117 and legacy["betting"]["directional"]["n"] == 0
@@ -123,6 +136,7 @@ def test_season_record_works_without_retained_quotes_and_rejects_altered_ones(ro
 def test_season_record_replays_earlier_versions_and_adds_live_games_once(root, rows, config):
     from sleeper_nba.season import replay_rows, season_record
 
+    legacy_only(root, config)
     older = {
         **config,
         "methodology": "sleeper_only_v1_21",
@@ -256,6 +270,7 @@ def test_lock_coverage_ignores_windows_closed_before_first_observation(root, row
 def test_season_record_review_fixes_season_scope_quote_timing_and_result_revisions(root, rows, config):
     from sleeper_nba.season import _forecast_markets, _scores_at, live_rows, replay_observations, replay_rows
 
+    legacy_only(root, config)
     http = FixtureHTTP(rows)
     capture(root, config, http=http, now=dt(AT))
     http.final = True
@@ -362,3 +377,17 @@ def test_page_script_defines_every_renderer_it_dispatches_to():
         assert f"function {name}(" in script, name
     for helper in ["card", "teamBlock", "pickSummary", "gameDetails", "seasonStats", "rowRecord"]:
         assert f"function {helper}(" in script, helper
+
+
+def test_outage_backfill_joins_the_replayed_season_record(root):
+    """Owner update, 17 November 2026: backfilled games appear once, as archived first snapshots."""
+    copy_quotes(root)
+    before = Ledger(root).records()
+    build_site(root)
+    data = json.loads((root / "site" / "data.json").read_text())
+    legacy = data["season"]["segments"][0]
+    backfill = json.loads((root / "data/calibration_seeds/gap_backfill_2026-11-17.json").read_text())
+    assert legacy["n"] == 117 + len(backfill["observations"])
+    assert legacy["end_date"] == "2026-11-16"
+    assert data["forecasts"] == [] and data["grades"] == {}
+    assert Ledger(root).records() == before
