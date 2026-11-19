@@ -1,5 +1,5 @@
 {
-  "code_commit": "c651d2845aea1bb30de0fa67870f8f54753c6417",
+  "code_commit": "962b9646a2394c5e2331f2904284c60a47b3c9b4",
   "config": {
     "ats_bias_bounds": [
       -15.0,
@@ -19,9 +19,13 @@
         "lock": "first"
       }
     },
+    "closing_backfill": {
+      "file": "data/market_backfill/espn_draftkings_close_2026-27.json",
+      "sha256": "e84d7160d677f113a34131cb83772e56daf66e7092f038bbd539b413398f7ee9"
+    },
     "daily_bias_movement": 1.0,
     "daily_scale_movement": 0.1,
-    "first_policy": "game_day_et_v1",
+    "first_policy": "game_day_priced_et_v1",
     "half_life": 75,
     "learn_scalar_biases": false,
     "lock_hours": 5,
@@ -54,7 +58,7 @@
       },
       "venue_prior": 100.0
     },
-    "methodology": "sleeper_only_v1_26",
+    "methodology": "sleeper_only_v1_27",
     "minimum_games": 30,
     "price_bounds": [
       -135,
@@ -63,6 +67,9 @@
     "prior_strength": 100,
     "selection_markets": [
       "moneyline"
+    ],
+    "selection_series": [
+      "directional"
     ],
     "sleeper_company": "rotowire",
     "team_minutes_bounds": [
@@ -86,8 +93,8 @@
     ],
     "wp_initial": 10.0
   },
-  "config_hash": "20041cef7aae0e223fe8ded965928a8f05dd6c1dc2a84ecf93d302e0e041e877",
-  "created_at": "2026-11-19T17:39:22.781260+00:00",
+  "config_hash": "e20a6ad19a7efd5a94a1b1be6edea2aabfea304f6586b48ad178d80bb4458aec",
+  "created_at": "2026-11-19T18:09:56.417825+00:00",
   "diagnostics": {
     "alpha": 0.6164633583740051,
     "ats_bias_target": 0.0,
@@ -102,7 +109,7 @@
     "wp_objective": 56.96047721161521,
     "wp_target": 11.254488936222367
   },
-  "id": "calibration:e3bf7149e319d691974702e0a040134cbe50257154a08e8a97ee8548449afc77",
+  "id": "calibration:2ef2c4d4604eaabf8ad8d2556b1289459851a42c19c94f9de3553b8c31419dca",
   "kind": "calibration",
   "manifest": [
     {
@@ -2591,7 +2598,7 @@
     }
   ],
   "manifest_hash": "9d3ef3d1b40fe5ef4c1628a262abfaef9dd772f5eea555da21fb44cf8332dc09",
-  "methodology": "sleeper_only_v1_26",
+  "methodology": "sleeper_only_v1_27",
   "n_eff": 160.73128130874866,
   "params": {
     "ats_bias": 0.0,
@@ -2613,5 +2620,5 @@
     "wp": "accepted"
   },
   "training_count": 207,
-  "training_cutoff": "2026-11-19T17:39:22.781260+00:00"
+  "training_cutoff": "2026-11-19T18:09:56.417825+00:00"
 }
