@@ -1,4 +1,4 @@
-methodology: sleeper_only_v1_29
+methodology: sleeper_only_v1_30
 sleeper_company: rotowire
 wp_initial: 10.0
 ats_bias_initial: 0.0
@@ -28,6 +28,10 @@ first_policy: game_day_priced_et_v1
 closing_backfill:
   file: data/market_backfill/espn_draftkings_close_2026-27.json
   sha256: e84d7160d677f113a34131cb83772e56daf66e7092f038bbd539b413398f7ee9
+# v1.30 (owner update, 19 November 2026): the season replay (public record and confidence
+# history) uses only snapshots captured on the game's Eastern date. A game-day native lock stands
+# in for an earlier-day first snapshot; a game with no game-day capture is excluded and listed.
+replay_snapshot: game_day_et_v1
 lock_hours: 5
 lock_tolerance_minutes: 15
 market_max_age_minutes: 15

@@ -27,6 +27,8 @@ from .markets import expected_value, freshness, no_vig, payout, valid_odds
 from .models import DEFAULTS, fit_parameters
 
 QUOTES_FILE = "research/inputs/v1_20_market_quotes_2026-11-09.json"
+# v1.30 (owner update, 19 November 2026): replay only snapshots captured on the game's Eastern date.
+GAME_DAY_REPLAY = "game_day_et_v1"
 SEGMENTS = [
     ("replay_legacy", "Replay · archived first snapshots"),
     ("replay_native", "Replay · earlier-version captures"),
@@ -39,6 +41,7 @@ PUBLIC_ROW_FIELDS = (
     "home",
     "away",
     "segment",
+    "snapshot_stage",
     "margin",
     "wp_home",
     "actual_home_score",
@@ -149,9 +152,26 @@ def _method(record):
     return record.get("methodology", record.get("config", {}).get("methodology", "sleeper_only_v1_19"))
 
 
+def _on_game_day(snapshot_utc, tip_utc):
+    """Captured on the game's Eastern calendar date."""
+    return dt(snapshot_utc).astimezone(ET).date() == dt(tip_utc).astimezone(ET).date()
+
+
 def replay_observations(records, root, config, season):
-    """Seed games plus resolved earlier-version native first snapshots, one per game."""
-    observations = {}
+    """Seed games plus resolved earlier-version native snapshots, one per game."""
+    return _replay(records, root, config, season)[0]
+
+
+def _replay(records, root, config, season):
+    """Replay observations and, under `replay_snapshot: game_day_et_v1`, the games it excludes.
+
+    Without the key (through v1.29) a game replays its latest earlier-version native first
+    snapshot, whenever it was captured. From v1.30 every replayed snapshot must be captured
+    on the game's Eastern date: a game-day native first snapshot is preferred, then a
+    game-day native lock; a game with neither keeps a game-day seed or backfill snapshot if
+    it has one and is otherwise excluded from the replay and listed with the reason.
+    """
+    observations, game_day = {}, config.get("replay_snapshot") == GAME_DAY_REPLAY
     seed_file = config.get("matchup", {}).get("seed_file")
     if seed_file and (Path(root) / seed_file).exists():
         seed = json.loads((Path(root) / seed_file).read_text())
@@ -162,6 +182,8 @@ def replay_observations(records, root, config, season):
         for o in seed["observations"]:
             if o["stage"] != "first" or o["season"] != season:
                 continue
+            if game_day and not _on_game_day(o["snapshot_utc"], o["tip_utc"]):
+                continue
             day = dt(o["tip_utc"]).astimezone(ET).date() + timedelta(days=1)
             observations[o["game_id"]] = {
                 **{k: o[k] for k in ["game_id", "home", "away", "tip_utc", "snapshot_utc"]},
@@ -171,6 +193,7 @@ def replay_observations(records, root, config, season):
                 "actual_away_score": o["actual_away_score"],
                 "available_at": iso(datetime.combine(day, time(12), UTC)),
                 "segment": "replay_legacy",
+                "snapshot_stage": "first",
                 "provenance": "legacy-first",
                 "markets": _seed_markets(quotes.get(o["game_id"]), o, config),
             }
@@ -179,6 +202,8 @@ def replay_observations(records, root, config, season):
         for backfill in matchup.backfill_files(root, config):
             for o in backfill["observations"]:
                 if o["stage"] != "first" or o["season"] != season or o["game_id"] in observations:
+                    continue
+                if game_day and not _on_game_day(o["snapshot_utc"], o["tip_utc"]):
                     continue
                 day = dt(o["tip_utc"]).astimezone(ET).date() + timedelta(days=1)
                 observations[o["game_id"]] = {
@@ -189,6 +214,7 @@ def replay_observations(records, root, config, season):
                     "actual_away_score": o["actual_away_score"],
                     "available_at": iso(datetime.combine(day, time(12), UTC)),
                     "segment": "replay_legacy",
+                    "snapshot_stage": "first",
                     "provenance": o["provenance"],
                     "markets": _seed_markets(o.get("quotes"), o, config),
                 }
@@ -196,11 +222,14 @@ def replay_observations(records, root, config, season):
     results, revisions = _latest_results(records), _result_revisions(records)
     # A game forecast under several earlier tags replays its latest earlier-version first
     # snapshot. Ledger order follows transaction hashes, so the order is fixed explicitly.
-    natives = sorted(
+    # From v1.30 only game-day snapshots qualify, and a game-day lock stands in for a
+    # first snapshot captured on an earlier day.
+    stages = ("first", "lock") if game_day else ("first",)
+    chosen, skipped = {}, {}
+    for f in sorted(
         (r for r in records if r["kind"] == "forecast"), key=lambda r: (dt(r["captured_at"]), r["id"])
-    )
-    for f in natives:
-        if f["stage"] != "first" or f.get("provenance") != "native":
+    ):
+        if f["stage"] not in stages or f.get("provenance") != "native":
             continue
         if _method(f) == config["methodology"] or f["instance_id"] in retired:
             continue
@@ -209,8 +238,17 @@ def replay_observations(records, root, config, season):
             continue
         if result["home_score"] == result["away_score"]:
             continue
-        observations[game["game_id"]] = {
-            "game_id": game["game_id"],
+        if game_day and not _on_game_day(f["captured_at"], game["tip_utc"]):
+            skipped[game["game_id"]] = f
+            continue
+        held = chosen.get(game["game_id"])
+        if held is None or held["stage"] == f["stage"] or f["stage"] == "first":
+            chosen[game["game_id"]] = f  # Latest of the preferred stage.
+    for game_id, f in chosen.items():
+        game = f["game"]
+        result = results[f["instance_id"]]
+        observations[game_id] = {
+            "game_id": game_id,
             "home": game["home"],
             "away": game["away"],
             "tip_utc": game["tip_utc"],
@@ -225,10 +263,24 @@ def replay_observations(records, root, config, season):
                 (r["verified_at"], r["home_score"], r["away_score"]) for r in revisions[f["instance_id"]]
             ],
             "segment": "replay_native",
+            "snapshot_stage": f["stage"],
             "provenance": "native",
             "markets": _forecast_markets(f, "fixed"),
         }
-    return sorted(observations.values(), key=lambda o: (dt(o["snapshot_utc"]), o["game_id"]))
+    excluded = [
+        {
+            "game_id": game_id,
+            "tip_utc": f["game"]["tip_utc"],
+            "home": f["game"]["home"],
+            "away": f["game"]["away"],
+            "snapshot_utc": f["captured_at"],
+            "reason": "no_game_day_capture",
+        }
+        for game_id, f in skipped.items()
+        if game_id not in observations
+    ]
+    ordered = sorted(observations.values(), key=lambda o: (dt(o["snapshot_utc"]), o["game_id"]))
+    return ordered, sorted(excluded, key=lambda e: (dt(e["tip_utc"]), e["game_id"]))
 
 
 def replay_rows(observations, config):
@@ -280,6 +332,7 @@ def replay_rows(observations, config):
                 "away": o["away"],
                 "tip_utc": o["tip_utc"],
                 "segment": o["segment"],
+                "snapshot_stage": o.get("snapshot_stage", "first"),
                 "slate_date": dt(o["tip_utc"]).astimezone(ET).date().isoformat(),
                 "available_at": o["available_at"],
                 "margin": scoring["margin"],
@@ -355,6 +408,7 @@ def live_rows(records, config, season=None):
                 "actual_home_score": result["home_score"],
                 "actual_away_score": result["away_score"],
                 "segment": "live",
+                "snapshot_stage": "first",
                 "slate_date": f["game"]["slate_date"],
                 "available_at": result["verified_at"],
                 "margin": scoring["margin"],
@@ -560,7 +614,8 @@ def season_record(records, root, config):
     season = max(seasons, default=config.get("matchup", {}).get("seed_season"))
     if season is None or not matchup.enabled(config):
         return None
-    rows = replay_rows(replay_observations(records, root, config, season), config)
+    observations, excluded = _replay(records, root, config, season)
+    rows = replay_rows(observations, config)
     live = live_rows(records, config, season)
     seen = {r["game_id"] for r in live}
     rows = [r for r in rows if r["game_id"] not in seen] + live
@@ -580,6 +635,10 @@ def season_record(records, root, config):
             {"key": key, "label": label, **metrics([r for r in rows if r["segment"] == key], config)}
             for key, label in SEGMENTS
         ],
+        # v1.30: replayed snapshots are captured on the game's Eastern date; a game-day lock
+        # stands in for an earlier-day first snapshot, and games with neither are listed here.
+        "replay_snapshot": config.get("replay_snapshot"),
+        "replay_excluded": [e for e in excluded if e["game_id"] not in seen],
         "replay_clock": "Seed results usable at 12 UTC on the day after the Eastern tip date (assumed); "
         "earlier-version captures use their recorded verification times.",
         # v1.27: where a frozen snapshot had no price, the moneyline is the DraftKings close.
