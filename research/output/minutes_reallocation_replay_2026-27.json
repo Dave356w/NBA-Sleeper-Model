@@ -1,0 +1,362 @@
+{
+  "question": "Scaling Sleeper team projections to a full game's minutes (research only, owner request 19 November 2026).",
+  "methodology": "sleeper_only_v1_31",
+  "cap_minutes": 38.0,
+  "sleeper_csv_sha256": "79bcf48f63d9f51544d7b3551f9385abbd5f66e94ef850229f7070daa99176ff",
+  "scored_games": 185,
+  "variants": {
+    "to_240": {
+      "dropped_statuses": [],
+      "team_minutes_target": 240.0,
+      "removed_minutes": 59.0,
+      "team_games_changed": 9,
+      "games_changed": 9,
+      "freed_minutes": 39.0,
+      "unplaced_minutes": 0.0,
+      "players_hitting_cap": 0,
+      "raw_team_points_mae": {
+        "baseline": 9.57637837837838,
+        "variant": 9.57736739481623
+      },
+      "all_scored": {
+        "games": 185,
+        "slates": 25,
+        "abs_error": {
+          "baseline": 11.568216599509366,
+          "variant": 11.546479725384927,
+          "difference": -0.021736874124436353,
+          "ci95_slate_bootstrap": [
+            -0.15109504698713416,
+            0.10385449101799185
+          ]
+        },
+        "total_abs_error": {
+          "baseline": 14.383985856869979,
+          "variant": 14.508459760596786,
+          "difference": 0.1244739037268057,
+          "ci95_slate_bootstrap": [
+            -0.07556569869113426,
+            0.40769940598502047
+          ]
+        },
+        "correct": {
+          "baseline": 0.6918918918918919,
+          "variant": 0.6972972972972973,
+          "difference": 0.005405405405405406,
+          "ci95_slate_bootstrap": [
+            -0.0111731843575419,
+            0.024844720496894408
+          ]
+        },
+        "log_loss": {
+          "baseline": 0.60806691177571,
+          "variant": 0.6059833859194156,
+          "difference": -0.0020835258562943958,
+          "ci95_slate_bootstrap": [
+            -0.012073967443407264,
+            0.007912241273044672
+          ]
+        },
+        "log_loss_a10": {
+          "baseline": 0.6060781010878699,
+          "variant": 0.6030100696365632,
+          "difference": -0.0030680314513066033,
+          "ci95_slate_bootstrap": [
+            -0.012366289818029435,
+            0.005959160223333575
+          ]
+        }
+      },
+      "changed_games": {
+        "games": 9,
+        "slates": 7,
+        "abs_error": {
+          "baseline": 11.12950375790249,
+          "variant": 10.611890998586116,
+          "difference": -0.5176127593163736,
+          "ci95_slate_bootstrap": [
+            -3.850861138887999,
+            1.705693464251412
+          ]
+        },
+        "total_abs_error": {
+          "baseline": 12.270353550640458,
+          "variant": 14.78237667385453,
+          "difference": 2.512023123214072,
+          "ci95_slate_bootstrap": [
+            -2.046624339203999,
+            5.580791099795032
+          ]
+        },
+        "correct": {
+          "baseline": 0.5555555555555556,
+          "variant": 0.6666666666666666,
+          "difference": 0.1111111111111111,
+          "ci95_slate_bootstrap": [
+            -0.2857142857142857,
+            0.5714285714285714
+          ]
+        },
+        "log_loss": {
+          "baseline": 0.7084257277654565,
+          "variant": 0.6666198862126032,
+          "difference": -0.041805841552853544,
+          "ci95_slate_bootstrap": [
+            -0.2966217278789167,
+            0.12904686728607878
+          ]
+        },
+        "log_loss_a10": {
+          "baseline": 0.6954195903127376,
+          "variant": 0.6451252388185716,
+          "difference": -0.05029435149416593,
+          "ci95_slate_bootstrap": [
+            -0.2926313994409142,
+            0.11090089907701452
+          ]
+        }
+      }
+    },
+    "out": {
+      "dropped_statuses": [
+        "ir",
+        "out",
+        "sus",
+        "suspended"
+      ],
+      "team_minutes_target": null,
+      "removed_minutes": 0.0,
+      "team_games_changed": 17,
+      "games_changed": 16,
+      "freed_minutes": 414.0,
+      "unplaced_minutes": 0.0,
+      "players_hitting_cap": 14,
+      "raw_team_points_mae": {
+        "baseline": 9.57637837837838,
+        "variant": 9.583715820213062
+      },
+      "all_scored": {
+        "games": 185,
+        "slates": 25,
+        "abs_error": {
+          "baseline": 11.568216599509366,
+          "variant": 11.554809808575019,
+          "difference": -0.013406790934346812,
+          "ci95_slate_bootstrap": [
+            -0.10691821563884207,
+            0.07951924386511004
+          ]
+        },
+        "total_abs_error": {
+          "baseline": 14.383985856869979,
+          "variant": 14.453699233471475,
+          "difference": 0.06971337660149472,
+          "ci95_slate_bootstrap": [
+            -0.024446294562116125,
+            0.177662543936897
+          ]
+        },
+        "correct": {
+          "baseline": 0.6918918918918919,
+          "variant": 0.6864864864864865,
+          "difference": -0.005405405405405406,
+          "ci95_slate_bootstrap": [
+            -0.018404907975460124,
+            0.0
+          ]
+        },
+        "log_loss": {
+          "baseline": 0.60806691177571,
+          "variant": 0.6117583972696333,
+          "difference": 0.0036914854939233905,
+          "ci95_slate_bootstrap": [
+            -0.002856460690249251,
+            0.011622527380036687
+          ]
+        },
+        "log_loss_a10": {
+          "baseline": 0.6060781010878699,
+          "variant": 0.609593745729644,
+          "difference": 0.003515644641774043,
+          "ci95_slate_bootstrap": [
+            -0.00271838704708785,
+            0.011044232955347908
+          ]
+        }
+      },
+      "changed_games": {
+        "games": 16,
+        "slates": 9,
+        "abs_error": {
+          "baseline": 11.70534649191313,
+          "variant": 11.572754658120003,
+          "difference": -0.13259183379312756,
+          "ci95_slate_bootstrap": [
+            -1.3040717965203608,
+            0.9774430724100309
+          ]
+        },
+        "total_abs_error": {
+          "baseline": 14.503273259601627,
+          "variant": 15.349894059178043,
+          "difference": 0.8466207995764155,
+          "ci95_slate_bootstrap": [
+            -0.2600692580584467,
+            1.7869216944192448
+          ]
+        },
+        "correct": {
+          "baseline": 0.8125,
+          "variant": 0.75,
+          "difference": -0.0625,
+          "ci95_slate_bootstrap": [
+            -0.25,
+            0.0
+          ]
+        },
+        "log_loss": {
+          "baseline": 0.49178861330173135,
+          "variant": 0.541676805112873,
+          "difference": 0.04988819181114165,
+          "ci95_slate_bootstrap": [
+            -0.025651505175124604,
+            0.12644370681110448
+          ]
+        },
+        "log_loss_a10": {
+          "baseline": 0.5026010747147718,
+          "variant": 0.5459294630773958,
+          "difference": 0.04332838836262394,
+          "ci95_slate_bootstrap": [
+            -0.028749147596768873,
+            0.11324753870670716
+          ]
+        }
+      }
+    },
+    "out_dtd": {
+      "dropped_statuses": [
+        "dtd",
+        "gtd",
+        "ir",
+        "out",
+        "sus",
+        "suspended"
+      ],
+      "team_minutes_target": null,
+      "removed_minutes": 0.0,
+      "team_games_changed": 180,
+      "games_changed": 134,
+      "freed_minutes": 5761.0,
+      "unplaced_minutes": 36.0,
+      "players_hitting_cap": 246,
+      "raw_team_points_mae": {
+        "baseline": 9.57637837837838,
+        "variant": 9.772117912538354
+      },
+      "all_scored": {
+        "games": 185,
+        "slates": 25,
+        "abs_error": {
+          "baseline": 11.568216599509366,
+          "variant": 12.448482300835051,
+          "difference": 0.8802657013256877,
+          "ci95_slate_bootstrap": [
+            0.3810767815007332,
+            1.5200266140845387
+          ]
+        },
+        "total_abs_error": {
+          "baseline": 14.383985856869979,
+          "variant": 14.365129534859644,
+          "difference": -0.018856322010335772,
+          "ci95_slate_bootstrap": [
+            -0.5260397250758048,
+            0.5839407874415249
+          ]
+        },
+        "correct": {
+          "baseline": 0.6918918918918919,
+          "variant": 0.6378378378378379,
+          "difference": -0.05405405405405406,
+          "ci95_slate_bootstrap": [
+            -0.1066685393258427,
+            -0.006060606060606061
+          ]
+        },
+        "log_loss": {
+          "baseline": 0.60806691177571,
+          "variant": 0.6816343614699008,
+          "difference": 0.07356744969419084,
+          "ci95_slate_bootstrap": [
+            0.015363863928368434,
+            0.16080812211621293
+          ]
+        },
+        "log_loss_a10": {
+          "baseline": 0.6060781010878699,
+          "variant": 0.6953383997684924,
+          "difference": 0.08926029868062238,
+          "ci95_slate_bootstrap": [
+            0.021291926722559792,
+            0.19631206499291506
+          ]
+        }
+      },
+      "changed_games": {
+        "games": 134,
+        "slates": 25,
+        "abs_error": {
+          "baseline": 11.31262985694366,
+          "variant": 12.522081568975178,
+          "difference": 1.2094517120315185,
+          "ci95_slate_bootstrap": [
+            0.5475735119933455,
+            2.0233408882682005
+          ]
+        },
+        "total_abs_error": {
+          "baseline": 14.21204805742574,
+          "variant": 14.219606202771452,
+          "difference": 0.0075581453457131366,
+          "ci95_slate_bootstrap": [
+            -0.7145609532230741,
+            0.841371675187669
+          ]
+        },
+        "correct": {
+          "baseline": 0.6791044776119403,
+          "variant": 0.6044776119402985,
+          "difference": -0.07462686567164178,
+          "ci95_slate_bootstrap": [
+            -0.14199735449735448,
+            -0.009088861588861618
+          ]
+        },
+        "log_loss": {
+          "baseline": 0.6184753102020528,
+          "variant": 0.7231922469273601,
+          "difference": 0.10471693672530734,
+          "ci95_slate_bootstrap": [
+            0.027797415460790703,
+            0.21891757180326216
+          ]
+        },
+        "log_loss_a10": {
+          "baseline": 0.6171348873860608,
+          "variant": 0.7393061290495541,
+          "difference": 0.12217124166349327,
+          "ci95_slate_bootstrap": [
+            0.02963852914966992,
+            0.2633062458144002
+          ]
+        }
+      }
+    }
+  },
+  "notes": [
+    "Differences are variant minus baseline: negative abs_error, total_abs_error or log_loss means the reallocation forecast better; positive correct means more winners.",
+    "log_loss uses the walk-forward calibrated scale; log_loss_a10 holds a = 10 fixed.",
+    "Retrospective analysis on previously inspected data. The owner set to_240 and the 38-minute cap; out and out_dtd were an earlier reading of the request, kept for context. No threshold was searched."
+  ]
+}
