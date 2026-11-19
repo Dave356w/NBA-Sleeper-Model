@@ -53,6 +53,8 @@ Fits recorded under `latest` (v1.28–v1.30) or without the key keep their histo
 
 On the 61 changed games alone the differences were +0.06 points, one more winner and +0.0043. Leaving the games out has no measurable accuracy cost: the margin and probability estimates lean very slightly towards dropping them, and the winner count leans towards keeping them, all well inside the noise. The analysis is retrospective on previously inspected data, and no threshold was searched.
 
+**Implementation fix, 19 November (package 1.31.1; no methodology change, tag unchanged).** §11 retires an instance when its schedule is revised: a date change, a postponement or cancellation, or a cumulative tip shift over 15 minutes. It also says normal start delays without a revised schedule keep the instance. The code applied the tip and date test at any status, so a start time ESPN rewrote after a game had started or finished would have retired a played game and voided its grades. A tip or date shift now retires the instance only while the game is still scheduled (`status: pre`). After the start, the instance and its result are kept, and the change is recorded once per reported tip and status as a `tip_revision_after_start` quality event. Postponements and cancellations still retire at any status. Nothing in the ledger was affected: no instance has been retired this season, and across 112 games and 360 schedule revisions ESPN has not moved a tip time.
+
 ## v1.30 methodology — game-day snapshots in the season replay (still current)
 
 Owner update, 19 November 2026. One change; everything else is unchanged from v1.29. New forecasts are tagged `sleeper_only_v1_30`; frozen records of every earlier version, and their grades, fits and calibrations, are never rewritten.
