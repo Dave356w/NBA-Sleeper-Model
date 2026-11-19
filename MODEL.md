@@ -42,7 +42,16 @@ Fits recorded under `latest` (v1.28–v1.30) or without the key keep their histo
 
 **Why.** It is consistent with v1.26 (first snapshots on game day) and v1.30 (replay on game day). Live forecasts and the public record now use team terms fitted from the same games.
 
-**Effect.** On the ledger at 22:00 UTC on 19 November the fit goes from 207 to 185 games: 117 seed, 8 backfill, 28 game-day native first snapshots and 32 game-day locks, matching the replay. The 22 games of 8, 9 and 15 November with no game-day capture drop out. The global term moves from −0.91 to −0.83 and venue from 0.00 to −0.07. Team terms move by 0.28 points on average, the largest being LAL offense (−1.09), WAS defense (−0.81) and SAS defense (+0.77). On that night's four games the adjusted margin moved by 0.1–0.5 points. Whether dropping the 22 day-before games helps or hurts accuracy has not been measured; this is a consistency change, not a demonstrated gain.
+**Effect.** On the ledger at 22:00 UTC on 19 November the fit goes from 207 to 185 games: 117 seed, 8 backfill, 28 game-day native first snapshots and 32 game-day locks, matching the replay. The 22 games of 8, 9 and 15 November with no game-day capture drop out. The global term moves from −0.91 to −0.83 and venue from 0.00 to −0.07. Team terms move by 0.28 points on average, the largest being LAL offense (−1.09), WAS defense (−0.81) and SAS defense (+0.77). On that night's four games the adjusted margin moved by 0.1–0.5 points. This is a consistency change, not a demonstrated gain.
+
+**Review of the dropped games (owner request, 19 November; `research/team_fit_exclusion_replay.py`).** The season was replayed walk-forward twice on the same 185 game-day games, with the team fit trained either on those games only or also on the 22 day-before snapshots. Everything else followed the replay, and the extra games trained the fit only. Adding them changed 61 forecasts. Paired differences (with the 22 minus without, 95% slate-bootstrap intervals over 25 slates):
+
+- margin error: +0.02 points (−0.04 to +0.09);
+- winners: +0.5 points, one more game correct (0 to +1.9);
+- log loss: +0.0014 (−0.004 to +0.006);
+- log loss with the scale held at 10: +0.0015 (−0.003 to +0.006).
+
+On the 61 changed games alone the differences were +0.06 points, one more winner and +0.0043. Leaving the games out has no measurable accuracy cost: the margin and probability estimates lean very slightly towards dropping them, and the winner count leans towards keeping them, all well inside the noise. The analysis is retrospective on previously inspected data, and no threshold was searched.
 
 ## v1.30 methodology — game-day snapshots in the season replay (still current)
 

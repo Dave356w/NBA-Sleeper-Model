@@ -1,0 +1,116 @@
+{
+  "question": "Does leaving the day-before-only games out of the team fit cost accuracy?",
+  "methodology": "sleeper_only_v1_31",
+  "scored_games": 185,
+  "extra_training_games": [
+    "401909945",
+    "401909946",
+    "401909947",
+    "401909948",
+    "401909949",
+    "401909950",
+    "401909951",
+    "401909952",
+    "401909953",
+    "401909954",
+    "401909955",
+    "401909957",
+    "401909958",
+    "401909985",
+    "401909986",
+    "401909987",
+    "401909988",
+    "401909989",
+    "401909990",
+    "401909991",
+    "401909992",
+    "401909993"
+  ],
+  "extra_first_usable": "2026-11-09T02:00:06.179320+00:00",
+  "games_whose_forecast_changed": 61,
+  "all_scored": {
+    "games": 185,
+    "slates": 25,
+    "abs_error": {
+      "game_day": 11.568216599509366,
+      "with_22": 11.588194541521101,
+      "difference": 0.019977942011737807,
+      "ci95_slate_bootstrap": [
+        -0.03992136781874725,
+        0.08723618765442279
+      ]
+    },
+    "correct": {
+      "game_day": 0.6918918918918919,
+      "with_22": 0.6972972972972973,
+      "difference": 0.005405405405405406,
+      "ci95_slate_bootstrap": [
+        0.0,
+        0.018691588785046728
+      ]
+    },
+    "log_loss": {
+      "game_day": 0.60806691177571,
+      "with_22": 0.609496967058028,
+      "difference": 0.0014300552823179693,
+      "ci95_slate_bootstrap": [
+        -0.003846572316682954,
+        0.005896904693877875
+      ]
+    },
+    "log_loss_a10": {
+      "game_day": 0.6060781010878699,
+      "with_22": 0.607590128292749,
+      "difference": 0.001512027204879106,
+      "ci95_slate_bootstrap": [
+        -0.002858960442616761,
+        0.0055300414319945064
+      ]
+    }
+  },
+  "after_first_extra_usable": {
+    "games": 61,
+    "slates": 9,
+    "abs_error": {
+      "game_day": 13.355007654664124,
+      "with_22": 13.415596495191526,
+      "difference": 0.060588840527401544,
+      "ci95_slate_bootstrap": [
+        -0.12397859567658615,
+        0.2421375345950567
+      ]
+    },
+    "correct": {
+      "game_day": 0.639344262295082,
+      "with_22": 0.6557377049180327,
+      "difference": 0.01639344262295082,
+      "ci95_slate_bootstrap": [
+        0.0,
+        0.057692307692307696
+      ]
+    },
+    "log_loss": {
+      "game_day": 0.7038841090929225,
+      "with_22": 0.7082211619983129,
+      "difference": 0.004337052905390563,
+      "ci95_slate_bootstrap": [
+        -0.011425373051528511,
+        0.01557797528304598
+      ]
+    },
+    "log_loss_a10": {
+      "game_day": 0.6964856225015418,
+      "with_22": 0.7010712787786343,
+      "difference": 0.004585656277092371,
+      "ci95_slate_bootstrap": [
+        -0.008764276524636542,
+        0.014683828771327468
+      ]
+    }
+  },
+  "notes": [
+    "Differences are with_22 minus game_day: positive abs_error or log_loss means adding the 22 games made forecasts worse; positive correct means more winners.",
+    "log_loss uses the walk-forward calibrated scale; log_loss_a10 holds a = 10 fixed, isolating the team-fit effect from calibration.",
+    "Retrospective analysis on previously inspected data; no threshold was searched."
+  ]
+}
