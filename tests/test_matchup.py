@@ -447,3 +447,29 @@ def test_v1_25_replay_uses_the_latest_earlier_version_snapshot_whatever_the_ledg
     for records in ([early, late, result], [late, early, result]):
         (o,) = season.replay_observations(records, ".", cfg, 2026)
         assert o["projected_home_score"] == 114.0 and o["snapshot_utc"] == late["captured_at"]
+
+
+def test_v1_28_fit_history_uses_the_latest_native_first_snapshot(config):
+    assert config["matchup"]["history_snapshot"] == "latest"
+    cfg = {
+        **config,
+        "matchup": {k: v for k, v in config["matchup"].items() if not k.startswith(("seed", "backfill"))},
+    }
+    early = native(
+        "g1", "BOS", "NYK", "2026-11-12T00:30:00+00:00", "2026-11-11", captured="2026-11-10T08:00:00+00:00"
+    )
+    late = native(
+        "g1", "BOS", "NYK", "2026-11-12T00:30:00+00:00", "2026-11-11", captured="2026-11-11T18:00:00+00:00"
+    )
+    early["id"], late["id"] = "forecast:g1:first:v1_24", "forecast:g1:first:v1_27"
+    early["raw"] = {**early["raw"], "home_score": 101.0}
+    late["raw"] = {**late["raw"], "home_score": 109.0}
+    result = final("g1", "2026-11-12T03:00:00+00:00")
+    cutoff = "2026-11-12T04:00:00+00:00"
+    for records in ([early, late, result], [late, early, result]):
+        (o,) = matchup.eligible_observations(records, ".", cfg, "first", 2026, cutoff)
+        assert o["projected_home_score"] == 109.0 and o["snapshot_utc"] == late["captured_at"]
+    # Configurations frozen without the key keep the ledger-order choice.
+    legacy = {**cfg, "matchup": {k: v for k, v in cfg["matchup"].items() if k != "history_snapshot"}}
+    (o,) = matchup.eligible_observations([late, early, result], ".", legacy, "first", 2026, cutoff)
+    assert o["projected_home_score"] == 101.0

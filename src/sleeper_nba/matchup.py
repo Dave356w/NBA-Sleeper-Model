@@ -26,7 +26,7 @@ import numpy as np
 
 from .common import TEAMS, digest, dt
 
-METHOD = "sleeper_only_v1_27"
+METHOD = "sleeper_only_v1_28"
 # A slate stops holding back a refit once its ungraded games are this old.
 PENDING_HOURS = 24
 TEAMS_SORTED = sorted(TEAMS)
@@ -110,8 +110,14 @@ def eligible_observations(records, root, config, stage, season, cutoff):
             previous = results.get(r["instance_id"])
             if previous is None or dt(r["verified_at"]) > dt(previous["verified_at"]):
                 results[r["instance_id"]] = r
-    for f in records:
-        if f["kind"] != "forecast" or f["stage"] != stage or f.get("provenance") != "native":
+    natives = [r for r in records if r["kind"] == "forecast"]
+    if config.get("matchup", {}).get("history_snapshot") == "latest":
+        # v1.28: a game forecast under several tags trains on its latest first snapshot,
+        # the one nearest tip and on the game day when one exists, as the season replay
+        # does. Configurations without the key keep the ledger-order choice they were fitted with.
+        natives.sort(key=lambda r: (dt(r["captured_at"]), r["id"]))
+    for f in natives:
+        if f["stage"] != stage or f.get("provenance") != "native":
             continue
         game = f["game"]
         if season_of(game) != season or f["instance_id"] in retired or f["instance_id"] not in results:
