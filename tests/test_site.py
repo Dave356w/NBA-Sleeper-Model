@@ -79,14 +79,18 @@ def copy_quotes(root):
     return target
 
 
-def legacy_only(root, config=None):
-    """These tests pin the 117-game legacy seed; the outage backfill has its own tests."""
+def legacy_only(root, config=None, closing=False):
+    """These tests pin the 117-game legacy seed; the outage and closing-price backfills have their own tests."""
     path = root / "config.yaml"
     data = yaml.safe_load(path.read_text())
     data["matchup"].pop("backfill_files", None)
+    if not closing:
+        data.pop("closing_backfill", None)
     path.write_text(yaml.safe_dump(data, sort_keys=False))
     if config is not None:
         config["matchup"].pop("backfill_files", None)
+        if not closing:
+            config.pop("closing_backfill", None)
 
 
 def test_season_record_pools_replay_without_entering_live_metrics_or_ledger(root):
@@ -205,7 +209,7 @@ def test_export_and_reporting_expose_lead_time_minutes_and_lock_coverage(root, r
     grade(root, config, http=http)
     build_site(root)
     data = json.loads((root / "site" / "data.json").read_text())
-    assert data["methodology_version"] == "1.26"
+    assert data["methodology_version"] == "1.27"
     assert data["selection_markets"] == ["moneyline"]
     assert data["sample_gates"] == {"forecast_games": 100, "settled_bets": 250}
     assert (
@@ -345,6 +349,7 @@ def test_site_exports_pooled_rows_and_display_only_live_win_chance(root):
         "actual_home_score",
         "actual_away_score",
         "ml",
+        "price_basis",
     }
     # The live win chance is a browser display: coefficients only, nothing in the ledger.
     fit = data["live_wp"]
@@ -393,3 +398,39 @@ def test_outage_backfill_joins_the_replayed_season_record(root):
     assert legacy["end_date"] == "2026-11-16"
     assert data["forecasts"] == [] and data["grades"] == {}
     assert Ledger(root).records() == before
+
+
+def test_v1_27_closing_prices_fill_only_unpriced_season_games(root):
+    from sleeper_nba.common import load_config
+    from sleeper_nba.season import closing_prices, season_record
+
+    legacy_only(root, closing=True)
+    copy_quotes(root)
+    before = Ledger(root).records()
+    build_site(root)
+    season = json.loads((root / "site" / "data.json").read_text())["season"]
+    legacy = season["segments"][0]
+    # 115 legacy games kept their archived first-snapshot price; the other 2 are priced at the close.
+    assert season["price_basis"]["counts"] == {"snapshot": 115, "closing": 2}
+    assert season["price_basis"]["closing"]["n"] == 2 and season["price_basis"]["snapshot"]["n"] == 115
+    assert legacy["betting"]["directional"]["n"] == 117
+    rows = {r["game_id"]: r for r in season["rows"]}
+    closes = closing_prices(root, load_config(root))
+    for row in rows.values():
+        if row["price_basis"] == "closing":
+            close = closes[row["game_id"]]["close"]["moneyline"]
+            assert row["ml"] == {"home": close["home"], "away": close["away"]}
+    # A snapshot price is never replaced by the close: compare with the record built without the backfill.
+    cfg = load_config(root)
+    cfg.pop("closing_backfill")
+    plain = {r["game_id"]: r for r in season_record(Ledger(root).records(), root, cfg)["rows"]}
+    assert all(rows[g]["ml"] == plain[g]["ml"] for g in rows if rows[g]["price_basis"] == "snapshot")
+    assert all(plain[g]["ml"] is None for g in rows if rows[g]["price_basis"] == "closing")
+    assert Ledger(root).records() == before
+    # The pinned file is checked against its hash.
+    path = root / load_config(root)["closing_backfill"]["file"]
+    data = json.loads(path.read_text())
+    data["rows"][0]["close"]["moneyline"]["home"] = -999.0
+    path.write_text(json.dumps(data))
+    with pytest.raises(ValueError, match="Closing-price backfill integrity failure"):
+        build_site(root)

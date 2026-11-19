@@ -63,18 +63,30 @@ def team(value):
     return result
 
 
-def first_window_open(game, config, at):
+def first_window_open(game, config, at, priced=True):
     """Whether a first snapshot may be frozen at `at` under the forecast's frozen policy.
 
     Configurations without `first_policy` freeze the earliest valid pregame capture.
     `game_day_et_v1` (v1.26) waits for the game's Eastern calendar date.
+    `game_day_priced_et_v1` (v1.27) also waits for a qualifying moneyline quote in
+    the same capture (`priced`), but freezes unpriced from the lock target (T-5h)
+    so that every game still gets a first snapshot.
     """
     policy = config.get("first_policy")
     if policy is None:
         return True
+    game_day = dt(at).astimezone(ET).date().isoformat() >= game["slate_date"]
     if policy == "game_day_et_v1":
-        return dt(at).astimezone(ET).date().isoformat() >= game["slate_date"]
+        return game_day
+    if policy == "game_day_priced_et_v1":
+        fallback = dt(at) >= dt(game["tip_utc"]) - timedelta(hours=config["lock_hours"])
+        return game_day and (priced or fallback)
     raise ValueError(f"Unknown first policy: {policy!r}")
+
+
+def first_is_priced(variants):
+    """A frozen first snapshot is priced when its fixed variant has a qualifying moneyline."""
+    return any(m["market"] == "moneyline" and m.get("eligible") for m in variants["fixed"].get("markets", []))
 
 
 def lock_window_end(game, config):

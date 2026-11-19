@@ -1,0 +1,8083 @@
+{
+ "created_at": "2026-11-19T17:53:04.500811+00:00",
+ "description": "ESPN DraftKings closing prices for finished games; season-record price backfill only (owner update, 19 November 2026). Never a forecast, selection, grade or ledger record.",
+ "rows": [
+  {
+   "away": "CLE",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": 114.0,
+     "home": -135.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": -2.5
+    },
+    "total": {
+     "line": 237.5,
+     "over": -105.0,
+     "under": -115.0
+    }
+   },
+   "game_id": "401909093",
+   "home": "PHI",
+   "open": {
+    "moneyline": {
+     "away": 145.0,
+     "home": -175.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": -4.5
+    },
+    "total": {
+     "line": 233.5,
+     "over": -115.0,
+     "under": -105.0
+    }
+   },
+   "tip_utc": "2026-10-22T23:00:00.000000+00:00"
+  },
+  {
+   "away": "DEN",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": 270.0,
+     "home": -340.0
+    },
+    "spread": {
+     "away": -102.0,
+     "home": -118.0,
+     "line": -7.5
+    },
+    "total": {
+     "line": 236.5,
+     "over": -108.0,
+     "under": -112.0
+    }
+   },
+   "game_id": "401909094",
+   "home": "OKC",
+   "open": {
+    "moneyline": {
+     "away": 225.0,
+     "home": -278.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": -7.5
+    },
+    "total": {
+     "line": 231.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "tip_utc": "2026-10-23T01:30:00.000000+00:00"
+  },
+  {
+   "away": "NYK",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": 124.0,
+     "home": -148.0
+    },
+    "spread": {
+     "away": -105.0,
+     "home": -115.0,
+     "line": -2.5
+    },
+    "total": {
+     "line": 220.5,
+     "over": -105.0,
+     "under": -115.0
+    }
+   },
+   "game_id": "401909095",
+   "home": "BOS",
+   "open": {
+    "moneyline": {
+     "away": 114.0,
+     "home": -135.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": -2.5
+    },
+    "total": {
+     "line": 223.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "tip_utc": "2026-10-23T23:00:00.000000+00:00"
+  },
+  {
+   "away": "HOU",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": 154.0,
+     "home": -185.0
+    },
+    "spread": {
+     "away": -105.0,
+     "home": -115.0,
+     "line": -4.5
+    },
+    "total": {
+     "line": 224.5,
+     "over": -108.0,
+     "under": -112.0
+    }
+   },
+   "game_id": "401909096",
+   "home": "SAS",
+   "open": {
+    "moneyline": {
+     "away": 185.0,
+     "home": -225.0
+    },
+    "spread": {
+     "away": -102.0,
+     "home": -118.0,
+     "line": -5.5
+    },
+    "total": {
+     "line": 225.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "tip_utc": "2026-10-24T01:30:00.000000+00:00"
+  },
+  {
+   "away": "CHA",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": -115.0,
+     "home": -105.0
+    },
+    "spread": {
+     "away": -102.0,
+     "home": -118.0,
+     "line": 1.5
+    },
+    "total": {
+     "line": 218.5,
+     "over": -108.0,
+     "under": -112.0
+    }
+   },
+   "game_id": "401909277",
+   "home": "WAS",
+   "open": {
+    "moneyline": {
+     "away": -115.0,
+     "home": -105.0
+    },
+    "spread": {
+     "away": -105.0,
+     "home": -115.0,
+     "line": 1.5
+    },
+    "total": {
+     "line": 234.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "tip_utc": "2026-10-30T23:00:00.000000+00:00"
+  },
+  {
+   "away": "CHI",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": 550.0,
+     "home": -800.0
+    },
+    "spread": {
+     "away": -115.0,
+     "home": -105.0,
+     "line": -14.5
+    },
+    "total": {
+     "line": 236.5,
+     "over": -105.0,
+     "under": -115.0
+    }
+   },
+   "game_id": "401909278",
+   "home": "BOS",
+   "open": {
+    "moneyline": {
+     "away": 425.0,
+     "home": -575.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": -11.5
+    },
+    "total": {
+     "line": 232.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "tip_utc": "2026-10-30T23:30:00.000000+00:00"
+  },
+  {
+   "away": "DET",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": -310.0,
+     "home": 250.0
+    },
+    "spread": {
+     "away": -102.0,
+     "home": -118.0,
+     "line": 8.5
+    },
+    "total": {
+     "line": 222.5,
+     "over": -108.0,
+     "under": -112.0
+    }
+   },
+   "game_id": "401909279",
+   "home": "BKN",
+   "open": {
+    "moneyline": {
+     "away": -310.0,
+     "home": 250.0
+    },
+    "spread": {
+     "away": -118.0,
+     "home": -102.0,
+     "line": 7.5
+    },
+    "total": {
+     "line": 226.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "tip_utc": "2026-10-30T23:30:00.000000+00:00"
+  },
+  {
+   "away": "NYK",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": -155.0,
+     "home": 130.0
+    },
+    "spread": {
+     "away": -105.0,
+     "home": -115.0,
+     "line": 3.5
+    },
+    "total": {
+     "line": 224.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "game_id": "401909280",
+   "home": "PHI",
+   "open": {
+    "moneyline": {
+     "away": 105.0,
+     "home": -125.0
+    },
+    "spread": {
+     "away": -105.0,
+     "home": -115.0,
+     "line": -1.5
+    },
+    "total": {
+     "line": 231.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "tip_utc": "2026-10-30T23:30:00.000000+00:00"
+  },
+  {
+   "away": "ORL",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": 180.0,
+     "home": -218.0
+    },
+    "spread": {
+     "away": -105.0,
+     "home": -115.0,
+     "line": -5.5
+    },
+    "total": {
+     "line": 226.5,
+     "over": -115.0,
+     "under": -105.0
+    }
+   },
+   "game_id": "401909281",
+   "home": "TOR",
+   "open": {
+    "moneyline": {
+     "away": 130.0,
+     "home": -155.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": -3.5
+    },
+    "total": {
+     "line": 226.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "tip_utc": "2026-10-30T23:30:00.000000+00:00"
+  },
+  {
+   "away": "IND",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": 260.0,
+     "home": -325.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": -8.5
+    },
+    "total": {
+     "line": 236.5,
+     "over": -115.0,
+     "under": -105.0
+    }
+   },
+   "game_id": "401909282",
+   "home": "MIA",
+   "open": {
+    "moneyline": {
+     "away": 130.0,
+     "home": -155.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": 3.5
+    },
+    "total": {
+     "line": 240.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "tip_utc": "2026-10-31T00:00:00.000000+00:00"
+  },
+  {
+   "away": "HOU",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": -198.0,
+     "home": 164.0
+    },
+    "spread": {
+     "away": -105.0,
+     "home": -115.0,
+     "line": 5.5
+    },
+    "total": {
+     "line": 223.5,
+     "over": -105.0,
+     "under": -115.0
+    }
+   },
+   "game_id": "401909283",
+   "home": "DAL",
+   "open": {
+    "moneyline": {
+     "away": -175.0,
+     "home": 145.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": -4.5
+    },
+    "total": {
+     "line": 225.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "tip_utc": "2026-10-31T00:00:00.000000+00:00"
+  },
+  {
+   "away": "LAC",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": 215.0,
+     "home": -265.0
+    },
+    "spread": {
+     "away": -105.0,
+     "home": -115.0,
+     "line": -6.5
+    },
+    "total": {
+     "line": 222.5,
+     "over": -115.0,
+     "under": -105.0
+    }
+   },
+   "game_id": "401909284",
+   "home": "MIN",
+   "open": {
+    "moneyline": {
+     "away": 285.0,
+     "home": -360.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": -9.5
+    },
+    "total": {
+     "line": 230.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "tip_utc": "2026-10-31T00:00:00.000000+00:00"
+  },
+  {
+   "away": "LAL",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": -148.0,
+     "home": 124.0
+    },
+    "spread": {
+     "away": -112.0,
+     "home": -108.0,
+     "line": 2.5
+    },
+    "total": {
+     "line": 234.5,
+     "over": -112.0,
+     "under": -108.0
+    }
+   },
+   "game_id": "401909285",
+   "home": "GSW",
+   "open": {
+    "moneyline": {
+     "away": -115.0,
+     "home": -105.0
+    },
+    "spread": {
+     "away": -105.0,
+     "home": -115.0,
+     "line": 1.5
+    },
+    "total": {
+     "line": 234.5,
+     "over": -105.0,
+     "under": -115.0
+    }
+   },
+   "tip_utc": "2026-10-31T02:00:00.000000+00:00"
+  },
+  {
+   "away": "DEN",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": -180.0,
+     "home": 150.0
+    },
+    "spread": {
+     "away": -105.0,
+     "home": -115.0,
+     "line": 4.5
+    },
+    "total": {
+     "line": 231.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "game_id": "401909286",
+   "home": "PHX",
+   "open": {
+    "moneyline": {
+     "away": -135.0,
+     "home": 114.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": 2.5
+    },
+    "total": {
+     "line": 233.5,
+     "over": -115.0,
+     "under": -105.0
+    }
+   },
+   "tip_utc": "2026-10-31T02:00:00.000000+00:00"
+  },
+  {
+   "away": "WAS",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": 261.0,
+     "home": -324.0
+    },
+    "spread": {
+     "away": -113.0,
+     "home": -107.0,
+     "line": -8.5
+    },
+    "total": {
+     "line": 228.5,
+     "over": -108.0,
+     "under": -112.0
+    }
+   },
+   "game_id": "401909287",
+   "home": "ATL",
+   "open": {
+    "moneyline": {
+     "away": 199.0,
+     "home": -241.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": -6.5
+    },
+    "total": {
+     "line": 230.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "tip_utc": "2026-11-07T00:00:00.000000+00:00"
+  },
+  {
+   "away": "BOS",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": -424.0,
+     "home": 331.0
+    },
+    "spread": {
+     "away": -112.0,
+     "home": -108.0,
+     "line": 10.5
+    },
+    "total": {
+     "line": 209.5,
+     "over": -107.0,
+     "under": -113.0
+    }
+   },
+   "game_id": "401909288",
+   "home": "CHA",
+   "open": {
+    "moneyline": {
+     "away": -344.0,
+     "home": 276.0
+    },
+    "spread": {
+     "away": -114.0,
+     "home": -106.0,
+     "line": 8.5
+    },
+    "total": {
+     "line": 210.5,
+     "over": -106.0,
+     "under": -114.0
+    }
+   },
+   "tip_utc": "2026-11-07T00:00:00.000000+00:00"
+  },
+  {
+   "away": "PHI",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": -152.0,
+     "home": 128.0
+    },
+    "spread": {
+     "away": -112.0,
+     "home": -108.0,
+     "line": 2.5
+    },
+    "total": {
+     "line": 232.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "game_id": "401909289",
+   "home": "CLE",
+   "open": {
+    "moneyline": {
+     "away": 105.0,
+     "home": -125.0
+    },
+    "spread": {
+     "away": -115.0,
+     "home": -105.0,
+     "line": 2.5
+    },
+    "total": {
+     "line": 233.5,
+     "over": -115.0,
+     "under": -105.0
+    }
+   },
+   "tip_utc": "2026-11-07T00:30:00.000000+00:00"
+  },
+  {
+   "away": "UTA",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": 211.0,
+     "home": -257.0
+    },
+    "spread": {
+     "away": -112.0,
+     "home": -108.0,
+     "line": -6.5
+    },
+    "total": {
+     "line": 226.5,
+     "over": -107.0,
+     "under": -113.0
+    }
+   },
+   "game_id": "401909290",
+   "home": "DAL",
+   "open": {
+    "moneyline": {
+     "away": 208.0,
+     "home": -252.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": -7.5
+    },
+    "total": {
+     "line": 223.5,
+     "over": -115.0,
+     "under": -106.0
+    }
+   },
+   "tip_utc": "2026-11-07T01:00:00.000000+00:00"
+  },
+  {
+   "away": "OKC",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": -174.0,
+     "home": 146.0
+    },
+    "spread": {
+     "away": -104.0,
+     "home": -117.0,
+     "line": 4.5
+    },
+    "total": {
+     "line": 224.5,
+     "over": -113.0,
+     "under": -107.0
+    }
+   },
+   "game_id": "401909291",
+   "home": "MEM",
+   "open": {
+    "moneyline": {
+     "away": -165.0,
+     "home": 139.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": 3.5
+    },
+    "total": {
+     "line": 225.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "tip_utc": "2026-11-07T01:00:00.000000+00:00"
+  },
+  {
+   "away": "TOR",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": -162.0,
+     "home": 136.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": 3.5
+    },
+    "total": {
+     "line": 228.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "game_id": "401909292",
+   "home": "MIL",
+   "open": {
+    "moneyline": {
+     "away": -226.0,
+     "home": 187.0
+    },
+    "spread": {
+     "away": -104.0,
+     "home": -116.0,
+     "line": 7.5
+    },
+    "total": {
+     "line": 231.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "tip_utc": "2026-11-07T01:00:00.000000+00:00"
+  },
+  {
+   "away": "MIN",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": -166.0,
+     "home": 140.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": 3.5
+    },
+    "total": {
+     "line": 230.5,
+     "over": -108.0,
+     "under": -112.0
+    }
+   },
+   "game_id": "401909293",
+   "home": "NOP",
+   "open": {
+    "moneyline": {
+     "away": -188.0,
+     "home": 157.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": 5.5
+    },
+    "total": {
+     "line": 229.5,
+     "over": -105.0,
+     "under": -115.0
+    }
+   },
+   "tip_utc": "2026-11-07T01:00:00.000000+00:00"
+  },
+  {
+   "away": "POR",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": 130.0,
+     "home": -154.0
+    },
+    "spread": {
+     "away": -116.0,
+     "home": -104.0,
+     "line": -3.5
+    },
+    "total": {
+     "line": 231.5,
+     "over": -112.0,
+     "under": -108.0
+    }
+   },
+   "game_id": "401909294",
+   "home": "LAL",
+   "open": {
+    "moneyline": {
+     "away": 136.0,
+     "home": -162.0
+    },
+    "spread": {
+     "away": -115.0,
+     "home": -105.0,
+     "line": -4.5
+    },
+    "total": {
+     "line": 238.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "tip_utc": "2026-11-07T03:00:00.000000+00:00"
+  },
+  {
+   "away": "SAS",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": -1340.0,
+     "home": 810.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": 17.5
+    },
+    "total": {
+     "line": 231.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "game_id": "401909295",
+   "home": "SAC",
+   "open": {
+    "moneyline": {
+     "away": -970.0,
+     "home": 640.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": 15.5
+    },
+    "total": {
+     "line": 228.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "tip_utc": "2026-11-07T03:00:00.000000+00:00"
+  },
+  {
+   "away": "NYK",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": -321.0,
+     "home": 259.0
+    },
+    "spread": {
+     "away": -116.0,
+     "home": -104.0,
+     "line": 7.5
+    },
+    "total": {
+     "line": 218.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "game_id": "401909296",
+   "home": "IND",
+   "open": {
+    "moneyline": {
+     "away": -130.0,
+     "home": 110.0
+    },
+    "spread": {
+     "away": -102.0,
+     "home": -118.0,
+     "line": 2.5
+    },
+    "total": {
+     "line": 233.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "tip_utc": "2026-11-14T00:00:00.000000+00:00"
+  },
+  {
+   "away": "MIL",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": 331.0,
+     "home": -423.0
+    },
+    "spread": {
+     "away": -108.0,
+     "home": -112.0,
+     "line": -9.5
+    },
+    "total": {
+     "line": 223.5,
+     "over": -112.0,
+     "under": -108.0
+    }
+   },
+   "game_id": "401909297",
+   "home": "ORL",
+   "open": {
+    "moneyline": {
+     "away": 257.0,
+     "home": -319.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": -9.5
+    },
+    "total": {
+     "line": 223.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "tip_utc": "2026-11-14T00:00:00.000000+00:00"
+  },
+  {
+   "away": "CLE",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": 120.0,
+     "home": -142.0
+    },
+    "spread": {
+     "away": -112.0,
+     "home": -108.0,
+     "line": -2.5
+    },
+    "total": {
+     "line": 234.5,
+     "over": -114.0,
+     "under": -106.0
+    }
+   },
+   "game_id": "401909298",
+   "home": "MIA",
+   "open": {
+    "moneyline": {
+     "away": 105.0,
+     "home": -125.0
+    },
+    "spread": {
+     "away": -105.0,
+     "home": -115.0,
+     "line": -1.5
+    },
+    "total": {
+     "line": 237.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "tip_utc": "2026-11-14T01:00:00.000000+00:00"
+  },
+  {
+   "away": "ATL",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": -257.0,
+     "home": 211.0
+    },
+    "spread": {
+     "away": -112.0,
+     "home": -108.0,
+     "line": 6.5
+    },
+    "total": {
+     "line": 246.5,
+     "over": -112.0,
+     "under": -108.0
+    }
+   },
+   "game_id": "401909299",
+   "home": "CHI",
+   "open": {
+    "moneyline": {
+     "away": -263.0,
+     "home": 216.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": 6.5
+    },
+    "total": {
+     "line": 246.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "tip_utc": "2026-11-14T01:00:00.000000+00:00"
+  },
+  {
+   "away": "MEM",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": -162.0,
+     "home": 136.0
+    },
+    "spread": {
+     "away": -112.0,
+     "home": -108.0,
+     "line": 3.5
+    },
+    "total": {
+     "line": 235.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "game_id": "401909300",
+   "home": "NOP",
+   "open": {
+    "moneyline": {
+     "away": -141.0,
+     "home": 119.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": 4.5
+    },
+    "total": {
+     "line": 234.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "tip_utc": "2026-11-14T01:00:00.000000+00:00"
+  },
+  {
+   "away": "UTA",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": 740.0,
+     "home": -1180.0
+    },
+    "spread": {
+     "away": -112.0,
+     "home": -108.0,
+     "line": -15.5
+    },
+    "total": {
+     "line": 221.5,
+     "over": -107.0,
+     "under": -113.0
+    }
+   },
+   "game_id": "401909301",
+   "home": "HOU",
+   "open": {
+    "moneyline": {
+     "away": 900.0,
+     "home": -1580.0
+    },
+    "spread": {
+     "away": -105.0,
+     "home": -115.0,
+     "line": -17.5
+    },
+    "total": {
+     "line": 217.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "tip_utc": "2026-11-14T01:30:00.000000+00:00"
+  },
+  {
+   "away": "GSW",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": 501.0,
+     "home": -700.0
+    },
+    "spread": {
+     "away": -108.0,
+     "home": -112.0,
+     "line": -12.5
+    },
+    "total": {
+     "line": 217.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "game_id": "401909302",
+   "home": "SAS",
+   "open": {
+    "moneyline": {
+     "away": 390.0,
+     "home": -520.0
+    },
+    "spread": {
+     "away": -118.0,
+     "home": -102.0,
+     "line": -11.5
+    },
+    "total": {
+     "line": 234.5,
+     "over": -115.0,
+     "under": -105.0
+    }
+   },
+   "tip_utc": "2026-11-14T02:30:00.000000+00:00"
+  },
+  {
+   "away": "POR",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": -468.0,
+     "home": 361.0
+    },
+    "spread": {
+     "away": -105.0,
+     "home": -115.0,
+     "line": 10.5
+    },
+    "total": {
+     "line": 229.5,
+     "over": -112.0,
+     "under": -108.0
+    }
+   },
+   "game_id": "401909303",
+   "home": "SAC",
+   "open": {
+    "moneyline": {
+     "away": -569.0,
+     "home": 426.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": 10.5
+    },
+    "total": {
+     "line": 229.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "tip_utc": "2026-11-14T03:00:00.000000+00:00"
+  },
+  {
+   "away": "OKC",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": -237.0,
+     "home": 196.0
+    },
+    "spread": {
+     "away": -107.0,
+     "home": -113.0,
+     "line": 6.5
+    },
+    "total": {
+     "line": 221.5,
+     "over": -105.0,
+     "under": -115.0
+    }
+   },
+   "game_id": "401909304",
+   "home": "LAC",
+   "open": {
+    "moneyline": {
+     "away": -276.0,
+     "home": 226.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": 7.5
+    },
+    "total": {
+     "line": 221.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "tip_utc": "2026-11-14T03:30:00.000000+00:00"
+  },
+  {
+   "away": "ATL",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": -142.0,
+     "home": 120.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": 2.5
+    },
+    "total": {
+     "line": 226.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "game_id": "401909843",
+   "home": "CHA",
+   "open": {
+    "moneyline": {
+     "away": -135.0,
+     "home": 114.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": 2.5
+    },
+    "total": {
+     "line": 226.5,
+     "over": -105.0,
+     "under": -115.0
+    }
+   },
+   "tip_utc": "2026-10-23T23:00:00.000000+00:00"
+  },
+  {
+   "away": "DAL",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": 215.0,
+     "home": -265.0
+    },
+    "spread": {
+     "away": -115.0,
+     "home": -105.0,
+     "line": -7.5
+    },
+    "total": {
+     "line": 241.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "game_id": "401909844",
+   "home": "IND",
+   "open": {
+    "moneyline": {
+     "away": 170.0,
+     "home": -205.0
+    },
+    "spread": {
+     "away": -105.0,
+     "home": -115.0,
+     "line": -5.5
+    },
+    "total": {
+     "line": 234.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "tip_utc": "2026-10-23T23:00:00.000000+00:00"
+  },
+  {
+   "away": "MIN",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": 102.0,
+     "home": -122.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": -1.5
+    },
+    "total": {
+     "line": 234.5,
+     "over": -108.0,
+     "under": -112.0
+    }
+   },
+   "game_id": "401909845",
+   "home": "ORL",
+   "open": {
+    "moneyline": {
+     "away": -118.0,
+     "home": -102.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": 1.5
+    },
+    "total": {
+     "line": 237.5,
+     "over": -105.0,
+     "under": -115.0
+    }
+   },
+   "tip_utc": "2026-10-23T23:00:00.000000+00:00"
+  },
+  {
+   "away": "TOR",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": -340.0,
+     "home": 270.0
+    },
+    "spread": {
+     "away": -102.0,
+     "home": -118.0,
+     "line": 9.5
+    },
+    "total": {
+     "line": 236.5,
+     "over": -108.0,
+     "under": -112.0
+    }
+   },
+   "game_id": "401909846",
+   "home": "WAS",
+   "open": {
+    "moneyline": {
+     "away": -185.0,
+     "home": 154.0
+    },
+    "spread": {
+     "away": -115.0,
+     "home": -105.0,
+     "line": 4.5
+    },
+    "total": {
+     "line": 235.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "tip_utc": "2026-10-23T23:00:00.000000+00:00"
+  },
+  {
+   "away": "DET",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": -130.0,
+     "home": 110.0
+    },
+    "spread": {
+     "away": -105.0,
+     "home": -115.0,
+     "line": 2.5
+    },
+    "total": {
+     "line": 235.5,
+     "over": -105.0,
+     "under": -115.0
+    }
+   },
+   "game_id": "401909847",
+   "home": "MIA",
+   "open": {
+    "moneyline": {
+     "away": 105.0,
+     "home": -125.0
+    },
+    "spread": {
+     "away": -105.0,
+     "home": -115.0,
+     "line": -1.5
+    },
+    "total": {
+     "line": 234.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "tip_utc": "2026-10-24T00:00:00.000000+00:00"
+  },
+  {
+   "away": "CHI",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": -102.0,
+     "home": -118.0
+    },
+    "spread": {
+     "away": -115.0,
+     "home": -105.0,
+     "line": -1.5
+    },
+    "total": {
+     "line": 241.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "game_id": "401909848",
+   "home": "MIL",
+   "open": {
+    "moneyline": {
+     "away": -110.0,
+     "home": -110.0
+    },
+    "spread": {
+     "away": -120.0,
+     "home": 100.0,
+     "line": -1.5
+    },
+    "total": {
+     "line": 239.5,
+     "over": -105.0,
+     "under": -115.0
+    }
+   },
+   "tip_utc": "2026-10-23T20:00:00.000000+00:00"
+  },
+  {
+   "away": "NOP",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": -108.0,
+     "home": -112.0
+    },
+    "spread": {
+     "away": -118.0,
+     "home": -102.0,
+     "line": -1.5
+    },
+    "total": {
+     "line": 238.5,
+     "over": -115.0,
+     "under": -105.0
+    }
+   },
+   "game_id": "401909849",
+   "home": "UTA",
+   "open": {
+    "moneyline": {
+     "away": 170.0,
+     "home": -205.0
+    },
+    "spread": {
+     "away": -115.0,
+     "home": -105.0,
+     "line": -5.5
+    },
+    "total": {
+     "line": 241.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "tip_utc": "2026-10-24T01:30:00.000000+00:00"
+  },
+  {
+   "away": "MEM",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": 136.0,
+     "home": -162.0
+    },
+    "spread": {
+     "away": -115.0,
+     "home": -105.0,
+     "line": -4.5
+    },
+    "total": {
+     "line": 236.5,
+     "over": -112.0,
+     "under": -108.0
+    }
+   },
+   "game_id": "401909850",
+   "home": "GSW",
+   "open": {
+    "moneyline": {
+     "away": 130.0,
+     "home": -155.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": -3.5
+    },
+    "total": {
+     "line": 235.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "tip_utc": "2026-10-24T02:00:00.000000+00:00"
+  },
+  {
+   "away": "LAC",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": 285.0,
+     "home": -360.0
+    },
+    "spread": {
+     "away": -108.0,
+     "home": -112.0,
+     "line": -8.5
+    },
+    "total": {
+     "line": 225.5,
+     "over": -108.0,
+     "under": -112.0
+    }
+   },
+   "game_id": "401909851",
+   "home": "LAL",
+   "open": {
+    "moneyline": {
+     "away": 300.0,
+     "home": -380.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": -9.5
+    },
+    "total": {
+     "line": 229.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "tip_utc": "2026-10-24T02:00:00.000000+00:00"
+  },
+  {
+   "away": "POR",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": -470.0,
+     "home": 360.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": 9.5
+    },
+    "total": {
+     "line": 231.5,
+     "over": -115.0,
+     "under": -105.0
+    }
+   },
+   "game_id": "401909852",
+   "home": "SAC",
+   "open": {
+    "moneyline": {
+     "away": -230.0,
+     "home": 190.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": 6.5
+    },
+    "total": {
+     "line": 232.5,
+     "over": -105.0,
+     "under": -115.0
+    }
+   },
+   "tip_utc": "2026-10-24T02:00:00.000000+00:00"
+  },
+  {
+   "away": "MIA",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": -180.0,
+     "home": 150.0
+    },
+    "spread": {
+     "away": -108.0,
+     "home": -112.0,
+     "line": 4.5
+    },
+    "total": {
+     "line": 227.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "game_id": "401909853",
+   "home": "CHA",
+   "open": {
+    "moneyline": {
+     "away": -148.0,
+     "home": 124.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": 3.5
+    },
+    "total": {
+     "line": 231.5,
+     "over": -115.0,
+     "under": -105.0
+    }
+   },
+   "tip_utc": "2026-10-24T22:00:00.000000+00:00"
+  },
+  {
+   "away": "BKN",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": 380.0,
+     "home": -500.0
+    },
+    "spread": {
+     "away": -112.0,
+     "home": -108.0,
+     "line": -11.5
+    },
+    "total": {
+     "line": 228.5,
+     "over": -115.0,
+     "under": -105.0
+    }
+   },
+   "game_id": "401909854",
+   "home": "CLE",
+   "open": {
+    "moneyline": {
+     "away": 350.0,
+     "home": -455.0
+    },
+    "spread": {
+     "away": -115.0,
+     "home": -105.0,
+     "line": -11.5
+    },
+    "total": {
+     "line": 232.5,
+     "over": -115.0,
+     "under": -105.0
+    }
+   },
+   "tip_utc": "2026-10-24T23:30:00.000000+00:00"
+  },
+  {
+   "away": "MIL",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": 470.0,
+     "home": -650.0
+    },
+    "spread": {
+     "away": -108.0,
+     "home": -112.0,
+     "line": -12.5
+    },
+    "total": {
+     "line": 234.5,
+     "over": -112.0,
+     "under": -108.0
+    }
+   },
+   "game_id": "401909855",
+   "home": "PHI",
+   "open": {
+    "moneyline": {
+     "away": 455.0,
+     "home": -625.0
+    },
+    "spread": {
+     "away": -105.0,
+     "home": -115.0,
+     "line": -12.5
+    },
+    "total": {
+     "line": 230.5,
+     "over": -115.0,
+     "under": -105.0
+    }
+   },
+   "tip_utc": "2026-10-24T23:30:00.000000+00:00"
+  },
+  {
+   "away": "HOU",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": -112.0,
+     "home": -108.0
+    },
+    "spread": {
+     "away": -102.0,
+     "home": -118.0,
+     "line": 1.5
+    },
+    "total": {
+     "line": 227.5,
+     "over": -108.0,
+     "under": -112.0
+    }
+   },
+   "game_id": "401909856",
+   "home": "ATL",
+   "open": {
+    "moneyline": {
+     "away": -105.0,
+     "home": -115.0
+    },
+    "spread": {
+     "away": -115.0,
+     "home": -105.0,
+     "line": -1.5
+    },
+    "total": {
+     "line": 230.5,
+     "over": -105.0,
+     "under": -115.0
+    }
+   },
+   "tip_utc": "2026-10-25T00:30:00.000000+00:00"
+  },
+  {
+   "away": "WAS",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": 105.0,
+     "home": -125.0
+    },
+    "spread": {
+     "away": -105.0,
+     "home": -115.0,
+     "line": -1.5
+    },
+    "total": {
+     "line": 244.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "game_id": "401909857",
+   "home": "CHI",
+   "open": {
+    "moneyline": {
+     "away": -110.0,
+     "home": -110.0
+    },
+    "spread": {
+     "away": -102.0,
+     "home": -118.0,
+     "line": 1.5
+    },
+    "total": {
+     "line": 243.5,
+     "over": -112.0,
+     "under": -108.0
+    }
+   },
+   "tip_utc": "2026-10-25T00:00:00.000000+00:00"
+  },
+  {
+   "away": "SAS",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": -900.0,
+     "home": 600.0
+    },
+    "spread": {
+     "away": -115.0,
+     "home": -105.0,
+     "line": 14.5
+    },
+    "total": {
+     "line": 229.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "game_id": "401909858",
+   "home": "DAL",
+   "open": {
+    "moneyline": {
+     "away": -470.0,
+     "home": 360.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": 11.5
+    },
+    "total": {
+     "line": 230.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "tip_utc": "2026-10-25T00:00:00.000000+00:00"
+  },
+  {
+   "away": "NOP",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": 370.0,
+     "home": -485.0
+    },
+    "spread": {
+     "away": -115.0,
+     "home": -105.0,
+     "line": -11.5
+    },
+    "total": {
+     "line": 239.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "game_id": "401909859",
+   "home": "DEN",
+   "open": {
+    "moneyline": {
+     "away": 370.0,
+     "home": -485.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": -11.5
+    },
+    "total": {
+     "line": 237.5,
+     "over": -115.0,
+     "under": -105.0
+    }
+   },
+   "tip_utc": "2026-10-25T01:00:00.000000+00:00"
+  },
+  {
+   "away": "GSW",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": 320.0,
+     "home": -410.0
+    },
+    "spread": {
+     "away": -105.0,
+     "home": -115.0,
+     "line": -9.5
+    },
+    "total": {
+     "line": 221.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "game_id": "401909860",
+   "home": "PHX",
+   "open": {
+    "moneyline": {
+     "away": 170.0,
+     "home": -205.0
+    },
+    "spread": {
+     "away": -115.0,
+     "home": -105.0,
+     "line": -6.5
+    },
+    "total": {
+     "line": 224.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "tip_utc": "2026-10-25T02:00:00.000000+00:00"
+  },
+  {
+   "away": "LAL",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": -250.0,
+     "home": 205.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": 6.5
+    },
+    "total": {
+     "line": 237.5,
+     "over": -105.0,
+     "under": -115.0
+    }
+   },
+   "game_id": "401909861",
+   "home": "UTA",
+   "open": {
+    "moneyline": {
+     "away": -258.0,
+     "home": 210.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": 6.5
+    },
+    "total": {
+     "line": 236.5,
+     "over": -105.0,
+     "under": -115.0
+    }
+   },
+   "tip_utc": "2026-10-25T21:00:00.000000+00:00"
+  },
+  {
+   "away": "IND",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": -218.0,
+     "home": 180.0
+    },
+    "spread": {
+     "away": -112.0,
+     "home": -108.0,
+     "line": 5.5
+    },
+    "total": {
+     "line": 231.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "game_id": "401909862",
+   "home": "BKN",
+   "open": {
+    "moneyline": {
+     "away": -218.0,
+     "home": 180.0
+    },
+    "spread": {
+     "away": -115.0,
+     "home": -105.0,
+     "line": 5.5
+    },
+    "total": {
+     "line": 232.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "tip_utc": "2026-10-25T22:00:00.000000+00:00"
+  },
+  {
+   "away": "ORL",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": 220.0,
+     "home": -270.0
+    },
+    "spread": {
+     "away": -105.0,
+     "home": -115.0,
+     "line": -6.5
+    },
+    "total": {
+     "line": 224.5,
+     "over": -112.0,
+     "under": -108.0
+    }
+   },
+   "game_id": "401909863",
+   "home": "NYK",
+   "open": {
+    "moneyline": {
+     "away": 250.0,
+     "home": -310.0
+    },
+    "spread": {
+     "away": -105.0,
+     "home": -115.0,
+     "line": -7.5
+    },
+    "total": {
+     "line": 225.5,
+     "over": -108.0,
+     "under": -112.0
+    }
+   },
+   "tip_utc": "2026-10-25T23:00:00.000000+00:00"
+  },
+  {
+   "away": "TOR",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": 140.0,
+     "home": -166.0
+    },
+    "spread": {
+     "away": -105.0,
+     "home": -115.0,
+     "line": -3.5
+    },
+    "total": {
+     "line": 228.5,
+     "over": -112.0,
+     "under": -108.0
+    }
+   },
+   "game_id": "401909864",
+   "home": "MIN",
+   "open": {
+    "moneyline": {
+     "away": 110.0,
+     "home": -130.0
+    },
+    "spread": {
+     "away": -115.0,
+     "home": -105.0,
+     "line": -2.5
+    },
+    "total": {
+     "line": 231.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "tip_utc": "2026-10-25T23:00:00.000000+00:00"
+  },
+  {
+   "away": "LAC",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": 800.0,
+     "home": -1350.0
+    },
+    "spread": {
+     "away": -112.0,
+     "home": -108.0,
+     "line": -16.5
+    },
+    "total": {
+     "line": 223.5,
+     "over": -108.0,
+     "under": -112.0
+    }
+   },
+   "game_id": "401909865",
+   "home": "OKC",
+   "open": {
+    "moneyline": {
+     "away": 625.0,
+     "home": -950.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": -14.5
+    },
+    "total": {
+     "line": 221.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "tip_utc": "2026-10-25T23:00:00.000000+00:00"
+  },
+  {
+   "away": "DET",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": -130.0,
+     "home": 110.0
+    },
+    "spread": {
+     "away": -115.0,
+     "home": -105.0,
+     "line": 1.5
+    },
+    "total": {
+     "line": 228.5,
+     "over": -115.0,
+     "under": -105.0
+    }
+   },
+   "game_id": "401909866",
+   "home": "PHI",
+   "open": {
+    "moneyline": {
+     "away": 110.0,
+     "home": -130.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": -2.5
+    },
+    "total": {
+     "line": 226.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "tip_utc": "2026-10-25T23:30:00.000000+00:00"
+  },
+  {
+   "away": "MEM",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": -180.0,
+     "home": 150.0
+    },
+    "spread": {
+     "away": -115.0,
+     "home": -105.0,
+     "line": 3.5
+    },
+    "total": {
+     "line": 234.5,
+     "over": -112.0,
+     "under": -108.0
+    }
+   },
+   "game_id": "401909867",
+   "home": "SAC",
+   "open": {
+    "moneyline": {
+     "away": -162.0,
+     "home": 136.0
+    },
+    "spread": {
+     "away": -115.0,
+     "home": -105.0,
+     "line": 3.5
+    },
+    "total": {
+     "line": 236.5,
+     "over": -105.0,
+     "under": -115.0
+    }
+   },
+   "tip_utc": "2026-10-26T01:00:00.000000+00:00"
+  },
+  {
+   "away": "WAS",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": 120.0,
+     "home": -142.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": -2.5
+    },
+    "total": {
+     "line": 225.5,
+     "over": -108.0,
+     "under": -112.0
+    }
+   },
+   "game_id": "401909868",
+   "home": "CHA",
+   "open": {
+    "moneyline": {
+     "away": 120.0,
+     "home": -142.0
+    },
+    "spread": {
+     "away": -105.0,
+     "home": -115.0,
+     "line": -2.5
+    },
+    "total": {
+     "line": 228.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "tip_utc": "2026-10-26T23:00:00.000000+00:00"
+  },
+  {
+   "away": "MIN",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": 130.0,
+     "home": -155.0
+    },
+    "spread": {
+     "away": -115.0,
+     "home": -105.0,
+     "line": -3.5
+    },
+    "total": {
+     "line": 234.5,
+     "over": -108.0,
+     "under": -112.0
+    }
+   },
+   "game_id": "401909869",
+   "home": "CLE",
+   "open": {
+    "moneyline": {
+     "away": 142.0,
+     "home": -170.0
+    },
+    "spread": {
+     "away": -115.0,
+     "home": -105.0,
+     "line": -4.5
+    },
+    "total": {
+     "line": 232.5,
+     "over": -112.0,
+     "under": -108.0
+    }
+   },
+   "tip_utc": "2026-10-26T23:00:00.000000+00:00"
+  },
+  {
+   "away": "CHI",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": 525.0,
+     "home": -750.0
+    },
+    "spread": {
+     "away": -115.0,
+     "home": -105.0,
+     "line": -14.5
+    },
+    "total": {
+     "line": 233.5,
+     "over": -105.0,
+     "under": -115.0
+    }
+   },
+   "game_id": "401909870",
+   "home": "BOS",
+   "open": {
+    "moneyline": {
+     "away": 575.0,
+     "home": -850.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": -13.5
+    },
+    "total": {
+     "line": 233.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "tip_utc": "2026-10-26T23:30:00.000000+00:00"
+  },
+  {
+   "away": "DAL",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": 220.0,
+     "home": -270.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": -7.5
+    },
+    "total": {
+     "line": 240.5,
+     "over": -108.0,
+     "under": -112.0
+    }
+   },
+   "game_id": "401909871",
+   "home": "MIA",
+   "open": {
+    "moneyline": {
+     "away": 235.0,
+     "home": -290.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": -7.5
+    },
+    "total": {
+     "line": 235.5,
+     "over": -105.0,
+     "under": -115.0
+    }
+   },
+   "tip_utc": "2026-10-26T23:30:00.000000+00:00"
+  },
+  {
+   "away": "IND",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": -155.0,
+     "home": 130.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": 3.5
+    },
+    "total": {
+     "line": 239.5,
+     "over": -108.0,
+     "under": -112.0
+    }
+   },
+   "game_id": "401909872",
+   "home": "MIL",
+   "open": {
+    "moneyline": {
+     "away": -175.0,
+     "home": 145.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": 4.5
+    },
+    "total": {
+     "line": 239.5,
+     "over": -115.0,
+     "under": -105.0
+    }
+   },
+   "tip_utc": "2026-10-27T00:00:00.000000+00:00"
+  },
+  {
+   "away": "PHX",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": 260.0,
+     "home": -325.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": -8.5
+    },
+    "total": {
+     "line": 221.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "game_id": "401909873",
+   "home": "OKC",
+   "open": {
+    "moneyline": {
+     "away": 300.0,
+     "home": -380.0
+    },
+    "spread": {
+     "away": -105.0,
+     "home": -115.0,
+     "line": -9.5
+    },
+    "total": {
+     "line": 218.5,
+     "over": -115.0,
+     "under": -105.0
+    }
+   },
+   "tip_utc": "2026-10-27T00:00:00.000000+00:00"
+  },
+  {
+   "away": "ATL",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": 160.0,
+     "home": -192.0
+    },
+    "spread": {
+     "away": -108.0,
+     "home": -112.0,
+     "line": -4.5
+    },
+    "total": {
+     "line": 228.5,
+     "over": -115.0,
+     "under": -105.0
+    }
+   },
+   "game_id": "401909874",
+   "home": "HOU",
+   "open": {
+    "moneyline": {
+     "away": 180.0,
+     "home": -218.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": -5.5
+    },
+    "total": {
+     "line": 229.5,
+     "over": -105.0,
+     "under": -115.0
+    }
+   },
+   "tip_utc": "2026-10-27T00:30:00.000000+00:00"
+  },
+  {
+   "away": "MEM",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": -112.0,
+     "home": -108.0
+    },
+    "spread": {
+     "away": -102.0,
+     "home": -118.0,
+     "line": 1.5
+    },
+    "total": {
+     "line": 237.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "game_id": "401909875",
+   "home": "UTA",
+   "open": {
+    "moneyline": {
+     "away": -105.0,
+     "home": -115.0
+    },
+    "spread": {
+     "away": -115.0,
+     "home": -105.0,
+     "line": -1.5
+    },
+    "total": {
+     "line": 237.5,
+     "over": -115.0,
+     "under": -105.0
+    }
+   },
+   "tip_utc": "2026-10-27T01:00:00.000000+00:00"
+  },
+  {
+   "away": "GSW",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": 220.0,
+     "home": -270.0
+    },
+    "spread": {
+     "away": -102.0,
+     "home": -118.0,
+     "line": -6.5
+    },
+    "total": {
+     "line": 236.5,
+     "over": -105.0,
+     "under": -115.0
+    }
+   },
+   "game_id": "401909876",
+   "home": "DEN",
+   "open": {
+    "moneyline": {
+     "away": 235.0,
+     "home": -290.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": -7.5
+    },
+    "total": {
+     "line": 235.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "tip_utc": "2026-10-27T02:00:00.000000+00:00"
+  },
+  {
+   "away": "BKN",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": 525.0,
+     "home": -750.0
+    },
+    "spread": {
+     "away": -115.0,
+     "home": -105.0,
+     "line": -13.5
+    },
+    "total": {
+     "line": 223.5,
+     "over": -112.0,
+     "under": -108.0
+    }
+   },
+   "game_id": "401909877",
+   "home": "BOS",
+   "open": {
+    "moneyline": {
+     "away": 425.0,
+     "home": -575.0
+    },
+    "spread": {
+     "away": -105.0,
+     "home": -115.0,
+     "line": -11.5
+    },
+    "total": {
+     "line": 222.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "tip_utc": "2026-10-27T23:30:00.000000+00:00"
+  },
+  {
+   "away": "DET",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": 145.0,
+     "home": -175.0
+    },
+    "spread": {
+     "away": -115.0,
+     "home": -105.0,
+     "line": -4.5
+    },
+    "total": {
+     "line": 220.5,
+     "over": -112.0,
+     "under": -108.0
+    }
+   },
+   "game_id": "401909878",
+   "home": "NYK",
+   "open": {
+    "moneyline": {
+     "away": 136.0,
+     "home": -162.0
+    },
+    "spread": {
+     "away": -105.0,
+     "home": -115.0,
+     "line": -3.5
+    },
+    "total": {
+     "line": 218.5,
+     "over": -115.0,
+     "under": -105.0
+    }
+   },
+   "tip_utc": "2026-10-28T00:00:00.000000+00:00"
+  },
+  {
+   "away": "SAC",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": 1000.0,
+     "home": -1800.0
+    },
+    "spread": {
+     "away": -118.0,
+     "home": -102.0,
+     "line": -19.5
+    },
+    "total": {
+     "line": 232.5,
+     "over": -108.0,
+     "under": -112.0
+    }
+   },
+   "game_id": "401909879",
+   "home": "SAS",
+   "open": {
+    "moneyline": {
+     "away": 1000.0,
+     "home": -1800.0
+    },
+    "spread": {
+     "away": -115.0,
+     "home": -105.0,
+     "line": -18.5
+    },
+    "total": {
+     "line": 230.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "tip_utc": "2026-10-28T00:00:00.000000+00:00"
+  },
+  {
+   "away": "POR",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": -102.0,
+     "home": -118.0
+    },
+    "spread": {
+     "away": -112.0,
+     "home": -108.0,
+     "line": -1.5
+    },
+    "total": {
+     "line": 234.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "game_id": "401909880",
+   "home": "LAL",
+   "open": {
+    "moneyline": {
+     "away": 120.0,
+     "home": -142.0
+    },
+    "spread": {
+     "away": -105.0,
+     "home": -115.0,
+     "line": -2.5
+    },
+    "total": {
+     "line": 236.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "tip_utc": "2026-10-28T03:00:00.000000+00:00"
+  },
+  {
+   "away": "MIA",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": 120.0,
+     "home": -142.0
+    },
+    "spread": {
+     "away": -105.0,
+     "home": -115.0,
+     "line": -2.5
+    },
+    "total": {
+     "line": 243.5,
+     "over": -112.0,
+     "under": -108.0
+    }
+   },
+   "game_id": "401909881",
+   "home": "ATL",
+   "open": {
+    "moneyline": {
+     "away": 136.0,
+     "home": -162.0
+    },
+    "spread": {
+     "away": -105.0,
+     "home": -115.0,
+     "line": -3.5
+    },
+    "total": {
+     "line": 239.5,
+     "over": -112.0,
+     "under": -108.0
+    }
+   },
+   "tip_utc": "2026-10-28T23:00:00.000000+00:00"
+  },
+  {
+   "away": "WAS",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": 310.0,
+     "home": -395.0
+    },
+    "spread": {
+     "away": -108.0,
+     "home": -112.0,
+     "line": -9.5
+    },
+    "total": {
+     "line": 240.5,
+     "over": -108.0,
+     "under": -112.0
+    }
+   },
+   "game_id": "401909882",
+   "home": "CLE",
+   "open": {
+    "moneyline": {
+     "away": 300.0,
+     "home": -380.0
+    },
+    "spread": {
+     "away": -115.0,
+     "home": -105.0,
+     "line": -10.5
+    },
+    "total": {
+     "line": 239.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "tip_utc": "2026-10-28T23:00:00.000000+00:00"
+  },
+  {
+   "away": "CHA",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": 235.0,
+     "home": -290.0
+    },
+    "spread": {
+     "away": -105.0,
+     "home": -115.0,
+     "line": -7.5
+    },
+    "total": {
+     "line": 212.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "game_id": "401909883",
+   "home": "DET",
+   "open": {
+    "moneyline": {
+     "away": 245.0,
+     "home": -305.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": -7.5
+    },
+    "total": {
+     "line": 216.5,
+     "over": -105.0,
+     "under": -115.0
+    }
+   },
+   "tip_utc": "2026-10-28T23:00:00.000000+00:00"
+  },
+  {
+   "away": "PHI",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": -278.0,
+     "home": 225.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": 7.5
+    },
+    "total": {
+     "line": 234.5,
+     "over": -105.0,
+     "under": -115.0
+    }
+   },
+   "game_id": "401909884",
+   "home": "IND",
+   "open": {
+    "moneyline": {
+     "away": -125.0,
+     "home": 105.0
+    },
+    "spread": {
+     "away": -115.0,
+     "home": -105.0,
+     "line": 1.5
+    },
+    "total": {
+     "line": 237.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "tip_utc": "2026-10-28T23:00:00.000000+00:00"
+  },
+  {
+   "away": "ORL",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": 160.0,
+     "home": -192.0
+    },
+    "spread": {
+     "away": -118.0,
+     "home": -102.0,
+     "line": -5.5
+    },
+    "total": {
+     "line": 224.5,
+     "over": -115.0,
+     "under": -105.0
+    }
+   },
+   "game_id": "401909885",
+   "home": "TOR",
+   "open": {
+    "moneyline": {
+     "away": 145.0,
+     "home": -175.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": -4.5
+    },
+    "total": {
+     "line": 223.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "tip_utc": "2026-10-28T23:30:00.000000+00:00"
+  },
+  {
+   "away": "NYK",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": -278.0,
+     "home": 225.0
+    },
+    "spread": {
+     "away": -102.0,
+     "home": -118.0,
+     "line": 7.5
+    },
+    "total": {
+     "line": 233.5,
+     "over": -115.0,
+     "under": -105.0
+    }
+   },
+   "game_id": "401909886",
+   "home": "CHI",
+   "open": {
+    "moneyline": {
+     "away": -258.0,
+     "home": 210.0
+    },
+    "spread": {
+     "away": -105.0,
+     "home": -115.0,
+     "line": 7.5
+    },
+    "total": {
+     "line": 234.5,
+     "over": -115.0,
+     "under": -105.0
+    }
+   },
+   "tip_utc": "2026-10-29T00:00:00.000000+00:00"
+  },
+  {
+   "away": "HOU",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": -340.0,
+     "home": 270.0
+    },
+    "spread": {
+     "away": -105.0,
+     "home": -115.0,
+     "line": 8.5
+    },
+    "total": {
+     "line": 226.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "game_id": "401909887",
+   "home": "MIL",
+   "open": {
+    "moneyline": {
+     "away": -310.0,
+     "home": 250.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": 8.5
+    },
+    "total": {
+     "line": 227.5,
+     "over": -115.0,
+     "under": -105.0
+    }
+   },
+   "tip_utc": "2026-10-29T00:00:00.000000+00:00"
+  },
+  {
+   "away": "GSW",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": 130.0,
+     "home": -155.0
+    },
+    "spread": {
+     "away": -108.0,
+     "home": -112.0,
+     "line": -3.5
+    },
+    "total": {
+     "line": 227.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "game_id": "401909888",
+   "home": "MIN",
+   "open": {
+    "moneyline": {
+     "away": 190.0,
+     "home": -230.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": -6.5
+    },
+    "total": {
+     "line": 227.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "tip_utc": "2026-10-29T00:00:00.000000+00:00"
+  },
+  {
+   "away": "DEN",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": -180.0,
+     "home": 150.0
+    },
+    "spread": {
+     "away": -105.0,
+     "home": -115.0,
+     "line": 4.5
+    },
+    "total": {
+     "line": 241.5,
+     "over": -105.0,
+     "under": -115.0
+    }
+   },
+   "game_id": "401909889",
+   "home": "NOP",
+   "open": {
+    "moneyline": {
+     "away": -185.0,
+     "home": 154.0
+    },
+    "spread": {
+     "away": -115.0,
+     "home": -105.0,
+     "line": 4.5
+    },
+    "total": {
+     "line": 238.5,
+     "over": -115.0,
+     "under": -105.0
+    }
+   },
+   "tip_utc": "2026-10-29T00:00:00.000000+00:00"
+  },
+  {
+   "away": "SAS",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": -750.0,
+     "home": 525.0
+    },
+    "spread": {
+     "away": -112.0,
+     "home": -108.0,
+     "line": 13.5
+    },
+    "total": {
+     "line": 232.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "game_id": "401909890",
+   "home": "UTA",
+   "open": {
+    "moneyline": {
+     "away": -575.0,
+     "home": 425.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": 12.5
+    },
+    "total": {
+     "line": 234.5,
+     "over": -105.0,
+     "under": -115.0
+    }
+   },
+   "tip_utc": "2026-10-29T01:00:00.000000+00:00"
+  },
+  {
+   "away": "OKC",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": -192.0,
+     "home": 160.0
+    },
+    "spread": {
+     "away": -115.0,
+     "home": -105.0,
+     "line": 4.5
+    },
+    "total": {
+     "line": 227.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "game_id": "401909891",
+   "home": "DAL",
+   "open": {
+    "moneyline": {
+     "away": -205.0,
+     "home": 170.0
+    },
+    "spread": {
+     "away": -115.0,
+     "home": -105.0,
+     "line": 5.5
+    },
+    "total": {
+     "line": 230.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "tip_utc": "2026-10-29T01:30:00.000000+00:00"
+  },
+  {
+   "away": "LAL",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": -108.0,
+     "home": -112.0
+    },
+    "spread": {
+     "away": -118.0,
+     "home": -102.0,
+     "line": -1.5
+    },
+    "total": {
+     "line": 224.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "game_id": "401909892",
+   "home": "LAC",
+   "open": {
+    "moneyline": {
+     "away": -198.0,
+     "home": 164.0
+    },
+    "spread": {
+     "away": -105.0,
+     "home": -115.0,
+     "line": 5.5
+    },
+    "total": {
+     "line": 228.5,
+     "over": -105.0,
+     "under": -115.0
+    }
+   },
+   "tip_utc": "2026-10-29T02:30:00.000000+00:00"
+  },
+  {
+   "away": "CLE",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": -102.0,
+     "home": -118.0
+    },
+    "spread": {
+     "away": -115.0,
+     "home": -105.0,
+     "line": -1.5
+    },
+    "total": {
+     "line": 237.5,
+     "over": -112.0,
+     "under": -108.0
+    }
+   },
+   "game_id": "401909893",
+   "home": "ATL",
+   "open": {
+    "moneyline": {
+     "away": -110.0,
+     "home": -110.0
+    },
+    "spread": {
+     "away": -118.0,
+     "home": -102.0,
+     "line": -1.5
+    },
+    "total": {
+     "line": 239.5,
+     "over": -105.0,
+     "under": -115.0
+    }
+   },
+   "tip_utc": "2026-10-30T00:00:00.000000+00:00"
+  },
+  {
+   "away": "SAC",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": 195.0,
+     "home": -238.0
+    },
+    "spread": {
+     "away": -112.0,
+     "home": -108.0,
+     "line": -6.5
+    },
+    "total": {
+     "line": 234.5,
+     "over": -112.0,
+     "under": -108.0
+    }
+   },
+   "game_id": "401909894",
+   "home": "NOP",
+   "open": {
+    "moneyline": {
+     "away": 160.0,
+     "home": -192.0
+    },
+    "spread": {
+     "away": -105.0,
+     "home": -115.0,
+     "line": -5.5
+    },
+    "total": {
+     "line": 237.5,
+     "over": -115.0,
+     "under": -105.0
+    }
+   },
+   "tip_utc": "2026-10-30T00:00:00.000000+00:00"
+  },
+  {
+   "away": "MEM",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": 230.0,
+     "home": -285.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": -7.5
+    },
+    "total": {
+     "line": 233.5,
+     "over": -108.0,
+     "under": -112.0
+    }
+   },
+   "game_id": "401909895",
+   "home": "POR",
+   "open": {
+    "moneyline": {
+     "away": 230.0,
+     "home": -285.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": -7.5
+    },
+    "total": {
+     "line": 232.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "tip_utc": "2026-10-30T02:00:00.000000+00:00"
+  },
+  {
+   "away": "POR",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": -258.0,
+     "home": 210.0
+    },
+    "spread": {
+     "away": -112.0,
+     "home": -108.0,
+     "line": 6.5
+    },
+    "total": {
+     "line": 232.5,
+     "over": -115.0,
+     "under": -105.0
+    }
+   },
+   "game_id": "401909896",
+   "home": "UTA",
+   "open": {
+    "moneyline": {
+     "away": -225.0,
+     "home": 185.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": 6.5
+    },
+    "total": {
+     "line": 232.5,
+     "over": -115.0,
+     "under": -105.0
+    }
+   },
+   "tip_utc": "2026-10-31T19:00:00.000000+00:00"
+  },
+  {
+   "away": "PHI",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": -118.0,
+     "home": -102.0
+    },
+    "spread": {
+     "away": -105.0,
+     "home": -115.0,
+     "line": 1.5
+    },
+    "total": {
+     "line": 211.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "game_id": "401909897",
+   "home": "CHA",
+   "open": {
+    "moneyline": {
+     "away": -120.0,
+     "home": 100.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": 1.5
+    },
+    "total": {
+     "line": 216.5,
+     "over": -115.0,
+     "under": -105.0
+    }
+   },
+   "tip_utc": "2026-10-31T22:00:00.000000+00:00"
+  },
+  {
+   "away": "ATL",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": -198.0,
+     "home": 164.0
+    },
+    "spread": {
+     "away": -102.0,
+     "home": -118.0,
+     "line": 5.5
+    },
+    "total": {
+     "line": 239.5,
+     "over": -108.0,
+     "under": -112.0
+    }
+   },
+   "game_id": "401909898",
+   "home": "NOP",
+   "open": {
+    "moneyline": {
+     "away": -155.0,
+     "home": 130.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": 3.5
+    },
+    "total": {
+     "line": 239.5,
+     "over": -105.0,
+     "under": -115.0
+    }
+   },
+   "tip_utc": "2026-10-31T23:00:00.000000+00:00"
+  },
+  {
+   "away": "SAC",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": 240.0,
+     "home": -298.0
+    },
+    "spread": {
+     "away": -105.0,
+     "home": -115.0,
+     "line": -7.5
+    },
+    "total": {
+     "line": 229.5,
+     "over": -108.0,
+     "under": -112.0
+    }
+   },
+   "game_id": "401909899",
+   "home": "MEM",
+   "open": {
+    "moneyline": {
+     "away": 340.0,
+     "home": -440.0
+    },
+    "spread": {
+     "away": -105.0,
+     "home": -115.0,
+     "line": -10.5
+    },
+    "total": {
+     "line": 234.5,
+     "over": -115.0,
+     "under": -105.0
+    }
+   },
+   "tip_utc": "2026-11-01T00:00:00.000000+00:00"
+  },
+  {
+   "away": "CLE",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": -290.0,
+     "home": 235.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": 8.5
+    },
+    "total": {
+     "line": 234.5,
+     "over": -112.0,
+     "under": -108.0
+    }
+   },
+   "game_id": "401909900",
+   "home": "MIL",
+   "open": {
+    "moneyline": {
+     "away": -360.0,
+     "home": 285.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": 9.5
+    },
+    "total": {
+     "line": 236.5,
+     "over": -115.0,
+     "under": -105.0
+    }
+   },
+   "tip_utc": "2026-11-01T00:00:00.000000+00:00"
+  },
+  {
+   "away": "MIN",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": 425.0,
+     "home": -575.0
+    },
+    "spread": {
+     "away": -105.0,
+     "home": -115.0,
+     "line": -12.5
+    },
+    "total": {
+     "line": 230.5,
+     "over": -108.0,
+     "under": -112.0
+    }
+   },
+   "game_id": "401909901",
+   "home": "SAS",
+   "open": {
+    "moneyline": {
+     "away": 390.0,
+     "home": -520.0
+    },
+    "spread": {
+     "away": -105.0,
+     "home": -115.0,
+     "line": -11.5
+    },
+    "total": {
+     "line": 227.5,
+     "over": -105.0,
+     "under": -115.0
+    }
+   },
+   "tip_utc": "2026-11-01T00:00:00.000000+00:00"
+  },
+  {
+   "away": "OKC",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": 120.0,
+     "home": -142.0
+    },
+    "spread": {
+     "away": -105.0,
+     "home": -115.0,
+     "line": -2.5
+    },
+    "total": {
+     "line": 219.5,
+     "over": -108.0,
+     "under": -112.0
+    }
+   },
+   "game_id": "401909902",
+   "home": "HOU",
+   "open": {
+    "moneyline": {
+     "away": 140.0,
+     "home": -166.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": -4.5
+    },
+    "total": {
+     "line": 218.5,
+     "over": -115.0,
+     "under": -105.0
+    }
+   },
+   "tip_utc": "2026-11-01T00:30:00.000000+00:00"
+  },
+  {
+   "away": "BOS",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": -285.0,
+     "home": 230.0
+    },
+    "spread": {
+     "away": -115.0,
+     "home": -105.0,
+     "line": 6.5
+    },
+    "total": {
+     "line": 221.5,
+     "over": -112.0,
+     "under": -108.0
+    }
+   },
+   "game_id": "401909903",
+   "home": "ORL",
+   "open": {
+    "moneyline": {
+     "away": -258.0,
+     "home": 210.0
+    },
+    "spread": {
+     "away": -108.0,
+     "home": -112.0,
+     "line": 6.5
+    },
+    "total": {
+     "line": 222.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "tip_utc": "2026-11-01T20:30:00.000000+00:00"
+  },
+  {
+   "away": "LAC",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": 110.0,
+     "home": -130.0
+    },
+    "spread": {
+     "away": -102.0,
+     "home": -118.0,
+     "line": -1.5
+    },
+    "total": {
+     "line": 220.5,
+     "over": -115.0,
+     "under": -105.0
+    }
+   },
+   "game_id": "401909905",
+   "home": "GSW",
+   "open": {
+    "moneyline": {
+     "away": 110.0,
+     "home": -130.0
+    },
+    "spread": {
+     "away": -115.0,
+     "home": -105.0,
+     "line": -2.5
+    },
+    "total": {
+     "line": 219.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "tip_utc": "2026-11-02T01:30:00.000000+00:00"
+  },
+  {
+   "away": "TOR",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": 142.0,
+     "home": -170.0
+    },
+    "spread": {
+     "away": -108.0,
+     "home": -112.0,
+     "line": -3.5
+    },
+    "total": {
+     "line": 224.5,
+     "over": -105.0,
+     "under": -115.0
+    }
+   },
+   "game_id": "401909906",
+   "home": "LAL",
+   "open": {
+    "moneyline": {
+     "away": 145.0,
+     "home": -175.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": -4.5
+    },
+    "total": {
+     "line": 227.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "tip_utc": "2026-11-02T02:00:00.000000+00:00"
+  },
+  {
+   "away": "OKC",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": 146.0,
+     "home": -173.0
+    },
+    "spread": {
+     "away": -115.0,
+     "home": -105.0,
+     "line": -4.5
+    },
+    "total": {
+     "line": 229.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "game_id": "401909907",
+   "home": "CLE",
+   "open": {
+    "moneyline": {
+     "away": 154.0,
+     "home": -185.0
+    },
+    "spread": {
+     "away": -105.0,
+     "home": -115.0,
+     "line": -4.5
+    },
+    "total": {
+     "line": 226.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "tip_utc": "2026-11-03T00:00:00.000000+00:00"
+  },
+  {
+   "away": "DET",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": -223.0,
+     "home": 185.0
+    },
+    "spread": {
+     "away": -115.0,
+     "home": -105.0,
+     "line": 5.5
+    },
+    "total": {
+     "line": 209.5,
+     "over": -108.0,
+     "under": -112.0
+    }
+   },
+   "game_id": "401909908",
+   "home": "CHA",
+   "open": {
+    "moneyline": {
+     "away": -180.0,
+     "home": 150.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": 4.5
+    },
+    "total": {
+     "line": 208.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "tip_utc": "2026-11-03T00:30:00.000000+00:00"
+  },
+  {
+   "away": "ATL",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": -467.0,
+     "home": 360.0
+    },
+    "spread": {
+     "away": -115.0,
+     "home": -106.0,
+     "line": 10.5
+    },
+    "total": {
+     "line": 226.5,
+     "over": -115.0,
+     "under": -105.0
+    }
+   },
+   "game_id": "401909909",
+   "home": "IND",
+   "open": {
+    "moneyline": {
+     "away": -298.0,
+     "home": 240.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": 7.5
+    },
+    "total": {
+     "line": 234.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "tip_utc": "2026-11-03T00:30:00.000000+00:00"
+  },
+  {
+   "away": "BKN",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": 660.0,
+     "home": -1020.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": -14.5
+    },
+    "total": {
+     "line": 218.5,
+     "over": -113.0,
+     "under": -107.0
+    }
+   },
+   "game_id": "401909910",
+   "home": "NYK",
+   "open": {
+    "moneyline": {
+     "away": 575.0,
+     "home": -850.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": -14.5
+    },
+    "total": {
+     "line": 222.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "tip_utc": "2026-11-03T00:30:00.000000+00:00"
+  },
+  {
+   "away": "WAS",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": 130.0,
+     "home": -154.0
+    },
+    "spread": {
+     "away": -103.0,
+     "home": -117.0,
+     "line": -2.5
+    },
+    "total": {
+     "line": 224.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "game_id": "401909911",
+   "home": "ORL",
+   "open": {
+    "moneyline": {
+     "away": 100.0,
+     "home": -120.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": -1.5
+    },
+    "total": {
+     "line": 226.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "tip_utc": "2026-11-03T00:30:00.000000+00:00"
+  },
+  {
+   "away": "CHI",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": 394.0,
+     "home": -518.0
+    },
+    "spread": {
+     "away": -108.0,
+     "home": -112.0,
+     "line": -10.5
+    },
+    "total": {
+     "line": 240.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "game_id": "401909912",
+   "home": "PHI",
+   "open": {
+    "moneyline": {
+     "away": 470.0,
+     "home": -650.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": -11.5
+    },
+    "total": {
+     "line": 239.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "tip_utc": "2026-11-03T00:30:00.000000+00:00"
+  },
+  {
+   "away": "SAC",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": 241.0,
+     "home": -297.0
+    },
+    "spread": {
+     "away": -112.0,
+     "home": -108.0,
+     "line": -7.5
+    },
+    "total": {
+     "line": 232.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "game_id": "401909913",
+   "home": "DAL",
+   "open": {
+    "moneyline": {
+     "away": 310.0,
+     "home": -395.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": -9.5
+    },
+    "total": {
+     "line": 234.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "tip_utc": "2026-11-03T01:00:00.000000+00:00"
+  },
+  {
+   "away": "NOP",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": 178.0,
+     "home": -214.0
+    },
+    "spread": {
+     "away": -105.0,
+     "home": -115.0,
+     "line": -5.5
+    },
+    "total": {
+     "line": 231.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "game_id": "401909914",
+   "home": "MEM",
+   "open": {
+    "moneyline": {
+     "away": 205.0,
+     "home": -250.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": -6.5
+    },
+    "total": {
+     "line": 235.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "tip_utc": "2026-11-03T01:00:00.000000+00:00"
+  },
+  {
+   "away": "MIL",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": 380.0,
+     "home": -497.0
+    },
+    "spread": {
+     "away": -106.0,
+     "home": -114.0,
+     "line": -11.5
+    },
+    "total": {
+     "line": 233.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "game_id": "401909915",
+   "home": "MIN",
+   "open": {
+    "moneyline": {
+     "away": 275.0,
+     "home": -345.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": -10.5
+    },
+    "total": {
+     "line": 233.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "tip_utc": "2026-11-03T01:00:00.000000+00:00"
+  },
+  {
+   "away": "BOS",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": 150.0,
+     "home": -179.0
+    },
+    "spread": {
+     "away": -114.0,
+     "home": -106.0,
+     "line": -4.5
+    },
+    "total": {
+     "line": 215.5,
+     "over": -113.0,
+     "under": -107.0
+    }
+   },
+   "game_id": "401909916",
+   "home": "HOU",
+   "open": {
+    "moneyline": {
+     "away": 154.0,
+     "home": -185.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": -5.5
+    },
+    "total": {
+     "line": 218.5,
+     "over": -115.0,
+     "under": -105.0
+    }
+   },
+   "tip_utc": "2026-11-03T01:30:00.000000+00:00"
+  },
+  {
+   "away": "UTA",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": 740.0,
+     "home": -1180.0
+    },
+    "spread": {
+     "away": -112.0,
+     "home": -108.0,
+     "line": -16.5
+    },
+    "total": {
+     "line": 226.5,
+     "over": -113.0,
+     "under": -107.0
+    }
+   },
+   "game_id": "401909917",
+   "home": "SAS",
+   "open": {
+    "moneyline": {
+     "away": 550.0,
+     "home": -800.0
+    },
+    "spread": {
+     "away": -105.0,
+     "home": -115.0,
+     "line": -15.5
+    },
+    "total": {
+     "line": 229.5,
+     "over": -115.0,
+     "under": -105.0
+    }
+   },
+   "tip_utc": "2026-11-03T01:30:00.000000+00:00"
+  },
+  {
+   "away": "POR",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": 146.0,
+     "home": -174.0
+    },
+    "spread": {
+     "away": -112.0,
+     "home": -108.0,
+     "line": -4.5
+    },
+    "total": {
+     "line": 231.5,
+     "over": -112.0,
+     "under": -108.0
+    }
+   },
+   "game_id": "401909918",
+   "home": "DEN",
+   "open": {
+    "moneyline": {
+     "away": 136.0,
+     "home": -162.0
+    },
+    "spread": {
+     "away": -112.0,
+     "home": -108.0,
+     "line": -4.5
+    },
+    "total": {
+     "line": 231.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "tip_utc": "2026-11-03T02:00:00.000000+00:00"
+  },
+  {
+   "away": "PHX",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": 115.0,
+     "home": -136.0
+    },
+    "spread": {
+     "away": -113.0,
+     "home": -107.0,
+     "line": -2.5
+    },
+    "total": {
+     "line": 227.5,
+     "over": -106.0,
+     "under": -115.0
+    }
+   },
+   "game_id": "401909919",
+   "home": "GSW",
+   "open": {
+    "moneyline": {
+     "away": 150.0,
+     "home": -180.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": -4.5
+    },
+    "total": {
+     "line": 227.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "tip_utc": "2026-11-03T03:00:00.000000+00:00"
+  },
+  {
+   "away": "TOR",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": -229.0,
+     "home": 189.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": 6.5
+    },
+    "total": {
+     "line": 220.5,
+     "over": -106.0,
+     "under": -114.0
+    }
+   },
+   "game_id": "401909920",
+   "home": "LAC",
+   "open": {
+    "moneyline": {
+     "away": -198.0,
+     "home": 164.0
+    },
+    "spread": {
+     "away": -105.0,
+     "home": -115.0,
+     "line": 5.5
+    },
+    "total": {
+     "line": 220.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "tip_utc": "2026-11-03T03:00:00.000000+00:00"
+  },
+  {
+   "away": "MIA",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": 110.0,
+     "home": -130.0
+    },
+    "spread": {
+     "away": -102.0,
+     "home": -119.0,
+     "line": -1.5
+    },
+    "total": {
+     "line": 237.5,
+     "over": -115.0,
+     "under": -105.0
+    }
+   },
+   "game_id": "401909921",
+   "home": "LAL",
+   "open": {
+    "moneyline": {
+     "away": 100.0,
+     "home": -120.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": -1.5
+    },
+    "total": {
+     "line": 239.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "tip_utc": "2026-11-03T03:00:00.000000+00:00"
+  },
+  {
+   "away": "PHI",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": 120.0,
+     "home": -142.0
+    },
+    "spread": {
+     "away": -106.0,
+     "home": -114.0,
+     "line": -2.5
+    },
+    "total": {
+     "line": 219.5,
+     "over": -106.0,
+     "under": -115.0
+    }
+   },
+   "game_id": "401909922",
+   "home": "DET",
+   "open": {
+    "moneyline": {
+     "away": 101.0,
+     "home": -119.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": -1.5
+    },
+    "total": {
+     "line": 219.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "tip_utc": "2026-11-05T00:00:00.000000+00:00"
+  },
+  {
+   "away": "ATL",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": -127.0,
+     "home": 107.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": 1.5
+    },
+    "total": {
+     "line": 229.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "game_id": "401909923",
+   "home": "WAS",
+   "open": {
+    "moneyline": {
+     "away": -124.0,
+     "home": 105.0
+    },
+    "spread": {
+     "away": -114.0,
+     "home": -106.0,
+     "line": 1.5
+    },
+    "total": {
+     "line": 234.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "tip_utc": "2026-11-05T00:00:00.000000+00:00"
+  },
+  {
+   "away": "MIL",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": 424.0,
+     "home": -567.0
+    },
+    "spread": {
+     "away": -117.0,
+     "home": -104.0,
+     "line": -12.5
+    },
+    "total": {
+     "line": 222.5,
+     "over": -115.0,
+     "under": -106.0
+    }
+   },
+   "game_id": "401909924",
+   "home": "BOS",
+   "open": {
+    "moneyline": {
+     "away": 660.0,
+     "home": -1000.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": -14.5
+    },
+    "total": {
+     "line": 225.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "tip_utc": "2026-11-05T00:30:00.000000+00:00"
+  },
+  {
+   "away": "CHA",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": -170.0,
+     "home": 143.0
+    },
+    "spread": {
+     "away": -115.0,
+     "home": -105.0,
+     "line": 3.5
+    },
+    "total": {
+     "line": 213.5,
+     "over": -107.0,
+     "under": -113.0
+    }
+   },
+   "game_id": "401909925",
+   "home": "BKN",
+   "open": {
+    "moneyline": {
+     "away": -136.0,
+     "home": 115.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": 2.5
+    },
+    "total": {
+     "line": 214.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "tip_utc": "2026-11-05T00:30:00.000000+00:00"
+  },
+  {
+   "away": "CHI",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": 427.0,
+     "home": -570.0
+    },
+    "spread": {
+     "away": -103.0,
+     "home": -117.0,
+     "line": -11.5
+    },
+    "total": {
+     "line": 233.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "game_id": "401909926",
+   "home": "NYK",
+   "open": {
+    "moneyline": {
+     "away": 466.0,
+     "home": -640.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": -12.5
+    },
+    "total": {
+     "line": 232.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "tip_utc": "2026-11-05T00:30:00.000000+00:00"
+  },
+  {
+   "away": "IND",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": 189.0,
+     "home": -228.0
+    },
+    "spread": {
+     "away": -102.0,
+     "home": -118.0,
+     "line": -5.5
+    },
+    "total": {
+     "line": 227.5,
+     "over": -115.0,
+     "under": -105.0
+    }
+   },
+   "game_id": "401909927",
+   "home": "MEM",
+   "open": {
+    "moneyline": {
+     "away": 212.0,
+     "home": -258.0
+    },
+    "spread": {
+     "away": -114.0,
+     "home": -106.0,
+     "line": -6.5
+    },
+    "total": {
+     "line": 230.5,
+     "over": -114.0,
+     "under": -106.0
+    }
+   },
+   "tip_utc": "2026-11-05T01:00:00.000000+00:00"
+  },
+  {
+   "away": "UTA",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": 168.0,
+     "home": -201.0
+    },
+    "spread": {
+     "away": -116.0,
+     "home": -104.0,
+     "line": -5.5
+    },
+    "total": {
+     "line": 231.5,
+     "over": -108.0,
+     "under": -112.0
+    }
+   },
+   "game_id": "401909928",
+   "home": "NOP",
+   "open": {
+    "moneyline": {
+     "away": 172.0,
+     "home": -207.0
+    },
+    "spread": {
+     "away": -114.0,
+     "home": -106.0,
+     "line": -5.5
+    },
+    "total": {
+     "line": 235.5,
+     "over": -106.0,
+     "under": -114.0
+    }
+   },
+   "tip_utc": "2026-11-05T01:00:00.000000+00:00"
+  },
+  {
+   "away": "CLE",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": 136.0,
+     "home": -161.0
+    },
+    "spread": {
+     "away": -113.0,
+     "home": -107.0,
+     "line": -3.5
+    },
+    "total": {
+     "line": 226.5,
+     "over": -112.0,
+     "under": -108.0
+    }
+   },
+   "game_id": "401909929",
+   "home": "OKC",
+   "open": {
+    "moneyline": {
+     "away": 116.0,
+     "home": -137.0
+    },
+    "spread": {
+     "away": -105.0,
+     "home": -115.0,
+     "line": -2.5
+    },
+    "total": {
+     "line": 227.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "tip_utc": "2026-11-05T01:00:00.000000+00:00"
+  },
+  {
+   "away": "MIN",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": 227.0,
+     "home": -278.0
+    },
+    "spread": {
+     "away": -116.0,
+     "home": -104.0,
+     "line": -7.5
+    },
+    "total": {
+     "line": 219.5,
+     "over": -107.0,
+     "under": -113.0
+    }
+   },
+   "game_id": "401909930",
+   "home": "HOU",
+   "open": {
+    "moneyline": {
+     "away": 279.0,
+     "home": -348.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": -8.5
+    },
+    "total": {
+     "line": 223.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "tip_utc": "2026-11-05T01:30:00.000000+00:00"
+  },
+  {
+   "away": "TOR",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": 160.0,
+     "home": -191.0
+    },
+    "spread": {
+     "away": -107.0,
+     "home": -113.0,
+     "line": -4.5
+    },
+    "total": {
+     "line": 230.5,
+     "over": -113.0,
+     "under": -107.0
+    }
+   },
+   "game_id": "401909931",
+   "home": "DEN",
+   "open": {
+    "moneyline": {
+     "away": 180.0,
+     "home": -217.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": -5.5
+    },
+    "total": {
+     "line": 231.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "tip_utc": "2026-11-05T02:00:00.000000+00:00"
+  },
+  {
+   "away": "POR",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": -148.0,
+     "home": 124.0
+    },
+    "spread": {
+     "away": -117.0,
+     "home": -103.0,
+     "line": 2.5
+    },
+    "total": {
+     "line": 227.5,
+     "over": -112.0,
+     "under": -108.0
+    }
+   },
+   "game_id": "401909932",
+   "home": "PHX",
+   "open": {
+    "moneyline": {
+     "away": -140.0,
+     "home": 118.0
+    },
+    "spread": {
+     "away": -104.0,
+     "home": -116.0,
+     "line": 3.5
+    },
+    "total": {
+     "line": 228.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "tip_utc": "2026-11-05T02:00:00.000000+00:00"
+  },
+  {
+   "away": "DAL",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": 458.0,
+     "home": -620.0
+    },
+    "spread": {
+     "away": -111.0,
+     "home": -109.0,
+     "line": -12.5
+    },
+    "total": {
+     "line": 226.5,
+     "over": -115.0,
+     "under": -105.0
+    }
+   },
+   "game_id": "401909933",
+   "home": "SAS",
+   "open": {
+    "moneyline": {
+     "away": -700.0,
+     "home": 503.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": 12.5
+    },
+    "total": {
+     "line": 229.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "tip_utc": "2026-11-05T02:30:00.000000+00:00"
+  },
+  {
+   "away": "LAL",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": -650.0,
+     "home": 470.0
+    },
+    "spread": {
+     "away": -106.0,
+     "home": -115.0,
+     "line": 12.5
+    },
+    "total": {
+     "line": 233.5,
+     "over": -115.0,
+     "under": -106.0
+    }
+   },
+   "game_id": "401909934",
+   "home": "SAC",
+   "open": {
+    "moneyline": {
+     "away": -610.0,
+     "home": 450.0
+    },
+    "spread": {
+     "away": -109.0,
+     "home": -111.0,
+     "line": 11.5
+    },
+    "total": {
+     "line": 238.5,
+     "over": -105.0,
+     "under": -115.0
+    }
+   },
+   "tip_utc": "2026-11-05T03:00:00.000000+00:00"
+  },
+  {
+   "away": "MIA",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": -216.0,
+     "home": 180.0
+    },
+    "spread": {
+     "away": -103.0,
+     "home": -118.0,
+     "line": 6.5
+    },
+    "total": {
+     "line": 233.5,
+     "over": -108.0,
+     "under": -112.0
+    }
+   },
+   "game_id": "401909935",
+   "home": "LAC",
+   "open": {
+    "moneyline": {
+     "away": -196.0,
+     "home": 164.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": 4.5
+    },
+    "total": {
+     "line": 233.5,
+     "over": -114.0,
+     "under": -106.0
+    }
+   },
+   "tip_utc": "2026-11-05T03:30:00.000000+00:00"
+  },
+  {
+   "away": "ORL",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": 102.0,
+     "home": -121.0
+    },
+    "spread": {
+     "away": -112.0,
+     "home": -108.0,
+     "line": -1.5
+    },
+    "total": {
+     "line": 222.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "game_id": "401909936",
+   "home": "PHX",
+   "open": {
+    "moneyline": {
+     "away": 100.0,
+     "home": -118.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": -1.5
+    },
+    "total": {
+     "line": 224.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "tip_utc": "2026-11-06T02:00:00.000000+00:00"
+  },
+  {
+   "away": "MIA",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": 140.0,
+     "home": -167.0
+    },
+    "spread": {
+     "away": -105.0,
+     "home": -115.0,
+     "line": -3.5
+    },
+    "total": {
+     "line": 236.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "game_id": "401909937",
+   "home": "GSW",
+   "open": {
+    "moneyline": {
+     "away": 138.0,
+     "home": -164.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": -4.5
+    },
+    "total": {
+     "line": 238.5,
+     "over": -114.0,
+     "under": -106.0
+    }
+   },
+   "tip_utc": "2026-11-06T03:00:00.000000+00:00"
+  },
+  {
+   "away": "DEN",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": -324.0,
+     "home": 261.0
+    },
+    "spread": {
+     "away": -103.0,
+     "home": -118.0,
+     "line": 8.5
+    },
+    "total": {
+     "line": 229.5,
+     "over": -107.0,
+     "under": -113.0
+    }
+   },
+   "game_id": "401909938",
+   "home": "IND",
+   "open": {
+    "moneyline": {
+     "away": -241.0,
+     "home": 199.0
+    },
+    "spread": {
+     "away": -114.0,
+     "home": -106.0,
+     "line": 6.5
+    },
+    "total": {
+     "line": 228.5,
+     "over": -106.0,
+     "under": -114.0
+    }
+   },
+   "tip_utc": "2026-11-07T22:00:00.000000+00:00"
+  },
+  {
+   "away": "BKN",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": 217.0,
+     "home": -265.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": -6.5
+    },
+    "total": {
+     "line": 227.5,
+     "over": -109.0,
+     "under": -111.0
+    }
+   },
+   "game_id": "401909939",
+   "home": "ATL",
+   "open": {
+    "moneyline": {
+     "away": 191.0,
+     "home": -230.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": -6.5
+    },
+    "total": {
+     "line": 224.5,
+     "over": -106.0,
+     "under": -114.0
+    }
+   },
+   "tip_utc": "2026-11-08T00:30:00.000000+00:00"
+  },
+  {
+   "away": "NYK",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": -197.0,
+     "home": 164.0
+    },
+    "spread": {
+     "away": -112.0,
+     "home": -108.0,
+     "line": 4.5
+    },
+    "total": {
+     "line": 222.5,
+     "over": -111.0,
+     "under": -109.0
+    }
+   },
+   "game_id": "401909940",
+   "home": "CLE",
+   "open": {
+    "moneyline": {
+     "away": -163.0,
+     "home": 137.0
+    },
+    "spread": {
+     "away": -114.0,
+     "home": -106.0,
+     "line": 3.5
+    },
+    "total": {
+     "line": 225.5,
+     "over": -106.0,
+     "under": -114.0
+    }
+   },
+   "tip_utc": "2026-11-08T01:00:00.000000+00:00"
+  },
+  {
+   "away": "WAS",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": 458.0,
+     "home": -620.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": -12.5
+    },
+    "total": {
+     "line": 224.5,
+     "over": -108.0,
+     "under": -111.0
+    }
+   },
+   "game_id": "401909941",
+   "home": "OKC",
+   "open": {
+    "moneyline": {
+     "away": 373.0,
+     "home": -486.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": -11.5
+    },
+    "total": {
+     "line": 220.5,
+     "over": -114.0,
+     "under": -106.0
+    }
+   },
+   "tip_utc": "2026-11-08T01:00:00.000000+00:00"
+  },
+  {
+   "away": "ORL",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": 250.0,
+     "home": -309.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": -7.5
+    },
+    "total": {
+     "line": 220.5,
+     "over": -106.0,
+     "under": -114.0
+    }
+   },
+   "game_id": "401909942",
+   "home": "GSW",
+   "open": {
+    "moneyline": {
+     "away": 191.0,
+     "home": -230.0
+    },
+    "spread": {
+     "away": -106.0,
+     "home": -114.0,
+     "line": -6.5
+    },
+    "total": {
+     "line": 220.5,
+     "over": -114.0,
+     "under": -106.0
+    }
+   },
+   "tip_utc": "2026-11-08T01:30:00.000000+00:00"
+  },
+  {
+   "away": "HOU",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": -264.0,
+     "home": 217.0
+    },
+    "spread": {
+     "away": -108.0,
+     "home": -112.0,
+     "line": 6.5
+    },
+    "total": {
+     "line": 223.5,
+     "over": -115.0,
+     "under": -105.0
+    }
+   },
+   "game_id": "401909943",
+   "home": "PHX",
+   "open": {
+    "moneyline": {
+     "away": -241.0,
+     "home": 199.0
+    },
+    "spread": {
+     "away": -114.0,
+     "home": -106.0,
+     "line": 6.5
+    },
+    "total": {
+     "line": 222.5,
+     "over": -114.0,
+     "under": -106.0
+    }
+   },
+   "tip_utc": "2026-11-08T02:00:00.000000+00:00"
+  },
+  {
+   "away": "SAS",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": -217.0,
+     "home": 180.0
+    },
+    "spread": {
+     "away": -112.0,
+     "home": -108.0,
+     "line": 5.5
+    },
+    "total": {
+     "line": 228.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "game_id": "401909944",
+   "home": "POR",
+   "open": {
+    "moneyline": {
+     "away": -166.0,
+     "home": 140.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": 4.5
+    },
+    "total": {
+     "line": 228.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "tip_utc": "2026-11-08T03:00:00.000000+00:00"
+  },
+  {
+   "away": "PHI",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": -423.0,
+     "home": 331.0
+    },
+    "spread": {
+     "away": -107.0,
+     "home": -113.0,
+     "line": 9.5
+    },
+    "total": {
+     "line": 238.5,
+     "over": -115.0,
+     "under": -105.0
+    }
+   },
+   "game_id": "401909945",
+   "home": "CHI",
+   "open": {
+    "moneyline": {
+     "away": -311.0,
+     "home": 251.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": 9.5
+    },
+    "total": {
+     "line": 238.5,
+     "over": -107.0,
+     "under": -113.0
+    }
+   },
+   "tip_utc": "2026-11-08T20:30:00.000000+00:00"
+  },
+  {
+   "away": "LAL",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": 226.0,
+     "home": -277.0
+    },
+    "spread": {
+     "away": -118.0,
+     "home": -103.0,
+     "line": -8.5
+    },
+    "total": {
+     "line": 216.5,
+     "over": -113.0,
+     "under": -107.0
+    }
+   },
+   "game_id": "401909946",
+   "home": "DET",
+   "open": {
+    "moneyline": {
+     "away": 111.0,
+     "home": -132.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": -2.5
+    },
+    "total": {
+     "line": 223.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "tip_utc": "2026-11-08T23:00:00.000000+00:00"
+  },
+  {
+   "away": "UTA",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": 504.0,
+     "home": -700.0
+    },
+    "spread": {
+     "away": -112.0,
+     "home": -108.0,
+     "line": -12.5
+    },
+    "total": {
+     "line": 222.5,
+     "over": -106.0,
+     "under": -114.0
+    }
+   },
+   "game_id": "401909947",
+   "home": "MIN",
+   "open": {
+    "moneyline": {
+     "away": 373.0,
+     "home": -486.0
+    },
+    "spread": {
+     "away": -106.0,
+     "home": -114.0,
+     "line": -10.5
+    },
+    "total": {
+     "line": 222.5,
+     "over": -114.0,
+     "under": -106.0
+    }
+   },
+   "tip_utc": "2026-11-09T00:00:00.000000+00:00"
+  },
+  {
+   "away": "BKN",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": 248.0,
+     "home": -305.0
+    },
+    "spread": {
+     "away": -113.0,
+     "home": -107.0,
+     "line": -7.5
+    },
+    "total": {
+     "line": 223.5,
+     "over": -108.0,
+     "under": -112.0
+    }
+   },
+   "game_id": "401909948",
+   "home": "DAL",
+   "open": {
+    "moneyline": {
+     "away": 263.0,
+     "home": -327.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": -8.5
+    },
+    "total": {
+     "line": 219.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "tip_utc": "2026-11-09T00:30:00.000000+00:00"
+  },
+  {
+   "away": "BOS",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": -790.0,
+     "home": 552.0
+    },
+    "spread": {
+     "away": -112.0,
+     "home": -108.0,
+     "line": 13.5
+    },
+    "total": {
+     "line": 222.5,
+     "over": -105.0,
+     "under": -115.0
+    }
+   },
+   "game_id": "401909949",
+   "home": "MIL",
+   "open": {
+    "moneyline": {
+     "away": -620.0,
+     "home": 454.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": 12.5
+    },
+    "total": {
+     "line": 222.5,
+     "over": -106.0,
+     "under": -114.0
+    }
+   },
+   "tip_utc": "2026-11-09T01:00:00.000000+00:00"
+  },
+  {
+   "away": "NOP",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": -129.0,
+     "home": 109.0
+    },
+    "spread": {
+     "away": -115.0,
+     "home": -106.0,
+     "line": 1.5
+    },
+    "total": {
+     "line": 226.5,
+     "over": -108.0,
+     "under": -112.0
+    }
+   },
+   "game_id": "401909950",
+   "home": "LAC",
+   "open": {
+    "moneyline": {
+     "away": -120.0,
+     "home": 101.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": 1.5
+    },
+    "total": {
+     "line": 225.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "tip_utc": "2026-11-09T02:00:00.000000+00:00"
+  },
+  {
+   "away": "MIA",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": -574.0,
+     "home": 429.0
+    },
+    "spread": {
+     "away": -115.0,
+     "home": -105.0,
+     "line": 11.5
+    },
+    "total": {
+     "line": 235.5,
+     "over": -105.0,
+     "under": -115.0
+    }
+   },
+   "game_id": "401909951",
+   "home": "SAC",
+   "open": {
+    "moneyline": {
+     "away": -303.0,
+     "home": 245.0
+    },
+    "spread": {
+     "away": -114.0,
+     "home": -106.0,
+     "line": 8.5
+    },
+    "total": {
+     "line": 238.5,
+     "over": -114.0,
+     "under": -106.0
+    }
+   },
+   "tip_utc": "2026-11-09T02:00:00.000000+00:00"
+  },
+  {
+   "away": "LAL",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": 121.0,
+     "home": -144.0
+    },
+    "spread": {
+     "away": -106.0,
+     "home": -114.0,
+     "line": -2.5
+    },
+    "total": {
+     "line": 233.5,
+     "over": -114.0,
+     "under": -106.0
+    }
+   },
+   "game_id": "401909952",
+   "home": "ATL",
+   "open": {
+    "moneyline": {
+     "away": -133.0,
+     "home": 112.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": 2.5
+    },
+    "total": {
+     "line": 236.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "tip_utc": "2026-11-10T00:00:00.000000+00:00"
+  },
+  {
+   "away": "CLE",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": -324.0,
+     "home": 261.0
+    },
+    "spread": {
+     "away": -108.0,
+     "home": -112.0,
+     "line": 8.5
+    },
+    "total": {
+     "line": 215.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "game_id": "401909953",
+   "home": "CHA",
+   "open": {
+    "moneyline": {
+     "away": -309.0,
+     "home": 250.0
+    },
+    "spread": {
+     "away": -105.0,
+     "home": -115.0,
+     "line": 9.5
+    },
+    "total": {
+     "line": 217.5,
+     "over": -107.0,
+     "under": -113.0
+    }
+   },
+   "tip_utc": "2026-11-10T00:00:00.000000+00:00"
+  },
+  {
+   "away": "WAS",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": 323.0,
+     "home": -411.0
+    },
+    "spread": {
+     "away": -114.0,
+     "home": -106.0,
+     "line": -9.5
+    },
+    "total": {
+     "line": 218.5,
+     "over": -114.0,
+     "under": -106.0
+    }
+   },
+   "game_id": "401909954",
+   "home": "DET",
+   "open": {
+    "moneyline": {
+     "away": 348.0,
+     "home": -448.0
+    },
+    "spread": {
+     "away": -115.0,
+     "home": -105.0,
+     "line": -11.5
+    },
+    "total": {
+     "line": 218.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "tip_utc": "2026-11-10T00:00:00.000000+00:00"
+  },
+  {
+   "away": "MEM",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": -119.0,
+     "home": 101.0
+    },
+    "spread": {
+     "away": -111.0,
+     "home": -109.0,
+     "line": 1.5
+    },
+    "total": {
+     "line": 225.5,
+     "over": -112.0,
+     "under": -108.0
+    }
+   },
+   "game_id": "401909955",
+   "home": "TOR",
+   "open": {
+    "moneyline": {
+     "away": 117.0,
+     "home": -139.0
+    },
+    "spread": {
+     "away": -105.0,
+     "home": -115.0,
+     "line": -2.5
+    },
+    "total": {
+     "line": 228.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "tip_utc": "2026-11-10T00:30:00.000000+00:00"
+  },
+  {
+   "away": "IND",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": 160.0,
+     "home": -191.0
+    },
+    "spread": {
+     "away": -105.0,
+     "home": -116.0,
+     "line": -4.5
+    },
+    "total": {
+     "line": 227.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "game_id": "401909956",
+   "home": "DAL",
+   "open": {
+    "moneyline": {
+     "away": 142.0,
+     "home": -169.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": -4.5
+    },
+    "total": {
+     "line": 222.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "tip_utc": "2026-11-10T01:00:00.000000+00:00"
+  },
+  {
+   "away": "DEN",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": 160.0,
+     "home": -191.0
+    },
+    "spread": {
+     "away": -103.0,
+     "home": -117.0,
+     "line": -4.5
+    },
+    "total": {
+     "line": 224.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "game_id": "401909957",
+   "home": "HOU",
+   "open": {
+    "moneyline": {
+     "away": 139.0,
+     "home": -166.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": -4.5
+    },
+    "total": {
+     "line": 222.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "tip_utc": "2026-11-10T01:30:00.000000+00:00"
+  },
+  {
+   "away": "SAS",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": -396.0,
+     "home": 312.0
+    },
+    "spread": {
+     "away": -103.0,
+     "home": -117.0,
+     "line": 9.5
+    },
+    "total": {
+     "line": 225.5,
+     "over": -107.0,
+     "under": -113.0
+    }
+   },
+   "game_id": "401909958",
+   "home": "PHX",
+   "open": {
+    "moneyline": {
+     "away": -243.0,
+     "home": 200.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": 7.5
+    },
+    "total": {
+     "line": 225.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "tip_utc": "2026-11-10T02:00:00.000000+00:00"
+  },
+  {
+   "away": "NOP",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": 409.0,
+     "home": -542.0
+    },
+    "spread": {
+     "away": -105.0,
+     "home": -116.0,
+     "line": -10.5
+    },
+    "total": {
+     "line": 228.5,
+     "over": -108.0,
+     "under": -112.0
+    }
+   },
+   "game_id": "401909959",
+   "home": "GSW",
+   "open": {
+    "moneyline": {
+     "away": 300.0,
+     "home": -378.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": -9.5
+    },
+    "total": {
+     "line": 231.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "tip_utc": "2026-11-10T03:00:00.000000+00:00"
+  },
+  {
+   "away": "MIL",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": 670.0,
+     "home": -1040.0
+    },
+    "spread": {
+     "away": -106.0,
+     "home": -114.0,
+     "line": -14.5
+    },
+    "total": {
+     "line": 221.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "game_id": "401909960",
+   "home": "NYK",
+   "open": {
+    "moneyline": {
+     "away": 770.0,
+     "home": -1260.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": -15.5
+    },
+    "total": {
+     "line": 219.5,
+     "over": -114.0,
+     "under": -106.0
+    }
+   },
+   "tip_utc": "2026-11-11T00:30:00.000000+00:00"
+  },
+  {
+   "away": "BOS",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": -124.0,
+     "home": 105.0
+    },
+    "spread": {
+     "away": -114.0,
+     "home": -106.0,
+     "line": 1.5
+    },
+    "total": {
+     "line": 216.5,
+     "over": -113.0,
+     "under": -107.0
+    }
+   },
+   "game_id": "401909961",
+   "home": "PHI",
+   "open": {
+    "moneyline": {
+     "away": -109.0,
+     "home": -109.0
+    },
+    "spread": {
+     "away": -101.0,
+     "home": -119.0,
+     "line": 1.5
+    },
+    "total": {
+     "line": 214.5,
+     "over": -114.0,
+     "under": -106.0
+    }
+   },
+   "tip_utc": "2026-11-11T01:00:00.000000+00:00"
+  },
+  {
+   "away": "LAC",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": 150.0,
+     "home": -179.0
+    },
+    "spread": {
+     "away": -108.0,
+     "home": -112.0,
+     "line": -3.5
+    },
+    "total": {
+     "line": 224.5,
+     "over": -107.0,
+     "under": -113.0
+    }
+   },
+   "game_id": "401909962",
+   "home": "PHX",
+   "open": {
+    "moneyline": {
+     "away": 141.0,
+     "home": -168.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": -4.5
+    },
+    "total": {
+     "line": 225.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "tip_utc": "2026-11-11T02:00:00.000000+00:00"
+  },
+  {
+   "away": "MIA",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": -344.0,
+     "home": 276.0
+    },
+    "spread": {
+     "away": -105.0,
+     "home": -116.0,
+     "line": 8.5
+    },
+    "total": {
+     "line": 227.5,
+     "over": -113.0,
+     "under": -107.0
+    }
+   },
+   "game_id": "401909963",
+   "home": "UTA",
+   "open": {
+    "moneyline": {
+     "away": -357.0,
+     "home": 285.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": 10.5
+    },
+    "total": {
+     "line": 227.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "tip_utc": "2026-11-11T02:00:00.000000+00:00"
+  },
+  {
+   "away": "ORL",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": -217.0,
+     "home": 180.0
+    },
+    "spread": {
+     "away": -106.0,
+     "home": -114.0,
+     "line": 5.5
+    },
+    "total": {
+     "line": 222.5,
+     "over": -107.0,
+     "under": -113.0
+    }
+   },
+   "game_id": "401909964",
+   "home": "SAC",
+   "open": {
+    "moneyline": {
+     "away": -188.0,
+     "home": 157.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": 5.5
+    },
+    "total": {
+     "line": 221.5,
+     "over": -114.0,
+     "under": -106.0
+    }
+   },
+   "tip_utc": "2026-11-11T03:00:00.000000+00:00"
+  },
+  {
+   "away": "OKC",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": -117.0,
+     "home": -101.0
+    },
+    "spread": {
+     "away": -105.0,
+     "home": -115.0,
+     "line": 1.5
+    },
+    "total": {
+     "line": 226.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "game_id": "401909965",
+   "home": "POR",
+   "open": {
+    "moneyline": {
+     "away": -122.0,
+     "home": 103.0
+    },
+    "spread": {
+     "away": -112.0,
+     "home": -108.0,
+     "line": 1.5
+    },
+    "total": {
+     "line": 226.5,
+     "over": -106.0,
+     "under": -114.0
+    }
+   },
+   "tip_utc": "2026-11-11T04:00:00.000000+00:00"
+  },
+  {
+   "away": "WAS",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": 130.0,
+     "home": -154.0
+    },
+    "spread": {
+     "away": -116.0,
+     "home": -104.0,
+     "line": -3.5
+    },
+    "total": {
+     "line": 227.5,
+     "over": -115.0,
+     "under": -106.0
+    }
+   },
+   "game_id": "401909966",
+   "home": "IND",
+   "open": {
+    "moneyline": {
+     "away": 135.0,
+     "home": -161.0
+    },
+    "spread": {
+     "away": -115.0,
+     "home": -105.0,
+     "line": -4.5
+    },
+    "total": {
+     "line": 228.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "tip_utc": "2026-11-12T00:00:00.000000+00:00"
+  },
+  {
+   "away": "CLE",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": 180.0,
+     "home": -217.0
+    },
+    "spread": {
+     "away": -106.0,
+     "home": -114.0,
+     "line": -4.5
+    },
+    "total": {
+     "line": 220.5,
+     "over": -113.0,
+     "under": -107.0
+    }
+   },
+   "game_id": "401909967",
+   "home": "NYK",
+   "open": {
+    "moneyline": {
+     "away": 148.0,
+     "home": -177.0
+    },
+    "spread": {
+     "away": -105.0,
+     "home": -115.0,
+     "line": -4.5
+    },
+    "total": {
+     "line": 221.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "tip_utc": "2026-11-12T00:00:00.000000+00:00"
+  },
+  {
+   "away": "BOS",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": -197.0,
+     "home": 165.0
+    },
+    "spread": {
+     "away": -115.0,
+     "home": -105.0,
+     "line": 4.5
+    },
+    "total": {
+     "line": 215.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "game_id": "401909968",
+   "home": "TOR",
+   "open": {
+    "moneyline": {
+     "away": -220.0,
+     "home": 182.0
+    },
+    "spread": {
+     "away": -112.0,
+     "home": -108.0,
+     "line": 6.5
+    },
+    "total": {
+     "line": 215.5,
+     "over": -114.0,
+     "under": -106.0
+    }
+   },
+   "tip_utc": "2026-11-12T00:00:00.000000+00:00"
+  },
+  {
+   "away": "SAS",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": -1180.0,
+     "home": 740.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": 15.5
+    },
+    "total": {
+     "line": 237.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "game_id": "401909969",
+   "home": "CHI",
+   "open": {
+    "moneyline": {
+     "away": -610.0,
+     "home": 451.0
+    },
+    "spread": {
+     "away": -109.0,
+     "home": -111.0,
+     "line": 14.5
+    },
+    "total": {
+     "line": 237.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "tip_utc": "2026-11-12T01:00:00.000000+00:00"
+  },
+  {
+   "away": "DEN",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": -161.0,
+     "home": 136.0
+    },
+    "spread": {
+     "away": -115.0,
+     "home": -106.0,
+     "line": 3.5
+    },
+    "total": {
+     "line": 230.5,
+     "over": -115.0,
+     "under": -106.0
+    }
+   },
+   "game_id": "401909970",
+   "home": "MEM",
+   "open": {
+    "moneyline": {
+     "away": -156.0,
+     "home": 131.0
+    },
+    "spread": {
+     "away": -106.0,
+     "home": -114.0,
+     "line": 4.5
+    },
+    "total": {
+     "line": 228.5,
+     "over": -106.0,
+     "under": -114.0
+    }
+   },
+   "tip_utc": "2026-11-12T01:00:00.000000+00:00"
+  },
+  {
+   "away": "LAL",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": -930.0,
+     "home": 620.0
+    },
+    "spread": {
+     "away": -108.0,
+     "home": -112.0,
+     "line": 14.5
+    },
+    "total": {
+     "line": 230.5,
+     "over": -107.0,
+     "under": -113.0
+    }
+   },
+   "game_id": "401909971",
+   "home": "MIL",
+   "open": {
+    "moneyline": {
+     "away": -650.0,
+     "home": 473.0
+    },
+    "spread": {
+     "away": -115.0,
+     "home": -105.0,
+     "line": 10.5
+    },
+    "total": {
+     "line": 233.5,
+     "over": -106.0,
+     "under": -114.0
+    }
+   },
+   "tip_utc": "2026-11-12T01:00:00.000000+00:00"
+  },
+  {
+   "away": "BKN",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": 120.0,
+     "home": -142.0
+    },
+    "spread": {
+     "away": -111.0,
+     "home": -109.0,
+     "line": -2.5
+    },
+    "total": {
+     "line": 228.5,
+     "over": -115.0,
+     "under": -105.0
+    }
+   },
+   "game_id": "401909972",
+   "home": "NOP",
+   "open": {
+    "moneyline": {
+     "away": 138.0,
+     "home": -164.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": -4.5
+    },
+    "total": {
+     "line": 230.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "tip_utc": "2026-11-12T01:00:00.000000+00:00"
+  },
+  {
+   "away": "ORL",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": -179.0,
+     "home": 150.0
+    },
+    "spread": {
+     "away": -105.0,
+     "home": -115.0,
+     "line": 4.5
+    },
+    "total": {
+     "line": 215.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "game_id": "401909973",
+   "home": "UTA",
+   "open": {
+    "moneyline": {
+     "away": -167.0,
+     "home": 140.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": 4.5
+    },
+    "total": {
+     "line": 218.5,
+     "over": -105.0,
+     "under": -115.0
+    }
+   },
+   "tip_utc": "2026-11-12T02:00:00.000000+00:00"
+  },
+  {
+   "away": "GSW",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": 205.0,
+     "home": -249.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": -6.5
+    },
+    "total": {
+     "line": 219.5,
+     "over": -112.0,
+     "under": -108.0
+    }
+   },
+   "game_id": "401909974",
+   "home": "HOU",
+   "open": {
+    "moneyline": {
+     "away": 158.0,
+     "home": -189.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": -5.5
+    },
+    "total": {
+     "line": 222.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "tip_utc": "2026-11-12T02:30:00.000000+00:00"
+  },
+  {
+   "away": "OKC",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": 124.0,
+     "home": -147.0
+    },
+    "spread": {
+     "away": -106.0,
+     "home": -115.0,
+     "line": -2.5
+    },
+    "total": {
+     "line": 224.5,
+     "over": -112.0,
+     "under": -108.0
+    }
+   },
+   "game_id": "401909975",
+   "home": "POR",
+   "open": {
+    "moneyline": {
+     "away": -132.0,
+     "home": 111.0
+    },
+    "spread": {
+     "away": -109.0,
+     "home": -111.0,
+     "line": 2.5
+    },
+    "total": {
+     "line": 224.5,
+     "over": -108.0,
+     "under": -112.0
+    }
+   },
+   "tip_utc": "2026-11-12T03:00:00.000000+00:00"
+  },
+  {
+   "away": "TOR",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": 226.0,
+     "home": -277.0
+    },
+    "spread": {
+     "away": -115.0,
+     "home": -105.0,
+     "line": -7.5
+    },
+    "total": {
+     "line": 222.5,
+     "over": -115.0,
+     "under": -105.0
+    }
+   },
+   "game_id": "401909976",
+   "home": "PHI",
+   "open": {
+    "moneyline": {
+     "away": 341.0,
+     "home": -410.0
+    },
+    "spread": {
+     "away": -115.0,
+     "home": -105.0,
+     "line": -9.5
+    },
+    "total": {
+     "line": 221.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "tip_utc": "2026-11-13T00:00:00.000000+00:00"
+  },
+  {
+   "away": "DET",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": -438.0,
+     "home": 341.0
+    },
+    "spread": {
+     "away": -103.0,
+     "home": -117.0,
+     "line": 10.5
+    },
+    "total": {
+     "line": 223.5,
+     "over": -105.0,
+     "under": -115.0
+    }
+   },
+   "game_id": "401909977",
+   "home": "WAS",
+   "open": {
+    "moneyline": {
+     "away": -369.0,
+     "home": 293.0
+    },
+    "spread": {
+     "away": -106.0,
+     "home": -114.0,
+     "line": 9.5
+    },
+    "total": {
+     "line": 220.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "tip_utc": "2026-11-13T00:00:00.000000+00:00"
+  },
+  {
+   "away": "DAL",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": 185.0,
+     "home": -223.0
+    },
+    "spread": {
+     "away": -106.0,
+     "home": -114.0,
+     "line": -5.5
+    },
+    "total": {
+     "line": 226.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "game_id": "401909978",
+   "home": "MIN",
+   "open": {
+    "moneyline": {
+     "away": 155.0,
+     "home": -185.0
+    },
+    "spread": {
+     "away": -106.0,
+     "home": -114.0,
+     "line": -4.5
+    },
+    "total": {
+     "line": 226.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "tip_utc": "2026-11-13T01:00:00.000000+00:00"
+  },
+  {
+   "away": "CHA",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": 180.0,
+     "home": -217.0
+    },
+    "spread": {
+     "away": -112.0,
+     "home": -108.0,
+     "line": -6.5
+    },
+    "total": {
+     "line": 214.5,
+     "over": -112.0,
+     "under": -108.0
+    }
+   },
+   "game_id": "401909979",
+   "home": "PHX",
+   "open": {
+    "moneyline": {
+     "away": 206.0,
+     "home": -250.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": -7.5
+    },
+    "total": {
+     "line": 213.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "tip_utc": "2026-11-13T02:00:00.000000+00:00"
+  },
+  {
+   "away": "DEN",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": -650.0,
+     "home": 470.0
+    },
+    "spread": {
+     "away": -105.0,
+     "home": -115.0,
+     "line": 12.5
+    },
+    "total": {
+     "line": 235.5,
+     "over": -108.0,
+     "under": -112.0
+    }
+   },
+   "game_id": "401909980",
+   "home": "NOP",
+   "open": {
+    "moneyline": {
+     "away": -556.0,
+     "home": 417.0
+    },
+    "spread": {
+     "away": -115.0,
+     "home": -105.0,
+     "line": 10.5
+    },
+    "total": {
+     "line": 234.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "tip_utc": "2026-11-15T00:00:00.000000+00:00"
+  },
+  {
+   "away": "DAL",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": -344.0,
+     "home": 276.0
+    },
+    "spread": {
+     "away": -107.0,
+     "home": -113.0,
+     "line": 8.5
+    },
+    "total": {
+     "line": 228.5,
+     "over": -108.0,
+     "under": -112.0
+    }
+   },
+   "game_id": "401909981",
+   "home": "CLE",
+   "open": {
+    "moneyline": {
+     "away": 118.0,
+     "home": -140.0
+    },
+    "spread": {
+     "away": -115.0,
+     "home": -105.0,
+     "line": -3.5
+    },
+    "total": {
+     "line": 231.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "tip_utc": "2026-11-15T00:30:00.000000+00:00"
+  },
+  {
+   "away": "DET",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": -173.0,
+     "home": 146.0
+    },
+    "spread": {
+     "away": -108.0,
+     "home": -112.0,
+     "line": 4.5
+    },
+    "total": {
+     "line": 228.5,
+     "over": -113.0,
+     "under": -107.0
+    }
+   },
+   "game_id": "401909982",
+   "home": "MIA",
+   "open": {
+    "moneyline": {
+     "away": -186.0,
+     "home": 156.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": 5.5
+    },
+    "total": {
+     "line": 226.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "tip_utc": "2026-11-15T01:00:00.000000+00:00"
+  },
+  {
+   "away": "BKN",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": 160.0,
+     "home": -191.0
+    },
+    "spread": {
+     "away": -119.0,
+     "home": -101.0,
+     "line": -4.5
+    },
+    "total": {
+     "line": 223.5,
+     "over": -105.0,
+     "under": -115.0
+    }
+   },
+   "game_id": "401909983",
+   "home": "MEM",
+   "open": {
+    "moneyline": {
+     "away": 163.0,
+     "home": -195.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": -5.5
+    },
+    "total": {
+     "line": 225.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "tip_utc": "2026-11-15T01:00:00.000000+00:00"
+  },
+  {
+   "away": "CHI",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": 690.0,
+     "home": -1080.0
+    },
+    "spread": {
+     "away": -116.0,
+     "home": -104.0,
+     "line": -16.5
+    },
+    "total": {
+     "line": 237.5,
+     "over": -114.0,
+     "under": -106.0
+    }
+   },
+   "game_id": "401909984",
+   "home": "MIN",
+   "open": {
+    "moneyline": {
+     "away": 580.0,
+     "home": -840.0
+    },
+    "spread": {
+     "away": -115.0,
+     "home": -105.0,
+     "line": -14.5
+    },
+    "total": {
+     "line": 236.5,
+     "over": -108.0,
+     "under": -112.0
+    }
+   },
+   "tip_utc": "2026-11-15T01:00:00.000000+00:00"
+  },
+  {
+   "away": "IND",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": 235.0,
+     "home": -288.0
+    },
+    "spread": {
+     "away": -115.0,
+     "home": -106.0,
+     "line": -7.5
+    },
+    "total": {
+     "line": 226.5,
+     "over": -105.0,
+     "under": -115.0
+    }
+   },
+   "game_id": "401909985",
+   "home": "PHI",
+   "open": {
+    "moneyline": {
+     "away": 208.0,
+     "home": -253.0
+    },
+    "spread": {
+     "away": -108.0,
+     "home": -112.0,
+     "line": -6.5
+    },
+    "total": {
+     "line": 222.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "tip_utc": "2026-11-15T18:00:00.000000+00:00"
+  },
+  {
+   "away": "LAL",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": -161.0,
+     "home": 136.0
+    },
+    "spread": {
+     "away": -108.0,
+     "home": -112.0,
+     "line": 3.5
+    },
+    "total": {
+     "line": 226.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "game_id": "401909986",
+   "home": "PHX",
+   "open": {
+    "moneyline": {
+     "away": -147.0,
+     "home": 124.0
+    },
+    "spread": {
+     "away": -105.0,
+     "home": -115.0,
+     "line": 2.5
+    },
+    "total": {
+     "line": 228.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "tip_utc": "2026-11-15T21:00:00.000000+00:00"
+  },
+  {
+   "away": "CHA",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": 100.0,
+     "home": -118.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": -1.5
+    },
+    "total": {
+     "line": 214.5,
+     "over": -113.0,
+     "under": -107.0
+    }
+   },
+   "game_id": "401909987",
+   "home": "LAC",
+   "open": {
+    "moneyline": {
+     "away": 107.0,
+     "home": -126.0
+    },
+    "spread": {
+     "away": -115.0,
+     "home": -105.0,
+     "line": -2.5
+    },
+    "total": {
+     "line": 215.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "tip_utc": "2026-11-15T21:30:00.000000+00:00"
+  },
+  {
+   "away": "SAS",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": -1080.0,
+     "home": 690.0
+    },
+    "spread": {
+     "away": -112.0,
+     "home": -108.0,
+     "line": 14.5
+    },
+    "total": {
+     "line": 222.5,
+     "over": -107.0,
+     "under": -113.0
+    }
+   },
+   "game_id": "401909988",
+   "home": "UTA",
+   "open": {
+    "moneyline": {
+     "away": -1640.0,
+     "home": 920.0
+    },
+    "spread": {
+     "away": -105.0,
+     "home": -115.0,
+     "line": 17.5
+    },
+    "total": {
+     "line": 224.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "tip_utc": "2026-11-15T22:00:00.000000+00:00"
+  },
+  {
+   "away": "DAL",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": 640.0,
+     "home": -970.0
+    },
+    "spread": {
+     "away": -103.0,
+     "home": -117.0,
+     "line": -14.5
+    },
+    "total": {
+     "line": 217.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "game_id": "401909989",
+   "home": "BOS",
+   "open": {
+    "moneyline": {
+     "away": 450.0,
+     "home": -610.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": -12.5
+    },
+    "total": {
+     "line": 216.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "tip_utc": "2026-11-15T23:00:00.000000+00:00"
+  },
+  {
+   "away": "NYK",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": -173.0,
+     "home": 146.0
+    },
+    "spread": {
+     "away": -105.0,
+     "home": -115.0,
+     "line": 4.5
+    },
+    "total": {
+     "line": 218.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "game_id": "401909990",
+   "home": "TOR",
+   "open": {
+    "moneyline": {
+     "away": -158.0,
+     "home": 133.0
+    },
+    "spread": {
+     "away": -105.0,
+     "home": -115.0,
+     "line": 3.5
+    },
+    "total": {
+     "line": 217.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "tip_utc": "2026-11-15T23:00:00.000000+00:00"
+  },
+  {
+   "away": "HOU",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": -359.0,
+     "home": 286.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": 8.5
+    },
+    "total": {
+     "line": 224.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "game_id": "401909991",
+   "home": "WAS",
+   "open": {
+    "moneyline": {
+     "away": -356.0,
+     "home": 284.0
+    },
+    "spread": {
+     "away": -114.0,
+     "home": -106.0,
+     "line": 8.5
+    },
+    "total": {
+     "line": 222.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "tip_utc": "2026-11-16T00:00:00.000000+00:00"
+  },
+  {
+   "away": "ATL",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": -351.0,
+     "home": 281.0
+    },
+    "spread": {
+     "away": -115.0,
+     "home": -106.0,
+     "line": 8.5
+    },
+    "total": {
+     "line": 233.5,
+     "over": -115.0,
+     "under": -105.0
+    }
+   },
+   "game_id": "401909992",
+   "home": "MIL",
+   "open": {
+    "moneyline": {
+     "away": -268.0,
+     "home": 220.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": 6.5
+    },
+    "total": {
+     "line": 232.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "tip_utc": "2026-11-16T01:00:00.000000+00:00"
+  },
+  {
+   "away": "OKC",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": -620.0,
+     "home": 458.0
+    },
+    "spread": {
+     "away": -112.0,
+     "home": -108.0,
+     "line": 12.5
+    },
+    "total": {
+     "line": 221.5,
+     "over": -108.0,
+     "under": -112.0
+    }
+   },
+   "game_id": "401909993",
+   "home": "SAC",
+   "open": {
+    "moneyline": {
+     "away": -430.0,
+     "home": 336.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": 10.5
+    },
+    "total": {
+     "line": 222.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "tip_utc": "2026-11-16T02:00:00.000000+00:00"
+  },
+  {
+   "away": "ORL",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": 286.0,
+     "home": -358.0
+    },
+    "spread": {
+     "away": -112.0,
+     "home": -108.0,
+     "line": -8.5
+    },
+    "total": {
+     "line": 212.5,
+     "over": -113.0,
+     "under": -107.0
+    }
+   },
+   "game_id": "401909994",
+   "home": "BOS",
+   "open": {
+    "moneyline": {
+     "away": 333.0,
+     "home": -426.0
+    },
+    "spread": {
+     "away": -115.0,
+     "home": -105.0,
+     "line": -9.5
+    },
+    "total": {
+     "line": 211.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "tip_utc": "2026-11-17T00:00:00.000000+00:00"
+  },
+  {
+   "away": "CHI",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": 263.0,
+     "home": -327.0
+    },
+    "spread": {
+     "away": -114.0,
+     "home": -106.0,
+     "line": -8.5
+    },
+    "total": {
+     "line": 241.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "game_id": "401909995",
+   "home": "CLE",
+   "open": {
+    "moneyline": {
+     "away": 315.0,
+     "home": -400.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": -10.5
+    },
+    "total": {
+     "line": 241.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "tip_utc": "2026-11-17T00:00:00.000000+00:00"
+  },
+  {
+   "away": "MEM",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": -170.0,
+     "home": 143.0
+    },
+    "spread": {
+     "away": -115.0,
+     "home": -105.0,
+     "line": 3.5
+    },
+    "total": {
+     "line": 231.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "game_id": "401909996",
+   "home": "WAS",
+   "open": {
+    "moneyline": {
+     "away": -223.0,
+     "home": 185.0
+    },
+    "spread": {
+     "away": -115.0,
+     "home": -105.0,
+     "line": 6.5
+    },
+    "total": {
+     "line": 230.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "tip_utc": "2026-11-17T00:00:00.000000+00:00"
+  },
+  {
+   "away": "PHI",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": -230.0,
+     "home": 191.0
+    },
+    "spread": {
+     "away": -113.0,
+     "home": -107.0,
+     "line": 5.5
+    },
+    "total": {
+     "line": 227.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "game_id": "401909997",
+   "home": "BKN",
+   "open": {
+    "moneyline": {
+     "away": -207.0,
+     "home": 172.0
+    },
+    "spread": {
+     "away": -115.0,
+     "home": -105.0,
+     "line": 5.5
+    },
+    "total": {
+     "line": 226.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "tip_utc": "2026-11-17T00:30:00.000000+00:00"
+  },
+  {
+   "away": "HOU",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": -120.0,
+     "home": 102.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": 1.5
+    },
+    "total": {
+     "line": 233.5,
+     "over": -114.0,
+     "under": -106.0
+    }
+   },
+   "game_id": "401909998",
+   "home": "MIA",
+   "open": {
+    "moneyline": {
+     "away": -141.0,
+     "home": 119.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": 2.5
+    },
+    "total": {
+     "line": 228.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "tip_utc": "2026-11-17T00:30:00.000000+00:00"
+  },
+  {
+   "away": "POR",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": 110.0,
+     "home": -130.0
+    },
+    "spread": {
+     "away": -114.0,
+     "home": -106.0,
+     "line": -2.5
+    },
+    "total": {
+     "line": 227.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "game_id": "401909999",
+   "home": "MIN",
+   "open": {
+    "moneyline": {
+     "away": 121.0,
+     "home": -143.0
+    },
+    "spread": {
+     "away": -115.0,
+     "home": -105.0,
+     "line": -3.5
+    },
+    "total": {
+     "line": 228.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "tip_utc": "2026-11-17T01:00:00.000000+00:00"
+  },
+  {
+   "away": "GSW",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": -170.0,
+     "home": 142.0
+    },
+    "spread": {
+     "away": -111.0,
+     "home": -108.0,
+     "line": 3.5
+    },
+    "total": {
+     "line": 223.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "game_id": "401910000",
+   "home": "NOP",
+   "open": {
+    "moneyline": {
+     "away": -131.0,
+     "home": 111.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": 2.5
+    },
+    "total": {
+     "line": 226.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "tip_utc": "2026-11-17T01:00:00.000000+00:00"
+  },
+  {
+   "away": "PHX",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": 333.0,
+     "home": -426.0
+    },
+    "spread": {
+     "away": -106.0,
+     "home": -114.0,
+     "line": -9.5
+    },
+    "total": {
+     "line": 229.5,
+     "over": -106.0,
+     "under": -114.0
+    }
+   },
+   "game_id": "401910001",
+   "home": "DEN",
+   "open": {
+    "moneyline": {
+     "away": 294.0,
+     "home": -370.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": -10.5
+    },
+    "total": {
+     "line": 228.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "tip_utc": "2026-11-17T02:00:00.000000+00:00"
+  },
+  {
+   "away": "NYK",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": -135.0,
+     "home": 114.0
+    },
+    "spread": {
+     "away": -103.0,
+     "home": -117.0,
+     "line": 2.5
+    },
+    "total": {
+     "line": 215.5,
+     "over": -115.0,
+     "under": -106.0
+    }
+   },
+   "game_id": "401910002",
+   "home": "TOR",
+   "open": {
+    "moneyline": {
+     "away": -152.0,
+     "home": 128.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": 3.5
+    },
+    "total": {
+     "line": 216.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "tip_utc": "2026-11-18T00:30:00.000000+00:00"
+  },
+  {
+   "away": "POR",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": 150.0,
+     "home": -179.0
+    },
+    "spread": {
+     "away": -107.0,
+     "home": -113.0,
+     "line": -4.5
+    },
+    "total": {
+     "line": 225.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "game_id": "401910003",
+   "home": "MIN",
+   "open": {
+    "moneyline": {
+     "away": 111.0,
+     "home": -132.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": -2.5
+    },
+    "total": {
+     "line": 226.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "tip_utc": "2026-11-18T01:00:00.000000+00:00"
+  },
+  {
+   "away": "DET",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": 340.0,
+     "home": -437.0
+    },
+    "spread": {
+     "away": -105.0,
+     "home": -116.0,
+     "line": -9.5
+    },
+    "total": {
+     "line": 221.5,
+     "over": -113.0,
+     "under": -107.0
+    }
+   },
+   "game_id": "401910004",
+   "home": "SAS",
+   "open": {
+    "moneyline": {
+     "away": 277.0,
+     "home": -345.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": -7.5
+    },
+    "total": {
+     "line": 220.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "tip_utc": "2026-11-18T01:00:00.000000+00:00"
+  },
+  {
+   "away": "CHA",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": 236.0,
+     "home": -289.0
+    },
+    "spread": {
+     "away": -101.0,
+     "home": -119.0,
+     "line": -6.5
+    },
+    "total": {
+     "line": 221.5,
+     "over": -112.0,
+     "under": -108.0
+    }
+   },
+   "game_id": "401910005",
+   "home": "LAL",
+   "open": {
+    "moneyline": {
+     "away": 309.0,
+     "home": -391.0
+    },
+    "spread": {
+     "away": -103.0,
+     "home": -117.0,
+     "line": -10.5
+    },
+    "total": {
+     "line": 218.5,
+     "over": -114.0,
+     "under": -106.0
+    }
+   },
+   "tip_utc": "2026-11-18T04:00:00.000000+00:00"
+  },
+  {
+   "away": "UTA",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": 190.0,
+     "home": -229.0
+    },
+    "spread": {
+     "away": -103.0,
+     "home": -117.0,
+     "line": -5.5
+    },
+    "total": {
+     "line": 227.5,
+     "over": -106.0,
+     "under": -114.0
+    }
+   },
+   "game_id": "401910006",
+   "home": "LAC",
+   "open": {
+    "moneyline": {
+     "away": 166.0,
+     "home": -199.0
+    },
+    "spread": {
+     "away": -106.0,
+     "home": -114.0,
+     "line": -5.5
+    },
+    "total": {
+     "line": 223.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "tip_utc": "2026-11-18T03:30:00.000000+00:00"
+  },
+  {
+   "away": "MEM",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": 155.0,
+     "home": -185.0
+    },
+    "spread": {
+     "away": -107.0,
+     "home": -113.0,
+     "line": -4.5
+    },
+    "total": {
+     "line": 239.5,
+     "over": -109.0,
+     "under": -111.0
+    }
+   },
+   "game_id": "401910007",
+   "home": "CLE",
+   "open": {
+    "moneyline": {
+     "away": 164.0,
+     "home": -196.0
+    },
+    "spread": {
+     "away": -117.0,
+     "home": -103.0,
+     "line": -5.5
+    },
+    "total": {
+     "line": 236.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "tip_utc": "2026-11-19T00:00:00.000000+00:00"
+  },
+  {
+   "away": "HOU",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": -326.0,
+     "home": 262.0
+    },
+    "spread": {
+     "away": -117.0,
+     "home": -103.0,
+     "line": 7.5
+    },
+    "total": {
+     "line": 224.5,
+     "over": -115.0,
+     "under": -105.0
+    }
+   },
+   "game_id": "401910008",
+   "home": "IND",
+   "open": {
+    "moneyline": {
+     "away": -264.0,
+     "home": 217.0
+    },
+    "spread": {
+     "away": -114.0,
+     "home": -106.0,
+     "line": 7.5
+    },
+    "total": {
+     "line": 224.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "tip_utc": "2026-11-19T00:00:00.000000+00:00"
+  },
+  {
+   "away": "MIL",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": 504.0,
+     "home": -700.0
+    },
+    "spread": {
+     "away": -102.0,
+     "home": -118.0,
+     "line": -11.5
+    },
+    "total": {
+     "line": 235.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "game_id": "401910009",
+   "home": "MIA",
+   "open": {
+    "moneyline": {
+     "away": 539.0,
+     "home": -770.0
+    },
+    "spread": {
+     "away": -106.0,
+     "home": -114.0,
+     "line": -12.5
+    },
+    "total": {
+     "line": 236.5,
+     "over": -106.0,
+     "under": -114.0
+    }
+   },
+   "tip_utc": "2026-11-19T00:00:00.000000+00:00"
+  },
+  {
+   "away": "PHI",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": 146.0,
+     "home": -174.0
+    },
+    "spread": {
+     "away": -115.0,
+     "home": -105.0,
+     "line": -4.5
+    },
+    "total": {
+     "line": 218.5,
+     "over": -112.0,
+     "under": -108.0
+    }
+   },
+   "game_id": "401910010",
+   "home": "ORL",
+   "open": {
+    "moneyline": {
+     "away": -122.0,
+     "home": 103.0
+    },
+    "spread": {
+     "away": -107.0,
+     "home": -113.0,
+     "line": 1.5
+    },
+    "total": {
+     "line": 223.5,
+     "over": -106.0,
+     "under": -114.0
+    }
+   },
+   "tip_utc": "2026-11-19T00:00:00.000000+00:00"
+  },
+  {
+   "away": "CHI",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": 105.0,
+     "home": -124.0
+    },
+    "spread": {
+     "away": -106.0,
+     "home": -114.0,
+     "line": -1.5
+    },
+    "total": {
+     "line": 239.5,
+     "over": -107.0,
+     "under": -113.0
+    }
+   },
+   "game_id": "401910011",
+   "home": "BKN",
+   "open": {
+    "moneyline": {
+     "away": 128.0,
+     "home": -152.0
+    },
+    "spread": {
+     "away": -106.0,
+     "home": -114.0,
+     "line": -2.5
+    },
+    "total": {
+     "line": 237.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "tip_utc": "2026-11-19T00:30:00.000000+00:00"
+  },
+  {
+   "away": "WAS",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": 147.0,
+     "home": -176.0
+    },
+    "spread": {
+     "away": -116.0,
+     "home": -105.0,
+     "line": -4.5
+    },
+    "total": {
+     "line": 223.5,
+     "over": -115.0,
+     "under": -105.0
+    }
+   },
+   "game_id": "401910012",
+   "home": "TOR",
+   "open": {
+    "moneyline": {
+     "away": 226.0,
+     "home": -276.0
+    },
+    "spread": {
+     "away": -106.0,
+     "home": -114.0,
+     "line": -7.5
+    },
+    "total": {
+     "line": 227.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "tip_utc": "2026-11-19T00:30:00.000000+00:00"
+  },
+  {
+   "away": "DET",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": -191.0,
+     "home": 160.0
+    },
+    "spread": {
+     "away": -115.0,
+     "home": -106.0,
+     "line": 4.5
+    },
+    "total": {
+     "line": 224.5,
+     "over": -110.0,
+     "under": -110.0
+    }
+   },
+   "game_id": "401910013",
+   "home": "NOP",
+   "open": {
+    "moneyline": {
+     "away": -305.0,
+     "home": 247.0
+    },
+    "spread": {
+     "away": -111.0,
+     "home": -109.0,
+     "line": 8.5
+    },
+    "total": {
+     "line": 229.5,
+     "over": -111.0,
+     "under": -109.0
+    }
+   },
+   "tip_utc": "2026-11-19T01:00:00.000000+00:00"
+  },
+  {
+   "away": "ATL",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": 217.0,
+     "home": -264.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": -6.5
+    },
+    "total": {
+     "line": 228.5,
+     "over": -115.0,
+     "under": -106.0
+    }
+   },
+   "game_id": "401910014",
+   "home": "OKC",
+   "open": {
+    "moneyline": {
+     "away": 221.0,
+     "home": -270.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": -7.5
+    },
+    "total": {
+     "line": 226.5,
+     "over": -106.0,
+     "under": -114.0
+    }
+   },
+   "tip_utc": "2026-11-19T01:00:00.000000+00:00"
+  },
+  {
+   "away": "BOS",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": -136.0,
+     "home": 115.0
+    },
+    "spread": {
+     "away": -106.0,
+     "home": -114.0,
+     "line": 2.5
+    },
+    "total": {
+     "line": 218.5,
+     "over": -113.0,
+     "under": -107.0
+    }
+   },
+   "game_id": "401910015",
+   "home": "DEN",
+   "open": {
+    "moneyline": {
+     "away": -141.0,
+     "home": 119.0
+    },
+    "spread": {
+     "away": -106.0,
+     "home": -114.0,
+     "line": 2.5
+    },
+    "total": {
+     "line": 219.5,
+     "over": -106.0,
+     "under": -114.0
+    }
+   },
+   "tip_utc": "2026-11-19T02:30:00.000000+00:00"
+  },
+  {
+   "away": "GSW",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": 164.0,
+     "home": -197.0
+    },
+    "spread": {
+     "away": -118.0,
+     "home": -103.0,
+     "line": -5.5
+    },
+    "total": {
+     "line": 223.5,
+     "over": -107.0,
+     "under": -113.0
+    }
+   },
+   "game_id": "401910016",
+   "home": "DAL",
+   "open": {
+    "moneyline": {
+     "away": 173.0,
+     "home": -208.0
+    },
+    "spread": {
+     "away": -114.0,
+     "home": -106.0,
+     "line": -6.5
+    },
+    "total": {
+     "line": 221.5,
+     "over": -114.0,
+     "under": -106.0
+    }
+   },
+   "tip_utc": "2026-11-19T01:00:00.000000+00:00"
+  },
+  {
+   "away": "UTA",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": 411.0,
+     "home": -545.0
+    },
+    "spread": {
+     "away": -105.0,
+     "home": -115.0,
+     "line": -11.5
+    },
+    "total": {
+     "line": 229.5,
+     "over": -108.0,
+     "under": -112.0
+    }
+   },
+   "game_id": "401910017",
+   "home": "LAL",
+   "open": {
+    "moneyline": {
+     "away": 431.0,
+     "home": -578.0
+    },
+    "spread": {
+     "away": -110.0,
+     "home": -110.0,
+     "line": -12.5
+    },
+    "total": {
+     "line": 231.5,
+     "over": -115.0,
+     "under": -106.0
+    }
+   },
+   "tip_utc": "2026-11-19T03:00:00.000000+00:00"
+  },
+  {
+   "away": "PHX",
+   "book": "draftkings",
+   "close": {
+    "moneyline": {
+     "away": -283.0,
+     "home": 231.0
+    },
+    "spread": {
+     "away": -111.0,
+     "home": -109.0,
+     "line": 7.5
+    },
+    "total": {
+     "line": 226.5,
+     "over": -115.0,
+     "under": -105.0
+    }
+   },
+   "game_id": "401910018",
+   "home": "SAC",
+   "open": {
+    "moneyline": {
+     "away": -219.0,
+     "home": 182.0
+    },
+    "spread": {
+     "away": -106.0,
+     "home": -114.0,
+     "line": 6.5
+    },
+    "total": {
+     "line": 229.5,
+     "over": -111.0,
+     "under": -109.0
+    }
+   },
+   "tip_utc": "2026-11-19T03:00:00.000000+00:00"
+  }
+ ],
+ "season": 2026,
+ "sha256": "e84d7160d677f113a34131cb83772e56daf66e7092f038bbd539b413398f7ee9",
+ "skipped": {},
+ "source": "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/summary?event=<game_id> (pickcenter, provider DraftKings, close and open)"
+}

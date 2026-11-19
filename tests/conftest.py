@@ -15,6 +15,7 @@ def root(tmp_path):
     shutil.copyfile(BASE / "config.yaml", tmp_path / "config.yaml")
     shutil.copyfile(BASE / "MODEL.md", tmp_path / "MODEL.md")
     shutil.copytree(BASE / "data" / "calibration_seeds", tmp_path / "data" / "calibration_seeds")
+    shutil.copytree(BASE / "data" / "market_backfill", tmp_path / "data" / "market_backfill")
     shutil.copytree(BASE / "web", tmp_path / "web")
     return tmp_path
 

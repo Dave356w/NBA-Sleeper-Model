@@ -143,12 +143,15 @@ def evaluate(output, params, quotes, captured_at, game, config, stage):
                 "favorite": prices[side] < 0,
             }
 
-        if direction:
+        # v1.27 retired the value series (`selection_series: [directional]`); configurations
+        # frozen without the key keep every series.
+        series = set(config.get("selection_series", ("directional", "edge_3plus", "value")))
+        if direction and "directional" in series:
             selections.append(selection(direction, "directional"))
         if market == "ats":
-            if direction and abs(edge_points) >= config["ats_subset_points"]:
+            if direction and abs(edge_points) >= config["ats_subset_points"] and "edge_3plus" in series:
                 selections.append(selection(direction, "edge_3plus"))
-        else:
+        elif "value" in series:
             for side in sides:
                 if edges[side] >= config["value_probability_edge"] and (
                     market != "moneyline" or evs[side] > 0

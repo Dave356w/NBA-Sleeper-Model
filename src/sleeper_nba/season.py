@@ -44,6 +44,7 @@ PUBLIC_ROW_FIELDS = (
     "actual_home_score",
     "actual_away_score",
     "ml",
+    "price_basis",
 )
 USABLE_LINE_REASONS = {None, "unsupported_line_increment", "outside_price_range"}
 
@@ -510,6 +511,49 @@ def favorite_benchmark(rows):
     }
 
 
+def closing_prices(root, config):
+    """Owner-authorized closing-price backfill (v1.27): hash-pinned ESPN DraftKings closes by game."""
+    entry = config.get("closing_backfill")
+    if not entry:
+        return {}
+    path = Path(root) / entry["file"]
+    data = json.loads(path.read_text())
+    body = {k: v for k, v in data.items() if k != "sha256"}
+    if digest(body) != data["sha256"] or data["sha256"] != entry["sha256"]:
+        raise ValueError("Closing-price backfill integrity failure")
+    return {r["game_id"]: r for r in data["rows"] if r.get("book") == config["book"]}
+
+
+def with_closing_prices(rows, closes):
+    """Price each market a game's frozen snapshot left unpriced at the DraftKings close.
+
+    Reporting only: the season record's selections are re-derived at render time
+    and never written, graded or used for training. `price_basis` names the
+    moneyline's source (snapshot or closing); spread and total lines carry their
+    own basis in `line_basis`.
+    """
+    out = []
+    for r in rows:
+        r = {**r, "price_basis": "snapshot" if r["ml"] else None, "line_basis": {}}
+        close = (closes.get(r["game_id"]) or {}).get("close")
+        same_teams = close is not None and (closes[r["game_id"]]["home"], closes[r["game_id"]]["away"]) == (
+            r["home"],
+            r["away"],
+        )
+        ml = (close or {}).get("moneyline", {})
+        if not r["ml"] and same_teams and valid_odds(ml.get("home")) and valid_odds(ml.get("away")):
+            r["ml"] = {"home": ml["home"], "away": ml["away"]}
+            r["price_basis"] = "closing"
+        for key, market, field in (("spread", "spread", "line"), ("total_line", "total", "line")):
+            if r[key] is not None:
+                r["line_basis"][market] = "snapshot"
+            elif same_teams and _number(close[market].get(field)) is not None:
+                r[key] = _number(close[market][field])
+                r["line_basis"][market] = "closing"
+        out.append(r)
+    return out
+
+
 def season_record(records, root, config):
     """Pooled first-snapshot record for the current season, with its parts kept visible."""
     seasons = [matchup.season_of(r["game"]) for r in records if r["kind"] in ("forecast", "schedule")]
@@ -520,6 +564,8 @@ def season_record(records, root, config):
     live = live_rows(records, config, season)
     seen = {r["game_id"] for r in live}
     rows = [r for r in rows if r["game_id"] not in seen] + live
+    rows = with_closing_prices(rows, closing_prices(root, config))
+    basis = [r["price_basis"] for r in rows]
     return {
         "season": f"{season}–{str(season + 1)[-2:]}",
         "stage": "first",
@@ -536,4 +582,10 @@ def season_record(records, root, config):
         ],
         "replay_clock": "Seed results usable at 12 UTC on the day after the Eastern tip date (assumed); "
         "earlier-version captures use their recorded verification times.",
+        # v1.27: where a frozen snapshot had no price, the moneyline is the DraftKings close.
+        "price_basis": {
+            "counts": {k or "none": basis.count(k) for k in ("snapshot", "closing", None) if basis.count(k)},
+            "snapshot": metrics([r for r in rows if r["price_basis"] == "snapshot"], config),
+            "closing": metrics([r for r in rows if r["price_basis"] == "closing"], config),
+        },
     }

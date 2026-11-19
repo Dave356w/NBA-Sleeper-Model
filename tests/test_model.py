@@ -155,6 +155,8 @@ ALL_MARKETS = ["moneyline", "ats", "totals"]
 
 
 def test_market_equations_and_signs(game, config):
+    # The value series applies to forecasts frozen before v1.27, which retired it.
+    config = {k: v for k, v in config.items() if k != "selection_series"}
     # Spread and totals series as registered before v1.22.
     config = {**config, "selection_markets": ALL_MARKETS}
     out = probabilities({"margin": 10, "total": 230}, DEFAULTS)
@@ -201,6 +203,8 @@ def test_quote_freshness(config, changes, reason):
 
 
 def test_moneyline_value_can_select_projected_loser(game, config):
+    # The value series applies to forecasts frozen before v1.27, which retired it.
+    config = {k: v for k, v in config.items() if k != "selection_series"}
     out = probabilities({"margin": 1, "total": 230}, DEFAULTS)
     _, selections = evaluate(
         out, DEFAULTS, [quote("moneyline", prices={"home": -300, "away": 250})], AT, game, config, "first"
@@ -368,6 +372,8 @@ def test_registered_lock_policy_and_unknown_policy(game, config):
 
 def test_v1_22_selects_moneyline_only_and_keeps_spread_and_total_as_context(game, config):
     assert config["selection_markets"] == ["moneyline"]
+    # Pin the v1.22-v1.26 series; v1.27 retired the value series (tested below).
+    config = {k: v for k, v in config.items() if k != "selection_series"}
     out = probabilities({"margin": 10, "total": 230}, DEFAULTS)
     quotes = [
         quote("moneyline", None, prices={"home": -150, "away": 130}),
@@ -403,7 +409,6 @@ def test_v1_22_selects_moneyline_only_and_keeps_spread_and_total_as_context(game
 def test_v1_26_first_snapshot_waits_for_the_game_day(game, config, at, policy, expected):
     from sleeper_nba.common import first_window_open
 
-    assert config["first_policy"] == "game_day_et_v1"
     frozen = (
         {**config, "first_policy": policy}
         if policy
@@ -413,3 +418,43 @@ def test_v1_26_first_snapshot_waits_for_the_game_day(game, config, at, policy, e
     assert first_window_open(game, frozen, at) == ("first" in expected)
     with pytest.raises(ValueError, match="Unknown first policy"):
         first_window_open(game, {**config, "first_policy": "typo"}, at)
+
+
+@pytest.mark.parametrize(
+    "at,priced,expected",
+    [
+        # Before the game's Eastern date nothing freezes, priced or not.
+        ("2026-11-07T04:59:59+00:00", True, False),
+        # On game day a priced capture freezes; an unpriced one waits ...
+        ("2026-11-07T05:00:00+00:00", True, True),
+        ("2026-11-07T05:00:00+00:00", False, False),
+        ("2026-11-07T16:59:59+00:00", False, False),
+        # ... until the lock target (T-5h), when it freezes unpriced.
+        ("2026-11-07T17:00:00+00:00", False, True),
+    ],
+)
+def test_v1_27_first_snapshot_waits_for_a_moneyline(game, config, at, priced, expected):
+    from sleeper_nba.common import first_is_priced, first_window_open
+
+    assert config["first_policy"] == "game_day_priced_et_v1"
+    assert first_window_open(game, config, at, priced) is expected
+    variants = {"fixed": {"markets": [{"market": "moneyline", "eligible": priced}]}}
+    assert first_is_priced(variants) is priced
+    assert not first_is_priced({"fixed": {"markets": [{"market": "ats", "eligible": True}]}})
+
+
+def test_v1_27_retires_the_value_series(game, config):
+    assert config["selection_series"] == ["directional"]
+    out = probabilities({"margin": 10, "total": 230}, DEFAULTS)
+    quotes = [quote("moneyline", None, prices={"home": -150, "away": 130}), quote("ats", -5.5)]
+    markets, selections = evaluate(out, DEFAULTS, quotes, AT, game, config, "first")
+    # Only the model pick registers; the edges and EV stay on the market record as context.
+    assert [(s["market"], s["series"], s["side"]) for s in selections] == [
+        ("moneyline", "directional", "home")
+    ]
+    ml = next(m for m in markets if m["market"] == "moneyline")
+    assert ml["edges"]["home"] >= config["value_probability_edge"] and ml["ev"]["home"] > 0
+    # Forecasts frozen before v1.27 keep the value series.
+    legacy = {k: v for k, v in config.items() if k != "selection_series"}
+    _, older = evaluate(out, DEFAULTS, quotes, AT, game, legacy, "first")
+    assert {s["series"] for s in older} == {"directional", "value"}
