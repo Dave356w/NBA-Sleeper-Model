@@ -1,5 +1,5 @@
 {
-  "code_commit": "9f92618148b22077900ebb2b7b511d919de70ac3",
+  "code_commit": "27f52fda1b6fb27c40d137b137ef6accf9e1b0e4",
   "config": {
     "ats_bias_bounds": [
       -15.0,
@@ -48,7 +48,7 @@
       "enabled": true,
       "global_prior": 100.0,
       "half_life_days": 25.0,
-      "history_snapshot": "latest",
+      "history_snapshot": "game_day_latest",
       "minimum_games": 1,
       "offense_prior": 20.0,
       "refit": "slate",
@@ -60,7 +60,7 @@
       },
       "venue_prior": 100.0
     },
-    "methodology": "sleeper_only_v1_30",
+    "methodology": "sleeper_only_v1_31",
     "minimum_games": 30,
     "price_bounds": [
       -135,
@@ -96,8 +96,8 @@
     ],
     "wp_initial": 10.0
   },
-  "config_hash": "7508741708717a10ed910a08b14dbf5fac0e8b4209c7af587df5529b6dc077d6",
-  "created_at": "2026-11-19T21:58:03.021478+00:00",
+  "config_hash": "eca097d677708dd7ab981c8257f3617911bd77698915d3e80070b6d0a1bf2b97",
+  "created_at": "2026-11-19T22:08:17.656055+00:00",
   "diagnostics": {
     "alpha": 0.6001622725295106,
     "ats_bias_target": 0.0,
@@ -112,7 +112,7 @@
     "wp_objective": 56.092247045345076,
     "wp_target": 12.552685681359371
   },
-  "id": "calibration:4d9e10e619e038d9e6cde16259d7ca89e638da573edf0ec9bf032c78a65b49d9",
+  "id": "calibration:e131ce66adb3bccc290ea37a26cbc068fda55683c07a3ccf861c47e790626ec5",
   "kind": "calibration",
   "manifest": [
     {
@@ -2337,7 +2337,7 @@
     }
   ],
   "manifest_hash": "eef6371f7dae6153f78667319202f6a7f1d6b12d2c40dd7eb4b69695b3b45971",
-  "methodology": "sleeper_only_v1_30",
+  "methodology": "sleeper_only_v1_31",
   "n_eff": 150.10146149197652,
   "params": {
     "ats_bias": 0.0,
@@ -2359,5 +2359,5 @@
     "wp": "accepted"
   },
   "training_count": 185,
-  "training_cutoff": "2026-11-19T21:58:03.021478+00:00"
+  "training_cutoff": "2026-11-19T22:08:17.656055+00:00"
 }
