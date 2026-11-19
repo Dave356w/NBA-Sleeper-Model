@@ -26,7 +26,7 @@ import numpy as np
 
 from .common import TEAMS, digest, dt
 
-METHOD = "sleeper_only_v1_27"
+METHOD = "sleeper_only_v1_28"
 # A slate stops holding back a refit once its ungraded games are this old.
 PENDING_HOURS = 24
 TEAMS_SORTED = sorted(TEAMS)
@@ -129,8 +129,9 @@ def eligible_observations(records, root, config, stage, season, cutoff):
             "snapshot_utc": f["captured_at"],
             "tip_utc": game["tip_utc"],
             "verified_at": r["verified_at"],
-            "projected_home_score": f["raw"]["home_score"],
-            "projected_away_score": f["raw"]["away_score"],
+            # v1.28: the fit learns from the same capped projections it corrects.
+            "projected_home_score": capped_scores(f["raw"], game, config.get("matchup"))[0],
+            "projected_away_score": capped_scores(f["raw"], game, config.get("matchup"))[1],
             "actual_home_score": r["home_score"],
             "actual_away_score": r["away_score"],
             "provenance": "native",
@@ -326,20 +327,45 @@ def applies_offense(version, settings=None):
     return bool(frozen.get("apply_offense", False))
 
 
+def minutes_cap(settings):
+    """The v1.28 projected-minutes cap, or None for configurations frozen without it."""
+    return (settings or {}).get("minutes_cap")
+
+
+def capped_scores(raw, game, settings):
+    """Projected team points with the v1.28 down cap: a team whose projected minutes
+    exceed `minutes_cap` is scaled down by cap / minutes. Teams at or below the cap,
+    and snapshots without recorded team minutes (the legacy seed and outage
+    backfill), keep their raw sums. Raw scores themselves are never changed."""
+    home, away = raw["home_score"], raw["away_score"]
+    cap = minutes_cap(settings)
+    minutes = raw.get("team_minutes") or {}
+    if cap:
+        if (minutes.get(game["home"]) or 0) > cap:
+            home *= cap / minutes[game["home"]]
+        if (minutes.get(game["away"]) or 0) > cap:
+            away *= cap / minutes[game["away"]]
+    return home, away
+
+
 def apply(raw, game, version, settings=None):
     """Correct raw scores with a fitted version.
 
     Through v1.24 offense controls are used in the fit only. From v1.25
     (`apply_offense`) each team's own offense term is added to its score too.
+    From v1.28 (`minutes_cap`) a team projected above the cap is first scaled
+    down to it. Both read the fit's own frozen settings when it has them.
     """
     params = version["params"]
+    frozen = version.get("settings") or settings or {}
     h = params["global"] + 0.5 * params["venue"] + params["defense"][game["away"]]
     a = params["global"] - 0.5 * params["venue"] + params["defense"][game["home"]]
     offense = applies_offense(version, settings)
     if offense:
         h += params["offense_control"][game["home"]]
         a += params["offense_control"][game["away"]]
-    home, away = raw["home_score"] + h, raw["away_score"] + a
+    base_home, base_away = capped_scores(raw, game, frozen)
+    home, away = base_home + h, base_away + a
     if not all(math.isfinite(x) and x >= 0 for x in [home, away]):
         raise ValueError("Invalid corrected score")
     adjustment = {
@@ -351,7 +377,11 @@ def apply(raw, game, version, settings=None):
     if offense:
         adjustment["home_offense"] = params["offense_control"][game["home"]]
         adjustment["away_offense"] = params["offense_control"][game["away"]]
-    adjustment |= {"home_correction": h, "away_correction": a}
+    if minutes_cap(frozen):
+        adjustment["home_minutes_cap"] = base_home - raw["home_score"]
+        adjustment["away_minutes_cap"] = base_away - raw["away_score"]
+    # The total change from the raw sum (equal to the team terms when no cap applies).
+    adjustment |= {"home_correction": home - raw["home_score"], "away_correction": away - raw["away_score"]}
     return {"home_score": home, "away_score": away, "margin": home - away, "total": home + away}, adjustment
 
 

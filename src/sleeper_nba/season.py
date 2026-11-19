@@ -215,8 +215,9 @@ def replay_observations(records, root, config, season):
             "away": game["away"],
             "tip_utc": game["tip_utc"],
             "snapshot_utc": f["captured_at"],
-            "projected_home_score": f["raw"]["home_score"],
-            "projected_away_score": f["raw"]["away_score"],
+            # v1.28: native snapshots carry team minutes, so the replay applies the same cap.
+            "projected_home_score": matchup.capped_scores(f["raw"], game, config.get("matchup"))[0],
+            "projected_away_score": matchup.capped_scores(f["raw"], game, config.get("matchup"))[1],
             "actual_home_score": result["home_score"],
             "actual_away_score": result["away_score"],
             # Usable from its first verification; corrections apply from their own times.

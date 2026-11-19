@@ -447,3 +447,29 @@ def test_v1_25_replay_uses_the_latest_earlier_version_snapshot_whatever_the_ledg
     for records in ([early, late, result], [late, early, result]):
         (o,) = season.replay_observations(records, ".", cfg, 2026)
         assert o["projected_home_score"] == 114.0 and o["snapshot_utc"] == late["captured_at"]
+
+
+def test_v1_28_caps_projected_minutes_above_240_and_earlier_fits_keep_raw_sums(config):
+    assert config["matchup"]["minutes_cap"] == 240.0
+    game = {"home": "BOS", "away": "NYK"}
+    raw = {"home_score": 120.0, "away_score": 110.0, "team_minutes": {"BOS": 250.0, "NYK": 236.0}}
+    # Only the team above the cap is scaled; a team below it is not filled up.
+    assert matchup.capped_scores(raw, game, config["matchup"]) == pytest.approx((115.2, 110.0))
+    # Snapshots without team minutes (legacy seed, outage backfill) and configs without the key keep raw sums.
+    seedlike = {"home_score": 120.0, "away_score": 110.0}
+    assert matchup.capped_scores(seedlike, game, config["matchup"]) == (120.0, 110.0)
+    v127 = {k: v for k, v in config["matchup"].items() if k != "minutes_cap"}
+    assert matchup.capped_scores(raw, game, v127) == (120.0, 110.0)
+    zero = {t: 0.0 for t in matchup.TEAMS_SORTED}
+    params = {"global": 0.0, "venue": 0.0, "offense_control": dict(zero), "defense": dict(zero)}
+    scored, adjustment = matchup.apply(raw, game, {"params": params, "settings": config["matchup"]})
+    assert scored["home_score"] == pytest.approx(115.2) and scored["away_score"] == 110.0
+    assert adjustment["home_minutes_cap"] == pytest.approx(-4.8) and adjustment["away_minutes_cap"] == 0.0
+    assert adjustment["home_correction"] == pytest.approx(-4.8)
+    # A fit frozen under v1.27 settings reproduces its scores without the cap, whatever the live config says.
+    legacy, legacy_adjustment = matchup.apply(
+        raw, game, {"params": params, "settings": v127}, config["matchup"]
+    )
+    assert legacy["home_score"] == 120.0 and "home_minutes_cap" not in legacy_adjustment
+    # The raw snapshot itself is never changed.
+    assert raw["home_score"] == 120.0

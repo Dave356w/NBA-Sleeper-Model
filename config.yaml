@@ -1,4 +1,4 @@
-methodology: sleeper_only_v1_27
+methodology: sleeper_only_v1_28
 sleeper_company: rotowire
 wp_initial: 10.0
 ats_bias_initial: 0.0
@@ -60,6 +60,9 @@ matchup:
   defense_prior: 20.0
   offense_prior: 20.0
   apply_offense: true
+  # v1.28 (owner update, 19 November 2026): a team projected above 240 minutes is scaled down to 240
+  # before the team terms, in scoring, the team fit and the replay. Raw scores are unchanged.
+  minutes_cap: 240.0
   global_prior: 100.0
   venue_prior: 100.0
   coefficient_bound: 30.0

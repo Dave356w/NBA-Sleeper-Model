@@ -1,6 +1,6 @@
 # Sleeper-Only NBA Prediction Model
 
-Implementation specification · v1.27 · 19 November 2026
+Implementation specification · v1.28 · 19 November 2026
 
 Suggested repository: `sleeper-nba-model`  
 Runtime: Python 3.12  
@@ -27,7 +27,13 @@ Documentation only: this section restates the rules in force for new forecasts t
 9. **Public record** (v1.22, 11 November reporting update). Results and Performance show one pooled first-snapshot record: live v1.27 forecasts plus the season's earlier games replayed under v1.27 from results known before each game. Where a game's frozen snapshot has no price, its moneyline, spread and total are the DraftKings close from the pinned ESPN file (`closing_backfill`, v1.27); `price_basis` records which. The replay writes nothing to the ledger. Pages show the model-pick moneyline series and a rolling ROI chart; the value series and all parts of the record stay in `data.json` and the ledger (17 November update).
 10. **Integrity.** The ledger in `data/transactions` is append-only and hash-verified. Accepted forecasts, grades and fits are never rewritten, and every methodology change is prospective and versioned (`AGENTS.md`).
 
-## Active methodology — v1.27 priced first snapshot, closing-price backfill, value series retired
+## Active methodology — v1.28 projected-minutes down cap
+
+Owner request, 19 November 2026. A team whose Sleeper projected minutes exceed 240 has its raw projected points scaled by 240 / minutes before the team terms are applied (`matchup.minutes_cap: 240`). Teams at or below 240 are not filled up. The cap applies in adaptive scoring, in the team-fit history and in the season replay wherever a snapshot records team minutes; the legacy seed and outage backfill record none and stay uncapped. Raw scores and the fixed control are unchanged, and fits frozen without the key reproduce without the cap. Everything else is unchanged from v1.27. New forecasts are tagged `sleeper_only_v1_28`.
+
+**Evidence and its limits.** On raw Sleeper sums (208 games, 416 team-games; 39 projected above 240, mostly deep benches at Milwaukee, Boston, New York and Miami) the cap removed those teams' −3.4-point bias and changed margin MAE by −0.02 (95% interval −0.21 to +0.18) and total MAE by −0.06 (−0.31 to +0.19). In the full v1.27 replay, with the team terms refitted on capped projections, it was slightly worse on every measure: 147–60 → 145–62 winners (two flipped picks, both losers), log loss +0.0014 (−0.011 to +0.015), margin MAE +0.058 (−0.10 to +0.21), total MAE +0.062 (−0.13 to +0.25). The offense term already absorbed most of the over-240 bias, and capped native games are fitted alongside uncapped seed games. A league-rate fill-up for teams below 240 was tested and rejected (totals +0.31, interval +0.05 to +0.64), as was a team-specific minutes rate (totals +0.94, +0.19 to +1.83).
+
+## v1.27 methodology — priced first snapshot, closing-price backfill, value series retired (still current)
 
 Owner update, 19 November 2026. Three changes, all prospective; everything else is unchanged from v1.26, including scoring (applied offense, defense prior 20), the T−5h lock policy, calibration and moneyline-only selections. New forecasts are tagged `sleeper_only_v1_27`; frozen records of every earlier version, and their grades, are never rewritten.
 
