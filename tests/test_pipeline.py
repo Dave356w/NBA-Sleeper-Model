@@ -90,6 +90,9 @@ class FixtureHTTP:
 
 def test_full_capture_grade_report_and_correction(root, rows, config, monkeypatch):
     http = FixtureHTTP(rows)
+    # Use the fixture clock for capture, verification, and correction availability.
+    monkeypatch.setattr("sleeper_nba.common.utcnow", lambda: dt(http.at))
+    monkeypatch.setattr("sleeper_nba.pipeline.utcnow", lambda: dt(http.at))
     result = capture(root, config, http=http, now=dt(AT))
     assert result["forecasts"] == 2  # First and lock share the same valid capture.
     ledger = Ledger(root)
@@ -104,8 +107,6 @@ def test_full_capture_grade_report_and_correction(root, rows, config, monkeypatc
     assert validate(root)["status"] == "valid"
     # No outcomes exist before verified completion.
     assert summarize(ledger.records())["forecast"] == {}
-    # Pin grading's wall clock inside the 7-day correction window so this fixture never ages out.
-    monkeypatch.setattr("sleeper_nba.pipeline.utcnow", lambda: dt("2026-11-08T03:00:00+00:00"))
     http.final = True
     http.at = "2026-11-08T02:00:00+00:00"
     assert grade(root, config, http=http)["graded"] == 2
@@ -414,7 +415,7 @@ def test_watcher_wakes_at_lock_target_retries_in_window_and_ticks(root, rows, co
     assert lock["lead_hours"] == pytest.approx(5 - 5 / 3600)
     assert lock["config"]["lock_policy"] == "five_hours_15min_v2"
     assert wake("2026-11-07T17:03:00+00:00")["reason"] == "tick"  # Locked; nothing left to chase.
-    assert len(ledger.records()) == count + 1
+    assert len(ledger.records()) == count + 2  # Frozen lock and its source candidate.
     assert validate(root)["status"] == "valid"
     http.final = True
     http.at = "2026-11-08T00:40:00+00:00"
@@ -447,3 +448,87 @@ def test_methodology_transition_captures_fresh_forecasts_once(root, rows, config
     assert len({f["id"] for f in forecasts}) == 4
     assert capture(root, config, http=http, now=dt(http.at))["forecasts"] == 0
     validate(root)
+
+
+def test_cutoff_replay_rejects_wrong_candidate_price_or_settlement(root, config, rows):
+    from sleeper_nba.audit import replay_ledger
+
+    class UnpricedHTTP(FixtureHTTP):
+        def event(self):
+            event = super().event()
+            event["competitions"][0]["odds"] = []
+            return event
+
+    early = UnpricedHTTP(rows)
+    early.at = "2026-11-07T16:00:00Z"
+    assert capture(root, config, http=early, now=dt(early.at))["forecasts"] == 0
+    http = FixtureHTTP(rows)
+    capture(root, config, http=http, now=dt(AT))
+    http.final = True
+    http.at = "2026-11-08T02:00:00Z"
+    grade(root, config, http=http)
+    records = Ledger(root).records()
+    assert validate(root)["audit"]["snapshot_candidate"] == 2
+    first = next(r for r in records if r["kind"] == "forecast" and r["stage"] == "first")
+    candidate = first["candidate_id"]
+    first["candidate_id"] = next(
+        r["id"] for r in records if r["kind"] == "snapshot_candidate" and r["id"] != candidate
+    )
+    with pytest.raises(ValueError, match="earliest eligible"):
+        replay_ledger(root, records)
+    first["candidate_id"] = candidate
+    market = first["variants"]["adaptive"]["markets"][0]
+    market["prices"]["home"] += 1
+    with pytest.raises(ValueError, match="forecast and price"):
+        replay_ledger(root, records)
+    market["prices"]["home"] -= 1
+    grade_record = next(r for r in records if r["kind"] == "grade" and r["forecast_id"] == first["id"])
+    grade_record["variants"]["adaptive"]["selections"][0]["units"] += 1
+    with pytest.raises(ValueError, match="grade differs"):
+        replay_ledger(root, records)
+    with pytest.raises(ValueError, match="missing grade"):
+        replay_ledger(root, [r for r in records if r is not grade_record])
+
+
+def test_cutoff_replay_refits_confidence_from_independent_history(root, config):
+    from sleeper_nba.audit import replay_ledger
+
+    refit(root, config, now=dt("2026-11-08T13:00:00Z"))
+    records = Ledger(root).records()
+    version = next(r for r in records if r["kind"] == "calibration")
+    version["params"]["wp_a"] += 0.25
+    with pytest.raises(ValueError, match="confidence fit"):
+        replay_ledger(root, records)
+    version["manifest"][0]["verified_at"] = "2026-11-09T00:00:00Z"
+    with pytest.raises(ValueError, match="confidence training history"):
+        replay_ledger(root, records)
+
+
+def test_frozen_first_replays_both_fits_raw_price_and_revised_grade(root, config, rows, monkeypatch):
+    from sleeper_nba.audit import replay_ledger
+
+    http = FixtureHTTP(rows)
+    http.at = "2026-11-07T21:40:00Z"
+    monkeypatch.setattr("sleeper_nba.common.utcnow", lambda: dt(http.at))
+    monkeypatch.setattr("sleeper_nba.pipeline.utcnow", lambda: dt(http.at))
+    assert refit(root, config, now=dt(http.at))["calibration_versions"] == 1
+    assert capture(root, config, http=http, now=dt(http.at))["forecasts"] == 1
+    forecast = Ledger(root).records("forecast")[0]
+    adaptive = forecast["variants"]["adaptive"]
+    assert adaptive["matchup_training_count"] > 0 and adaptive["training_count"] >= config["minimum_games"]
+    assert adaptive["selections"][0]["odds"] == -200
+    http.final = True
+    http.at = "2026-11-08T02:00:00Z"
+    grade(root, config, http=http)
+    http.correction = True
+    http.at = "2026-11-08T03:00:00Z"
+    grade(root, config, http=http)
+    audit = validate(root)["audit"]
+    assert audit["grade"] == 2
+    assert audit["legacy_without_candidate_history"] == audit["legacy_results_without_raw_event"] == 0
+
+    records = Ledger(root).records()
+    team_fit = next(r for r in records if r["kind"] == "matchup_calibration")
+    team_fit["manifest"][0]["actual_home_score"] += 1
+    with pytest.raises(ValueError, match="team training history"):
+        replay_ledger(root, records)

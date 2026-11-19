@@ -9,7 +9,7 @@ import pytest
 from test_pipeline import FixtureHTTP
 
 from sleeper_nba import matchup
-from sleeper_nba.common import dt, iso
+from sleeper_nba.common import digest, dt, iso
 from sleeper_nba.models import DEFAULTS, fit_parameters, training_observations
 from sleeper_nba.pipeline import capture, validate
 from sleeper_nba.storage import Ledger
@@ -296,15 +296,27 @@ def test_v1_23_lock_scores_with_the_first_stage_fit(root, config):
 
 
 def test_v1_23_captured_lock_carries_the_first_stage_correction(root, rows, config):
-    cfg = {**config, "matchup": {k: v for k, v in config["matchup"].items() if not k.startswith("seed")}}
-    history = [
-        native("g0", "BOS", "NYK", "2026-11-05T23:00:00+00:00", "2026-11-05"),
-        final("g0", "2026-11-06T02:00:00+00:00"),
+    # The replay must be able to recover the fit's original observations.
+    fixture_seed = seed(root, config)
+    fixture_seed.pop("sha256")
+    fixture_seed["created_at"] = "2026-11-06T03:00:00+00:00"
+    fixture_seed["observations"] = [
+        dict(fixture_seed["observations"][0], verified_at=fixture_seed["created_at"])
     ]
-    versions = matchup.prepare_versions(history, root, cfg, "2026-11-06T03:00:00+00:00")
-    Ledger(root).append(versions)
+    fixture_seed["sha256"] = digest(fixture_seed)
+    (root / "fixture_seed.json").write_text(json.dumps(fixture_seed))
+    cfg = {
+        **config,
+        "matchup": {
+            **config["matchup"],
+            "seed_file": "fixture_seed.json",
+            "seed_sha256": fixture_seed["sha256"],
+            "backfill_files": [],
+        },
+    }
     http = FixtureHTTP(rows)
     capture(root, cfg, http=http, now=dt(http.at))
+    versions = Ledger(root).records("matchup_calibration")
     forecasts = {f["stage"]: f for f in Ledger(root).records("forecast")}
     assert set(forecasts) == {"first", "lock"}
     for forecast in forecasts.values():

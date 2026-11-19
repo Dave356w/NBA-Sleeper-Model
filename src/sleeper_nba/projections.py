@@ -25,9 +25,7 @@ def public_player_snapshot(players):
     )
 
 
-def aggregate(game, raw, captured_at, config):
-    if dt(captured_at) >= dt(game["tip_utc"]) or game["status"] != "pre":
-        raise InvalidProjection("at_or_after_tip_or_started")
+def game_rows(game, raw):
     selected = []
     for row in raw:
         if not isinstance(row, dict) or str(row.get("date", ""))[:10] != game["slate_date"]:
@@ -38,6 +36,13 @@ def aggregate(game, raw, captured_at, config):
             continue
         if {t, opponent} == {game["home"], game["away"]}:
             selected.append(row)
+    return selected
+
+
+def aggregate(game, raw, captured_at, config):
+    if dt(captured_at) >= dt(game["tip_utc"]) or game["status"] != "pre":
+        raise InvalidProjection("at_or_after_tip_or_started")
+    selected = game_rows(game, raw)
     if not selected:
         raise InvalidProjection("missing_game_projection")
     companies = {r.get("company") for r in selected}
