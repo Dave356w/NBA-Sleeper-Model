@@ -1,5 +1,5 @@
 {
-  "code_commit": "ef281a4430c8f9e7439451086725b5cbcbecd219",
+  "code_commit": "775349d9862e979e6b5b2c74712d031b26e0bead",
   "config": {
     "ats_bias_bounds": [
       -15.0,
@@ -85,7 +85,7 @@
     "wp_initial": 10.0
   },
   "config_hash": "627e9c84be7b0bc26b2dc8eaad377080fe3de5c3b7fd1070a0a4b60a2c9e8fa6",
-  "created_at": "2026-11-18T07:07:48.393134+00:00",
+  "created_at": "2026-11-19T00:02:25.469992+00:00",
   "diagnostics": {
     "alpha": 0.6080366857732161,
     "ats_bias_target": 0.0,
@@ -95,12 +95,12 @@
     "totals_bias_target": 0.0,
     "totals_sigma_target": 18.459614540434508,
     "weight_sum": 90.77360646195343,
-    "wp_fit": 9.77171247819069,
-    "wp_grid_range": 2.8367004682488215,
+    "wp_fit": 9.771712147466921,
+    "wp_grid_range": 2.8367004682488286,
     "wp_objective": 54.21564588936979,
-    "wp_target": 9.860565116879568
+    "wp_target": 9.860564913958884
   },
-  "id": "calibration:abbe54767f1cabc00091ee3ae62ac6f119e541a9bcc396132cc89478ce98579b",
+  "id": "calibration:1a291054ff92715894902dd01876b0577552fc0bac6dd0475a793faa1919dfc4",
   "kind": "calibration",
   "manifest": [
     {
@@ -293,7 +293,7 @@
       "segment": "replay_legacy",
       "totals_residual": 17.292316151605405,
       "verified_at": "2026-10-25T12:00:00.000000+00:00",
-      "weight": 0.19122371169049893
+      "weight": 0.19122371169049895
     },
     {
       "age": 178,
@@ -305,7 +305,7 @@
       "segment": "replay_legacy",
       "totals_residual": 13.519700330586204,
       "verified_at": "2026-10-25T12:00:00.000000+00:00",
-      "weight": 0.19299918584054193
+      "weight": 0.19299918584054196
     },
     {
       "age": 177,
@@ -437,7 +437,7 @@
       "segment": "replay_legacy",
       "totals_residual": -28.590042210342148,
       "verified_at": "2026-10-26T12:00:00.000000+00:00",
-      "weight": 0.21365179356622488
+      "weight": 0.2136517935662249
     },
     {
       "age": 166,
@@ -533,7 +533,7 @@
       "segment": "replay_legacy",
       "totals_residual": 1.4161670343817718,
       "verified_at": "2026-10-27T12:00:00.000000+00:00",
-      "weight": 0.23004691265621874
+      "weight": 0.23004691265621877
     },
     {
       "age": 158,
@@ -665,7 +665,7 @@
       "segment": "replay_legacy",
       "totals_residual": 3.4609781550045966,
       "verified_at": "2026-10-29T12:00:00.000000+00:00",
-      "weight": 0.25466395248932305
+      "weight": 0.2546639524893231
     },
     {
       "age": 147,
@@ -897,10 +897,10 @@
     },
     {
       "age": 128,
-      "ats_residual": -4.069892111488258,
+      "ats_residual": -4.069892111488244,
       "game_id": "401909286",
       "home_won": false,
-      "margin": -2.930107888511742,
+      "margin": -2.930107888511756,
       "provenance": "replay",
       "segment": "replay_legacy",
       "totals_residual": 16.757961606558297,
@@ -981,10 +981,10 @@
     },
     {
       "age": 121,
-      "ats_residual": 24.483586054596074,
+      "ats_residual": 24.48358605459609,
       "game_id": "401909902",
       "home_won": true,
-      "margin": -3.483586054596074,
+      "margin": -3.4835860545960884,
       "provenance": "replay",
       "segment": "replay_legacy",
       "totals_residual": -6.932631445639117,
@@ -1041,15 +1041,15 @@
     },
     {
       "age": 116,
-      "ats_residual": -29.761778154975502,
+      "ats_residual": -29.761778154975516,
       "game_id": "401909908",
       "home_won": false,
-      "margin": -3.2382218450244977,
+      "margin": -3.2382218450244835,
       "provenance": "replay",
       "segment": "replay_legacy",
-      "totals_residual": -0.15307938244714592,
+      "totals_residual": -0.1530793824471175,
       "verified_at": "2026-11-03T12:00:00.000000+00:00",
-      "weight": 0.3423000322377979
+      "weight": 0.342300032237798
     },
     {
       "age": 115,
@@ -1193,7 +1193,7 @@
       "segment": "replay_legacy",
       "totals_residual": 22.256094184289168,
       "verified_at": "2026-11-03T12:00:00.000000+00:00",
-      "weight": 0.38244742338099785
+      "weight": 0.3824474233809979
     },
     {
       "age": 103,
@@ -1277,7 +1277,7 @@
       "segment": "replay_legacy",
       "totals_residual": -19.6085320240162,
       "verified_at": "2026-11-05T12:00:00.000000+00:00",
-      "weight": 0.40800724249422277
+      "weight": 0.4080072424942228
     },
     {
       "age": 96,
@@ -1337,7 +1337,7 @@
       "segment": "replay_legacy",
       "totals_residual": 25.24295516410936,
       "verified_at": "2026-11-05T12:00:00.000000+00:00",
-      "weight": 0.42730358713244976
+      "weight": 0.4273035871324498
     },
     {
       "age": 91,
@@ -1433,7 +1433,7 @@
       "segment": "replay_legacy",
       "totals_residual": -14.20132316440754,
       "verified_at": "2026-11-07T12:00:00.000000+00:00",
-      "weight": 0.4600938253124375
+      "weight": 0.46009382531243753
     },
     {
       "age": 83,
@@ -1565,7 +1565,7 @@
       "segment": "replay_native",
       "totals_residual": 21.677646841305602,
       "verified_at": "2026-11-08T06:43:45.900650+00:00",
-      "weight": 0.5093279049786461
+      "weight": 0.5093279049786462
     },
     {
       "age": 72,
@@ -1946,7 +1946,7 @@
       "result_id": "result:4ddcbfe5acc2e29c81e73bffd3f68bc232868c1c62dc82cb08fc35d3d9fec95c",
       "totals_residual": 28.477645287255484,
       "verified_at": "2026-11-12T03:40:28.638334+00:00",
-      "weight": 0.6720621997967086
+      "weight": 0.6720621997967087
     },
     {
       "age": 42,
@@ -1976,7 +1976,7 @@
       "result_id": "result:d063fd2880ceaadbc30782b99434f089bbcd04f3a2fdf0a84788498ed846df7b",
       "totals_residual": 3.320673562962952,
       "verified_at": "2026-11-12T05:11:41.619903+00:00",
-      "weight": 0.6846000644755958
+      "weight": 0.684600064475596
     },
     {
       "age": 40,
@@ -2081,7 +2081,7 @@
       "result_id": "result:e1fe59430e6a98fe3602fc7680bd288b82afed8a5db0faca4e72edf73fb8b9e8",
       "totals_residual": -15.955997067754765,
       "verified_at": "2026-11-14T02:47:43.271707+00:00",
-      "weight": 0.7303534223050363
+      "weight": 0.7303534223050364
     },
     {
       "age": 33,
@@ -2570,7 +2570,7 @@
       "weight": 1.0
     }
   ],
-  "manifest_hash": "ef412b86d39cec5b086664fa7834f2239825eb91fa8c50ae97752b4b2226c4bb",
+  "manifest_hash": "b5d90f59812c6040aa439ea33e17165627be210bb9544f444c3ebe87c13138b6",
   "methodology": "sleeper_only_v1_24",
   "n_eff": 155.12591707024285,
   "params": {
@@ -2578,9 +2578,9 @@
     "ats_sigma": 14.682581511243086,
     "totals_bias": 0.0,
     "totals_sigma": 18.459614540434508,
-    "wp_a": 9.860565116879568
+    "wp_a": 9.860564913958884
   },
-  "previous_id": "calibration:1f033fb0644794f2993acd524436b9df701c95e654c777b445774650fa9d8f34",
+  "previous_id": "calibration:abbe54767f1cabc00091ee3ae62ac6f119e541a9bcc396132cc89478ce98579b",
   "runtime": {
     "numpy": "2.5.4",
     "python": "3.12.16",
@@ -2593,5 +2593,5 @@
     "wp": "accepted"
   },
   "training_count": 195,
-  "training_cutoff": "2026-11-18T07:07:48.393134+00:00"
+  "training_cutoff": "2026-11-19T00:02:25.469992+00:00"
 }
