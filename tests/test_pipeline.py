@@ -112,6 +112,22 @@ def test_full_capture_grade_report_and_correction(root, rows, config, monkeypatc
     assert grade(root, config, http=http)["graded"] == 2
     metrics = summarize(ledger.records())
     assert metrics["forecast"]["first:fixed"]["accuracy"] == 1
+    # Games frozen in one capture share captured_at; reporting must not depend on ledger order.
+    records = ledger.records()
+    first = next(f for f in records if f["kind"] == "forecast" and f["stage"] == "first")
+    twin = copy.deepcopy(first)
+    twin["id"] += ":twin"
+    twin["game"] = {**twin["game"], "tip_utc": "2026-11-07T23:30:00+00:00"}
+    graded = copy.deepcopy(
+        next(g for g in records if g["kind"] == "grade" and g["forecast_id"] == first["id"])
+    )
+    graded["id"] += ":twin"
+    graded["forecast_id"] = twin["id"]
+    for variant in graded["variants"].values():
+        for selection in variant["selections"]:
+            selection.update(outcome="loss", units=-1.0)
+    synthetic = [*records, twin, graded]
+    assert summarize(synthetic) == summarize(list(reversed(synthetic)))
     assert metrics["forecast"]["first:adaptive"]["margin"]["mae"] == 0
     assert grade(root, config, http=http)["graded"] == 0
     http.correction = True
@@ -384,6 +400,8 @@ def test_latest_pregame_fallback_survives_tip_invalid_feed_and_outage(root, rows
 
 
 def test_watcher_wakes_at_lock_target_retries_in_window_and_ticks(root, rows, config):
+    # Pins the v2 narrow window, which still governs every lock frozen under it (v1.29 adds late locks).
+    config = {**config, "lock_policy": "five_hours_15min_v2"}
     http = FixtureHTTP(rows)
     http.at = "2026-11-07T15:00:00+00:00"
     capture(root, config, http=http, now=dt(http.at))  # First snapshot; lock target is 17:00.
@@ -424,6 +442,8 @@ def test_watcher_wakes_at_lock_target_retries_in_window_and_ticks(root, rows, co
 
 
 def test_capture_after_narrow_window_records_a_missed_lock(root, rows, config):
+    # Pins the v2 narrow window, which still governs every lock frozen under it (v1.29 adds late locks).
+    config = {**config, "lock_policy": "five_hours_15min_v2"}
     http = FixtureHTTP(rows)
     http.at = "2026-11-07T16:00:00+00:00"
     early = FixtureHTTP([])
@@ -619,3 +639,33 @@ def test_watcher_run_reports_partial_and_total_schedule_outages(
     assert {d.replace("-", "") for d in report["capture"]["schedule_failures"]} == failed_dates
     assert report["validation"]["status"] == "valid"
     assert report["capture"]["forecasts"] == (0 if "20261107" in failed_dates else 2)
+
+
+def test_v1_29_late_lock_after_a_failed_on_time_window(root, rows, config):
+    from sleeper_nba.pipeline import lock_outcomes
+    from sleeper_nba.site import summarize_lock_outcomes
+
+    early = FixtureHTTP([])  # No valid projection through the on-time window.
+    early.at = "2026-11-07T16:00:00+00:00"
+    capture(root, config, http=early, now=dt(early.at))
+    early.at = "2026-11-07T17:05:00+00:00"
+    capture(root, config, http=early, now=dt(early.at))
+    ledger = Ledger(root)
+    assert not ledger.records("forecast")
+    # During the late window the watcher ticks instead of retrying every minute.
+    late_wake = next_wake(ledger.records(), config, dt("2026-11-07T17:20:00+00:00"))
+    assert late_wake["seconds"] == 600 and late_wake["reason"] in ("tick", "late_lock_window")
+    on_time_wake = next_wake(ledger.records(), config, dt("2026-11-07T17:05:00+00:00"))
+    assert on_time_wake["reason"] == "lock_window_open"
+    http = FixtureHTTP(rows)
+    http.at = "2026-11-07T18:30:00+00:00"
+    capture(root, config, http=http, now=dt(http.at))
+    lock = next(f for f in ledger.records("forecast") if f["stage"] == "lock")
+    assert lock["lock_timing"] == "late" and lock["lead_hours"] == pytest.approx(3.5)
+    assert lock["variants"]["adaptive"]["selections"]  # A late lock is a tracked, graded forecast.
+    assert not any(q["code"] == "missed_lock" for q in ledger.records("quality"))
+    assert validate(root)["status"] == "valid"
+    (outcome,) = lock_outcomes(ledger.records(), config, dt("2026-11-07T21:00:00+00:00")).values()
+    assert outcome["status"] == "locked" and outcome["late"] is True
+    (row,) = summarize_lock_outcomes({outcome["instance_id"]: outcome})
+    assert (row["games"], row["locked"], row["late"], row["missed"]) == (1, 1, 1, 0)

@@ -59,7 +59,12 @@ def summarize(records):
     groups = defaultdict(list)
     bets = defaultdict(list)
     errors = defaultdict(list)
-    forecasts = sorted((r for r in records if r["kind"] == "forecast"), key=lambda r: dt(r["captured_at"]))
+    # Games frozen in the same capture share `captured_at`; tip time and id break the tie so the
+    # cumulative series and bootstrap intervals never depend on ledger (hash-named file) order.
+    forecasts = sorted(
+        (r for r in records if r["kind"] == "forecast"),
+        key=lambda r: (dt(r["captured_at"]), dt(r["game"]["tip_utc"]), r["id"]),
+    )
     for f in forecasts:
         if f["id"] not in grades:
             continue
@@ -190,7 +195,7 @@ def paired_comparisons(groups):
             clusters[f[0]["game"]["slate_date"]].append(al - fl)
         if not clusters:
             continue
-        arrays = list(clusters.values())
+        arrays = [clusters[slate] for slate in sorted(clusters)]
         values = [x for xs in arrays for x in xs]
         interval = None
         if len(arrays) > 1:

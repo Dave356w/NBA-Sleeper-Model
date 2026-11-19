@@ -362,6 +362,8 @@ def test_full_pregame_lock_window(game, config, at, locked):
 
 
 def test_registered_lock_policy_and_unknown_policy(game, config):
+    # Pins the v2 narrow window, which still governs every lock frozen under it (v1.29 adds late locks).
+    config = {**config, "lock_policy": "five_hours_15min_v2"}
     from sleeper_nba.common import dt, lock_window_end
 
     assert config["lock_policy"] == "five_hours_15min_v2"
@@ -458,3 +460,33 @@ def test_v1_27_retires_the_value_series(game, config):
     legacy = {k: v for k, v in config.items() if k != "selection_series"}
     _, older = evaluate(out, DEFAULTS, quotes, AT, game, legacy, "first")
     assert {s["series"] for s in older} == {"directional", "value"}
+
+
+def test_rejected_team_minutes_are_journaled(game, rows, config):
+    short = [r for r in rows if not (r["team"] == "NYK" and r["player_id"] in ("NYK-6", "NYK-7"))]
+    with pytest.raises(InvalidProjection, match="incomplete_team_minutes") as rejected:
+        aggregate(game, short, AT, config)
+    # NYK keeps 6 of 8 players at 30 minutes: 180, below the 200-minute floor.
+    assert rejected.value.details == {
+        "team_minutes": {"BOS": 240.0, "NYK": 180.0},
+        "projected_players": {"BOS": 8, "NYK": 6},
+        "bounds": config["team_minutes_bounds"],
+    }
+
+
+def test_v1_29_late_lock_window_and_timing_labels(game, config):
+    from sleeper_nba.common import dt, lock_primary_end, lock_timing, lock_window_end
+
+    # Tip 22:00 UTC: on time 17:00-17:15, late until T-2h (20:00).
+    assert config["lock_policy"] == "five_hours_late_v3" and config["lock_late_hours"] == 2
+    assert lock_primary_end(game, config) == dt("2026-11-07T17:15:00+00:00")
+    assert lock_window_end(game, config) == dt("2026-11-07T20:00:00+00:00")
+    assert lock_timing(game, config, "2026-11-07T17:15:00+00:00") == "on_time"
+    assert lock_timing(game, config, "2026-11-07T17:15:01+00:00") == "late"
+    assert "lock" in eligible_stages(game, "2026-11-07T19:59:59+00:00", {"first"}, config)
+    assert "lock" not in eligible_stages(game, "2026-11-07T20:00:01+00:00", {"first"}, config)
+    assert "lock" not in eligible_stages(game, "2026-11-07T16:59:59+00:00", {"first"}, config)
+    # Earlier policies carry no timing label and keep their windows.
+    v2 = {**config, "lock_policy": "five_hours_15min_v2"}
+    assert lock_timing(game, v2, "2026-11-07T17:10:00+00:00") is None
+    assert lock_window_end(game, v2) == dt("2026-11-07T17:15:00+00:00")
