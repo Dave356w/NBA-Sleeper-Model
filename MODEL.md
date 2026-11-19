@@ -773,4 +773,6 @@ The offline `validate` command reconstructs fit histories at their cutoffs, refi
 
 A final becomes eligible for settlement when both competitors have explicit nonnegative integer scores, the final is untied, and the two team identities match the frozen matchup. The ledger stores the verified scores in frozen home/away order, including when the source reverses its labels. An incomplete or mismatched final stays pending for a subsequent verification. Schedule retrieval failures identify the affected dates and make the watcher run exit unsuccessfully after saving available work.
 
+A rejected projection's quality event now records the per-team projected minutes, projected-player counts and bounds (`invalid_projection` with `team_minutes`, `projected_players`, `bounds`), so a missed stage can be diagnosed; identical repeated rejections still deduplicate. The internal live-performance summary orders games frozen in the same capture by tip time and record id, and paired-comparison slates by date, so its cumulative series and bootstrap intervals no longer depend on ledger file order (reporting only).
+
 Capture events, the lock card and aggregate coverage use the same per-instance operational outcome across methodology versions. Historical quality events remain in the ledger. Public missed-lock rows carry the derived outcome when the watcher was offline.

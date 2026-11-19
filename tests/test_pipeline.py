@@ -112,6 +112,22 @@ def test_full_capture_grade_report_and_correction(root, rows, config, monkeypatc
     assert grade(root, config, http=http)["graded"] == 2
     metrics = summarize(ledger.records())
     assert metrics["forecast"]["first:fixed"]["accuracy"] == 1
+    # Games frozen in one capture share captured_at; reporting must not depend on ledger order.
+    records = ledger.records()
+    first = next(f for f in records if f["kind"] == "forecast" and f["stage"] == "first")
+    twin = copy.deepcopy(first)
+    twin["id"] += ":twin"
+    twin["game"] = {**twin["game"], "tip_utc": "2026-11-07T23:30:00+00:00"}
+    graded = copy.deepcopy(
+        next(g for g in records if g["kind"] == "grade" and g["forecast_id"] == first["id"])
+    )
+    graded["id"] += ":twin"
+    graded["forecast_id"] = twin["id"]
+    for variant in graded["variants"].values():
+        for selection in variant["selections"]:
+            selection.update(outcome="loss", units=-1.0)
+    synthetic = [*records, twin, graded]
+    assert summarize(synthetic) == summarize(list(reversed(synthetic)))
     assert metrics["forecast"]["first:adaptive"]["margin"]["mae"] == 0
     assert grade(root, config, http=http)["graded"] == 0
     http.correction = True

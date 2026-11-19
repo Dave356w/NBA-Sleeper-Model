@@ -7,7 +7,11 @@ from .common import canonical, digest, dt, first_window_open, lock_window_end, t
 
 
 class InvalidProjection(ValueError):
-    pass
+    """A rejected projection snapshot. `details` carries diagnostics for the quality journal."""
+
+    def __init__(self, reason, **details):
+        super().__init__(reason)
+        self.details = details
 
 
 def public_player_snapshot(players):
@@ -113,7 +117,14 @@ def aggregate(game, raw, captured_at, config):
         projected_counts[t] += 1
     lower, upper = config["team_minutes_bounds"]
     if not all(lower <= m <= upper for m in minutes.values()) or not all(projected_counts.values()):
-        raise InvalidProjection("incomplete_team_minutes")
+        # Journal what was rejected (per-team minutes and projected-player counts) so a
+        # missed stage can be diagnosed; repeated identical rejections still deduplicate.
+        raise InvalidProjection(
+            "incomplete_team_minutes",
+            team_minutes={t: round(m, 2) for t, m in sorted(minutes.items())},
+            projected_players=dict(sorted(projected_counts.items())),
+            bounds=[lower, upper],
+        )
     h, a = scores[game["home"]], scores[game["away"]]
     return {
         "home_score": h,

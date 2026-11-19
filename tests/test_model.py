@@ -458,3 +458,15 @@ def test_v1_27_retires_the_value_series(game, config):
     legacy = {k: v for k, v in config.items() if k != "selection_series"}
     _, older = evaluate(out, DEFAULTS, quotes, AT, game, legacy, "first")
     assert {s["series"] for s in older} == {"directional", "value"}
+
+
+def test_rejected_team_minutes_are_journaled(game, rows, config):
+    short = [r for r in rows if not (r["team"] == "NYK" and r["player_id"] in ("NYK-6", "NYK-7"))]
+    with pytest.raises(InvalidProjection, match="incomplete_team_minutes") as rejected:
+        aggregate(game, short, AT, config)
+    # NYK keeps 6 of 8 players at 30 minutes: 180, below the 200-minute floor.
+    assert rejected.value.details == {
+        "team_minutes": {"BOS": 240.0, "NYK": 180.0},
+        "projected_players": {"BOS": 8, "NYK": 6},
+        "bounds": config["team_minutes_bounds"],
+    }

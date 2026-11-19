@@ -301,7 +301,7 @@ def capture(root, config, dry_run=False, http=None, now=None):
             raw = aggregate(game, inputs, captured_at, config)
         except InvalidProjection as exc:
             # Repeated identical rejection does not grow the audit log forever.
-            additions.append(event("invalid_projection", instance, reason=str(exc)))
+            additions.append(event("invalid_projection", instance, reason=str(exc), **exc.details))
             continue
         quotes = live_quotes.get(game["game_id"]) or espn_quotes(game, source_event)
         if (now if supplied_clock else utcnow()) >= dt(game["tip_utc"]):
