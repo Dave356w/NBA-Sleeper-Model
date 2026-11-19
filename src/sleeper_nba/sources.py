@@ -75,6 +75,14 @@ def schedule(http, slate_date):
     return parse_schedule(envelope), envelope
 
 
+def scoreboard_score(value, final):
+    if type(value) is int and value >= 0:
+        return value
+    if isinstance(value, str) and value.strip().isascii() and value.strip().isdecimal():
+        return int(value.strip())
+    return None if final else 0
+
+
 def parse_schedule(envelope):
     payload = envelope["payload"]
     if not isinstance(payload, dict) or not isinstance(payload.get("events"), list):
@@ -107,19 +115,21 @@ def parse_schedule(envelope):
             "completed": status.get("completed", False),
             "competition_class": "regular" if season_type == 2 and not excluded else "excluded",
             "season": int(event.get("season", {}).get("year", tip.year)) - 1,
-            "home_score": int(h.get("score") or 0),
-            "away_score": int(a.get("score") or 0),
+            "home_score": scoreboard_score(
+                h.get("score"), status.get("completed") or status.get("state") == "post"
+            ),
+            "away_score": scoreboard_score(
+                a.get("score"), status.get("completed") or status.get("state") == "post"
+            ),
             "source_captured_at": envelope["captured_at"],
             "source_requested_at": envelope["requested_at"],
             "source_url": envelope["url"],
             "source_hash": digest(event),
         }
-        game["schedule_revision"] = digest(
-            {
-                k: game[k]
-                for k in ["game_id", "tip_utc", "home", "away", "competition_class", "status", "status_name"]
-            }
-        )
+        revision_fields = ["game_id", "tip_utc", "home", "away", "competition_class", "status", "status_name"]
+        if game["completed"] and game["status"] == "post":
+            revision_fields.extend(("home_score", "away_score"))
+        game["schedule_revision"] = digest({k: game[k] for k in revision_fields})
         games.append((game, event))
     return games
 

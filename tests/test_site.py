@@ -268,7 +268,7 @@ def test_lock_coverage_ignores_windows_closed_before_first_observation(root, row
     http = FixtureHTTP(rows)
     http.at = "2026-11-07T22:05:00+00:00"  # First run ever, after the window closed.
     capture(root, config, http=http, now=dt(http.at))
-    assert any(q["code"] == "missed_lock" for q in Ledger(root).records("quality"))
+    assert not any(q["code"] == "missed_lock" for q in Ledger(root).records("quality"))
     build_site(root)
     assert json.loads((root / "site" / "data.json").read_text())["lock_coverage"] == []
 
@@ -437,13 +437,50 @@ def test_v1_27_closing_prices_fill_only_unpriced_season_games(root):
 
 
 def test_elapsed_schedule_window_counts_even_if_watcher_never_returns(root, config):
-    from sleeper_nba.site import lock_coverage
+    from sleeper_nba.pipeline import lock_outcomes
+    from sleeper_nba.site import summarize_lock_outcomes
 
     http = FixtureHTTP([])
     http.at = "2026-11-07T16:00:00Z"
     capture(root, config, http=http, now=dt(http.at))
     records = Ledger(root).records()
     assert not any(r.get("code") == "missed_lock" for r in records)
-    assert lock_coverage(records, config, dt("2026-11-07T17:15:00Z")) == []
-    coverage = lock_coverage(records, config, dt("2026-11-07T17:15:01Z"))
+    assert summarize_lock_outcomes(lock_outcomes(records, config, dt("2026-11-07T17:15:00Z"))) == []
+    coverage = summarize_lock_outcomes(lock_outcomes(records, config, dt("2026-11-07T17:15:01Z")))
     assert [(s["games"], s["locked"], s["missed"]) for s in coverage] == [(1, 0, 1)]
+    build_site(root)
+    data = json.loads((root / "site/data.json").read_text())
+    (only,) = data["lock_outcomes"].values()
+    (miss,) = data["missed_locks"]
+    assert only["status"] == "missed" and miss["instance_id"] == only["instance_id"]
+    assert data["lock_coverage"] == coverage
+
+
+def test_release_change_preserves_operational_lock_status(root, rows, config):
+    http = FixtureHTTP(rows)
+    old = {**config, "methodology": "sleeper_only_v1_27"}
+    capture(root, old, http=http, now=dt(http.at))
+    http.at = "2026-11-07T17:20:00Z"
+    capture(root, config, http=http, now=dt(http.at))
+    ledger = Ledger(root)
+    assert not any(r.get("code") == "missed_lock" for r in ledger.records())
+    # A historical miss from the old version-specific event writer stays immutable.
+    lock = next(f for f in ledger.records("forecast") if f["stage"] == "lock")
+    ledger.append(
+        [
+            dict(
+                kind="quality",
+                code="missed_lock",
+                id="missed_lock:" + lock["instance_id"],
+                instance_id=lock["instance_id"],
+                context=lock["game"]["game_id"],
+                at=http.at,
+                window_end="2026-11-07T17:15:00Z",
+            )
+        ]
+    )
+    build_site(root)
+    data = json.loads((root / "site/data.json").read_text())
+    assert data["lock_outcomes"][lock["instance_id"]]["status"] == "locked"
+    assert data["missed_locks"] == [] and not any(q["code"] == "missed_lock" for q in data["quality"])
+    assert data["lock_coverage"][0]["locked"] == 1

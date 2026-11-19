@@ -85,6 +85,10 @@ def main(argv=None):
                 else:
                     parser.error("Unknown command")
         print(json.dumps(result, indent=2))
+        phases = (result["grade"], result["capture"]) if args.command == "run" else (result,)
+        if any(p.get("schedule_failures") for p in phases):
+            print("Schedule retrieval failed; see schedule_failures above", file=sys.stderr)
+            raise SystemExit(1)
     except Exception as exc:
         print(f"{type(exc).__name__}: {exc}", file=sys.stderr)
         raise SystemExit(1) from None

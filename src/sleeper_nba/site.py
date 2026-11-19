@@ -11,11 +11,11 @@ from statistics import median
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 
 from . import matchup
-from .common import ET, dt, iso, load_config, lock_window_end, utcnow
+from .common import ET, dt, iso, load_config, utcnow
 from .evaluation import closing_line_values, latest_grades, summarize
 from .markets import ALL_MARKETS
 from .models import active_calibration
-from .pipeline import latest_schedules
+from .pipeline import latest_schedules, lock_outcomes, missed_lock_event
 from .projections import public_player_snapshot
 from .reporting import live_market_comparisons
 from .season import season_record
@@ -31,51 +31,18 @@ def methodology_of(record):
     return record.get("methodology", record.get("config", {}).get("methodology"))
 
 
-def lock_coverage(records, config, as_of):
-    """Operational lock capture by slate, across all native versions."""
-    # A game captured under multiple releases contributes one operational lock.
-    forecasts = sorted(
-        (
-            f
-            for f in records
-            if f["kind"] == "forecast" and f.get("provenance") == "native" and dt(f["captured_at"]) <= as_of
-        ),
-        key=lambda f: (dt(f["captured_at"]), f["id"]),
-    )
-    retired = {r["instance_id"] for r in records if r["kind"] == "retired" and dt(r["at"]) <= as_of}
-    locks, policies = {}, {}
-    for f in forecasts:
-        policies[f["instance_id"]] = f["config"]
-        if f["stage"] == "lock":
-            locks.setdefault(f["instance_id"], f["lead_hours"])
-    schedules = [r for r in records if r["kind"] == "schedule" and dt(r["at"]) <= as_of]
-    launch = min((dt(r["at"]) for r in schedules), default=None)
-    recorded_ends = {
-        r["instance_id"]: dt(r["window_end"])
-        for r in records
-        if r["kind"] == "quality" and r["code"] == "missed_lock" and dt(r["at"]) <= as_of
-    }
+def summarize_lock_outcomes(outcomes):
     slates = {}
-    for schedule in latest_schedules(schedules).values():
-        game = schedule["game"]
-        instance = schedule["instance_id"]
-        if (
-            game["competition_class"] != "regular"
-            or instance in retired
-            or any(status in game["status_name"] for status in ("POSTPONED", "CANCELED", "CANCELLED"))
-        ):
+    for outcome in outcomes.values():
+        if not outcome["elapsed"]:
             continue
-        end = (
-            dt(schedule["lock_window_end"])
-            if schedule.get("lock_window_end")
-            else recorded_ends.get(instance) or lock_window_end(game, policies.get(instance, config))
+        row = slates.setdefault(
+            outcome["slate_date"], {"slate_date": outcome["slate_date"], "leads": [], "missed": 0}
         )
-        if not (launch <= end < as_of):
-            continue  # Lock window still open, or it closed before launch.
-        row = slates.setdefault(game["slate_date"], {"slate_date": game["slate_date"], "leads": []})
-        if instance in locks:
-            row["leads"].append(locks[instance])
-        row["missed"] = row.get("missed", 0) + (instance not in locks)
+        if outcome["status"] == "locked":
+            row["leads"].append(outcome["lead_hours"])
+        else:
+            row["missed"] += 1
     result = []
     for row in sorted(slates.values(), key=lambda r: r["slate_date"]):
         leads = sorted(row.pop("leads"))
@@ -89,6 +56,10 @@ def lock_coverage(records, config, as_of):
             }
         )
     return result
+
+
+def lock_coverage(records, config, as_of):
+    return summarize_lock_outcomes(lock_outcomes(records, config, as_of))
 
 
 def live_win_fit(root):
@@ -125,6 +96,15 @@ def build_site(root):
     season = max(
         (r["season"] for r in defense_versions), default=config.get("matchup", {}).get("seed_season", 2026)
     )
+    as_of = utcnow()
+    outcomes = lock_outcomes(records, config, as_of)
+    recorded_misses = {r["instance_id"]: r for r in records if r.get("code") == "missed_lock"}
+    misses = [
+        recorded_misses.get(i) or {**missed_lock_event(o, o["window_end"]), "derived": True}
+        for i, o in outcomes.items()
+        if o["status"] == "missed"
+    ]
+    quality = [r for r in records if r["kind"] == "quality" and r["code"] != "missed_lock"] + misses
     data = {
         "updated_at": iso(),
         "today": utcnow().astimezone(ET).date().isoformat(),
@@ -162,14 +142,13 @@ def build_site(root):
             stage: active_calibration(records, stage, iso(), PUBLIC_METHOD, config)
             for stage in ["first", "lock"]
         },
-        "missed_locks": [r for r in records if r["kind"] == "quality" and r["code"] == "missed_lock"],
-        "quality": [
-            {k: r[k] for k in ["code", "context", "at"] if k in r} for r in records if r["kind"] == "quality"
-        ],
+        "lock_outcomes": outcomes,
+        "missed_locks": misses,
+        "quality": [{k: r[k] for k in ["code", "context", "at"] if k in r} for r in quality],
         "methodology_version": PUBLIC_VERSION,
         "sample_gates": SAMPLE_GATES,
         "live_wp": live_win_fit(root),
-        "lock_coverage": lock_coverage(records, config, utcnow()),
+        "lock_coverage": summarize_lock_outcomes(outcomes),
         "matchup_settings": {
             k: config["matchup"][k]
             for k in ["half_life_days", "minimum_games", "defense_prior", "offense_prior"]
