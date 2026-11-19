@@ -72,6 +72,10 @@ def schedule(http, slate_date):
         "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard",
         params={"dates": slate_date.replace("-", ""), "limit": 100},
     )
+    return parse_schedule(envelope), envelope
+
+
+def parse_schedule(envelope):
     payload = envelope["payload"]
     if not isinstance(payload, dict) or not isinstance(payload.get("events"), list):
         raise SourceError("Invalid schedule schema")
@@ -117,7 +121,7 @@ def schedule(http, slate_date):
             }
         )
         games.append((game, event))
-    return games, envelope
+    return games
 
 
 def _number(value):

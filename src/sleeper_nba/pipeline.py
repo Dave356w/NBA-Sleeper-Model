@@ -33,7 +33,7 @@ from .models import (
     training_observations,
     weights,
 )
-from .projections import InvalidProjection, aggregate, eligible_stages, public_player_snapshot
+from .projections import InvalidProjection, aggregate, eligible_stages, game_rows, public_player_snapshot
 from .sources import HTTP, SourceError, dates_around, espn_quotes, schedule, sleeper_feed
 from .storage import Ledger, event
 
@@ -48,7 +48,7 @@ def latest_schedules(records):
     return result
 
 
-def assign_instance(game, records):
+def assign_instance(game, records, config=None):
     previous = latest_schedules(records).get(game["game_id"])
     retired = {r["instance_id"] for r in records if r["kind"] == "retired"}
     terminal = any(x in game["status_name"] for x in ["POSTPONED", "CANCELED", "CANCELLED"])
@@ -89,6 +89,7 @@ def assign_instance(game, records):
                 "instance_id": instance,
                 "at": game["source_captured_at"],
                 "baseline_tip": baseline,
+                **({"lock_window_end": iso(lock_window_end(game, config))} if config else {}),
                 "game": game,
             }
         )
@@ -149,7 +150,7 @@ def capture(root, config, dry_run=False, http=None, now=None):
             for game, source_event in found:
                 if game["competition_class"] != "regular":
                     continue
-                game, new = assign_instance(game, records + additions)
+                game, new = assign_instance(game, records + additions, config)
                 additions.extend(new)
                 games.append((game, source_event))
         except SourceError as exc:
@@ -224,22 +225,14 @@ def capture(root, config, dry_run=False, http=None, now=None):
                 )
         if game["status"] != "pre" or now >= dt(game["tip_utc"]):
             continue
-        relevant = [
-            e
-            for e in envelopes
-            if any(
-                str(r.get("date", ""))[:10] == game["slate_date"]
-                and r.get("game_id")
-                and r.get("team") in {game["home"], game["away"]}
-                for r in e["payload"]
-            )
-        ]
+        relevant = [e for e in envelopes if game_rows(game, e["payload"])]
         captured_at = max((e["captured_at"] for e in relevant), default=iso(now))
         stages = eligible_stages(game, captured_at, existing, config)
         if not stages and not matchup.enabled(config):
             continue
+        inputs = game_rows(game, rows)
         try:
-            raw = aggregate(game, rows, captured_at, config)
+            raw = aggregate(game, inputs, captured_at, config)
         except InvalidProjection as exc:
             # Repeated identical rejection does not grow the audit log forever.
             additions.append(event("invalid_projection", instance, reason=str(exc)))
@@ -268,6 +261,19 @@ def capture(root, config, dry_run=False, http=None, now=None):
             previous = previews.get(instance)
             if previous is None or dt(captured_at) > dt(previous["captured_at"]):
                 previews[instance] = preview
+        if stages:
+            # Keep the source evidence even when an unpriced first capture is deferred.
+            candidate = {
+                "kind": "snapshot_candidate",
+                "game": game,
+                "config": config,
+                "captured_at": captured_at,
+                "requests": [{k: e[k] for k in ("url", "requested_at", "captured_at")} for e in relevant],
+                "raw_rows": inputs,
+                "event": source_event,
+            }
+            candidate["id"] = "candidate:" + digest(candidate)
+            additions.append(candidate)
         for stage in stages:
             variants = build_variants(raw, game, all_records, config, captured_at, stage, quotes)
             if stage == "first" and not first_window_open(
@@ -282,6 +288,7 @@ def capture(root, config, dry_run=False, http=None, now=None):
             forecast = {
                 "id": forecast_id,
                 "kind": "forecast",
+                "candidate_id": candidate["id"],
                 "methodology": config.get("methodology", "sleeper_only_v1_19"),
                 "instance_id": instance,
                 "stage": stage,
@@ -383,6 +390,34 @@ def next_wake(
     return {**best, "seconds": max(int(floor_seconds), math.ceil(best["seconds"]))}
 
 
+def grade_variants(forecast, result, retirement):
+    variants = {}
+    for variant, output in forecast["variants"].items():
+        selections = []
+        for index, s in enumerate(output["selections"]):
+            grading = (
+                {"outcome": "void", "units": 0, "reason": retirement["reason"]}
+                if retirement
+                else settle(s, result["home_score"], result["away_score"])
+            )
+            selections.append({**s, "selection_id": digest([forecast["id"], variant, index]), **grading})
+        variants[variant] = {"selections": selections}
+        if not retirement:
+            actual_margin = result["home_score"] - result["away_score"]
+            actual_total = result["home_score"] + result["away_score"]
+            variants[variant].update(
+                home_won=actual_margin > 0,
+                winner_correct=None
+                if output["winner"] is None
+                else (output["winner"] == "home") == (actual_margin > 0),
+                raw_margin_error=actual_margin - forecast["raw"]["margin"],
+                raw_total_error=actual_total - forecast["raw"]["total"],
+                ats_margin_error=actual_margin - output["ats_margin"],
+                adjusted_total_error=actual_total - output["adjusted_total"],
+            )
+    return variants
+
+
 def grade(root, config, http=None):
     ledger, http = Ledger(root), http or HTTP()
     records, additions = ledger.records(), []
@@ -405,10 +440,10 @@ def grade(root, config, http=None):
         except SourceError as exc:
             additions.append(event("results_unavailable", date, message=str(exc)))
             continue
-        for game, _ in found:
+        for game, source_event in found:
             if game["competition_class"] != "regular":
                 continue
-            game, new = assign_instance(game, records + additions)
+            game, new = assign_instance(game, records + additions, config)
             additions.extend(new)
             instance = game["instance_id"]
             if not game["completed"] or game["status"] != "post" or game["home_score"] == game["away_score"]:
@@ -430,6 +465,16 @@ def grade(root, config, http=None):
                 "supersedes": old["id"] if old else None,
                 "includes_overtime": True,
             }
+            evidence = {
+                "kind": "result_evidence",
+                "event": source_event,
+                "requested_at": game["source_requested_at"],
+                "captured_at": game["source_captured_at"],
+                "url": game["source_url"],
+            }
+            evidence["id"] = "result-evidence:" + digest(evidence)
+            result["evidence_id"] = evidence["id"]
+            additions.append(evidence)
             latest_results[instance] = result
             additions.append(result)
     retired = {r["instance_id"]: r for r in records + additions if r["kind"] == "retired"}
@@ -443,30 +488,7 @@ def grade(root, config, http=None):
         key = "grade:" + digest([forecast["id"], revision])
         if key in existing:
             continue
-        variants = {}
-        for variant, output in forecast["variants"].items():
-            selections = []
-            for index, s in enumerate(output["selections"]):
-                grading = (
-                    {"outcome": "void", "units": 0, "reason": retired[instance]["reason"]}
-                    if instance in retired
-                    else settle(s, result["home_score"], result["away_score"])
-                )
-                selections.append({**s, "selection_id": digest([forecast["id"], variant, index]), **grading})
-            variants[variant] = {"selections": selections}
-            if instance not in retired:
-                actual_margin = result["home_score"] - result["away_score"]
-                actual_total = result["home_score"] + result["away_score"]
-                variants[variant].update(
-                    home_won=actual_margin > 0,
-                    winner_correct=None
-                    if output["winner"] is None
-                    else (output["winner"] == "home") == (actual_margin > 0),
-                    raw_margin_error=actual_margin - forecast["raw"]["margin"],
-                    raw_total_error=actual_total - forecast["raw"]["total"],
-                    ats_margin_error=actual_margin - output["ats_margin"],
-                    adjusted_total_error=actual_total - output["adjusted_total"],
-                )
+        variants = grade_variants(forecast, result, retired.get(instance))
         additions.append(
             {
                 "id": key,
@@ -485,12 +507,7 @@ def grade(root, config, http=None):
     return {"graded": sum(r["kind"] == "grade" for r in additions), "records": len(additions)}
 
 
-def refit(root, config, now=None):
-    ledger, now = Ledger(root), now or utcnow()
-    records, additions = ledger.records(), []
-    prepared = matchup.prepare_versions(records, root, config, iso(now))
-    ledger.append(prepared)
-    records = records + prepared
+def confidence_history(records, root, config, stage, cutoff):
     # Only fully resolved slates enter daily calibration. Postponed/cancelled
     # games are removed; unfinished games keep their slate pending.
     schedules = latest_schedules(records)
@@ -509,6 +526,35 @@ def refit(root, config, now=None):
     allowed_instances = {
         g["instance_id"] for date, games in slates.items() if date in completed for g in games
     }
+    observations = [
+        o
+        for o in training_observations(records, stage, cutoff, config.get("methodology"))
+        if o["instance_id"] in allowed_instances
+    ]
+    if stage == "first" and config.get("calibration", {}).get("history") == "season":
+        # v1.24: the season's earlier games, replayed walk-forward under this
+        # methodology, start the history; a native game supersedes its replay.
+        from .season import calibration_observations
+
+        native_games = {o["game_id"] for o in observations}
+        observations = sorted(
+            [
+                o
+                for o in calibration_observations(records, root, config, cutoff)
+                if o["game_id"] not in native_games
+            ]
+            + observations,
+            key=lambda o: (dt(o["verified_at"]), o["game_id"]),
+        )
+    return observations
+
+
+def refit(root, config, now=None):
+    ledger, now = Ledger(root), now or utcnow()
+    records, additions = ledger.records(), []
+    prepared = matchup.prepare_versions(records, root, config, iso(now))
+    ledger.append(prepared)
+    records = records + prepared
     try:
         commit = (
             subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=root, stderr=subprocess.DEVNULL)
@@ -520,26 +566,7 @@ def refit(root, config, now=None):
     for stage in ["first", "lock"]:
         if calibration_stage(config, stage) != stage:
             continue  # v1.24: this stage is scored with another stage's calibration.
-        observations = [
-            o
-            for o in training_observations(records, stage, iso(now), config.get("methodology"))
-            if o["instance_id"] in allowed_instances
-        ]
-        if stage == "first" and config.get("calibration", {}).get("history") == "season":
-            # v1.24: the season's earlier games, replayed walk-forward under this
-            # methodology, start the history; a native game supersedes its replay.
-            from .season import calibration_observations
-
-            native_games = {o["game_id"] for o in observations}
-            observations = sorted(
-                [
-                    o
-                    for o in calibration_observations(records, root, config, iso(now))
-                    if o["game_id"] not in native_games
-                ]
-                + observations,
-                key=lambda o: (dt(o["verified_at"]), o["game_id"]),
-            )
+        observations = confidence_history(records, root, config, stage, iso(now))
         previous = active_calibration(records, stage, iso(now), config.get("methodology"))
         manifest_hash = digest(observations)
         if previous.get("manifest_hash") == manifest_hash:
@@ -677,7 +704,15 @@ def validate(root):
             for o in r["manifest"]:
                 if dt(o["verified_at"]) > dt(r["training_cutoff"]):
                     raise ValueError("Training result unavailable at cutoff")
-    return {"status": "valid", "records": len(records), "transactions": len(Ledger(root).transactions())}
+    from .audit import replay_ledger
+
+    audit = replay_ledger(root, records)
+    return {
+        "audit": audit,
+        "status": "valid",
+        "records": len(records),
+        "transactions": len(Ledger(root).transactions()),
+    }
 
 
 def export_active(root):

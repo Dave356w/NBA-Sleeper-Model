@@ -434,3 +434,16 @@ def test_v1_27_closing_prices_fill_only_unpriced_season_games(root):
     path.write_text(json.dumps(data))
     with pytest.raises(ValueError, match="Closing-price backfill integrity failure"):
         build_site(root)
+
+
+def test_elapsed_schedule_window_counts_even_if_watcher_never_returns(root, config):
+    from sleeper_nba.site import lock_coverage
+
+    http = FixtureHTTP([])
+    http.at = "2026-11-07T16:00:00Z"
+    capture(root, config, http=http, now=dt(http.at))
+    records = Ledger(root).records()
+    assert not any(r.get("code") == "missed_lock" for r in records)
+    assert lock_coverage(records, config, dt("2026-11-07T17:15:00Z")) == []
+    coverage = lock_coverage(records, config, dt("2026-11-07T17:15:01Z"))
+    assert [(s["games"], s["locked"], s["missed"]) for s in coverage] == [(1, 0, 1)]

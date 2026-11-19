@@ -11,7 +11,7 @@ from statistics import median
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 
 from . import matchup
-from .common import ET, dt, iso, load_config, utcnow
+from .common import ET, dt, iso, load_config, lock_window_end, utcnow
 from .evaluation import closing_line_values, latest_grades, summarize
 from .markets import ALL_MARKETS
 from .models import active_calibration
@@ -31,33 +31,46 @@ def methodology_of(record):
     return record.get("methodology", record.get("config", {}).get("methodology"))
 
 
-def lock_coverage(records, retired):
+def lock_coverage(records, config, as_of):
     """Operational lock capture by slate, across all native versions."""
-    locks = {
-        f["instance_id"]: f["lead_hours"]
-        for f in records
-        if f["kind"] == "forecast" and f["stage"] == "lock" and f.get("provenance") == "native"
-    }
-    # A window that closed before this system first observed a schedule is not an
-    # operational miss. Every later miss counts, including games that never
-    # received a valid projection and so have no forecast at all.
-    observed = [dt(r["at"]) for r in records if r["kind"] == "schedule"]
-    launch = min(observed) if observed else None
-    missed = {
-        r["instance_id"]
+    # A game captured under multiple releases contributes one operational lock.
+    forecasts = sorted(
+        (
+            f
+            for f in records
+            if f["kind"] == "forecast" and f.get("provenance") == "native" and dt(f["captured_at"]) <= as_of
+        ),
+        key=lambda f: (dt(f["captured_at"]), f["id"]),
+    )
+    retired = {r["instance_id"] for r in records if r["kind"] == "retired" and dt(r["at"]) <= as_of}
+    locks, policies = {}, {}
+    for f in forecasts:
+        policies[f["instance_id"]] = f["config"]
+        if f["stage"] == "lock":
+            locks.setdefault(f["instance_id"], f["lead_hours"])
+    schedules = [r for r in records if r["kind"] == "schedule" and dt(r["at"]) <= as_of]
+    launch = min((dt(r["at"]) for r in schedules), default=None)
+    recorded_ends = {
+        r["instance_id"]: dt(r["window_end"])
         for r in records
-        if r["kind"] == "quality"
-        and r["code"] == "missed_lock"
-        and launch is not None
-        and dt(r["window_end"]) >= launch
+        if r["kind"] == "quality" and r["code"] == "missed_lock" and dt(r["at"]) <= as_of
     }
     slates = {}
-    for schedule in latest_schedules(records).values():
+    for schedule in latest_schedules(schedules).values():
         game = schedule["game"]
         instance = schedule["instance_id"]
-        if game["competition_class"] != "regular" or instance in retired:
+        if (
+            game["competition_class"] != "regular"
+            or instance in retired
+            or any(status in game["status_name"] for status in ("POSTPONED", "CANCELED", "CANCELLED"))
+        ):
             continue
-        if instance not in locks and instance not in missed:
+        end = (
+            dt(schedule["lock_window_end"])
+            if schedule.get("lock_window_end")
+            else recorded_ends.get(instance) or lock_window_end(game, policies.get(instance, config))
+        )
+        if not (launch <= end < as_of):
             continue  # Lock window still open, or it closed before launch.
         row = slates.setdefault(game["slate_date"], {"slate_date": game["slate_date"], "leads": []})
         if instance in locks:
@@ -156,7 +169,7 @@ def build_site(root):
         "methodology_version": PUBLIC_VERSION,
         "sample_gates": SAMPLE_GATES,
         "live_wp": live_win_fit(root),
-        "lock_coverage": lock_coverage(records, retired),
+        "lock_coverage": lock_coverage(records, config, utcnow()),
         "matchup_settings": {
             k: config["matchup"][k]
             for k in ["half_life_days", "minimum_games", "defense_prior", "offense_prior"]
