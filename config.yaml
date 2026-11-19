@@ -1,4 +1,4 @@
-methodology: sleeper_only_v1_30
+methodology: sleeper_only_v1_31
 sleeper_company: rotowire
 wp_initial: 10.0
 ats_bias_initial: 0.0
@@ -69,7 +69,10 @@ matchup:
   apply_offense: true
   # v1.28 (owner update, 19 November 2026): a game with several native first snapshots trains on
   # its latest one (nearest tip, game-day when available), as the season replay already does.
-  history_snapshot: latest
+  # v1.31 (owner update, 19 November 2026): only game-day snapshots train the fit, as in the v1.30
+  # replay; a game-day lock stands in for an earlier-day first snapshot, and a game with no
+  # game-day capture is left out.
+  history_snapshot: game_day_latest
   global_prior: 100.0
   venue_prior: 100.0
   coefficient_bound: 30.0

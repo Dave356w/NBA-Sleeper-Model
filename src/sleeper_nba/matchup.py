@@ -24,9 +24,11 @@ from pathlib import Path
 
 import numpy as np
 
-from .common import TEAMS, digest, dt
+from .common import ET, TEAMS, digest, dt
 
-METHOD = "sleeper_only_v1_30"
+METHOD = "sleeper_only_v1_31"
+# v1.31 (owner update, 19 November 2026): the team fit trains on game-day snapshots only.
+GAME_DAY_HISTORY = "game_day_latest"
 # A slate stops holding back a refit once its ungraded games are this old.
 PENDING_HOURS = 24
 TEAMS_SORTED = sorted(TEAMS)
@@ -101,6 +103,11 @@ def seed_observations(root, config, stage, season, cutoff):
     ]
 
 
+def on_game_day(snapshot_utc, tip_utc):
+    """Captured on the game's Eastern calendar date."""
+    return dt(snapshot_utc).astimezone(ET).date() == dt(tip_utc).astimezone(ET).date()
+
+
 def eligible_observations(records, root, config, stage, season, cutoff):
     observations = {o["game_id"]: o for o in seed_observations(root, config, stage, season, cutoff)}
     retired = {r["instance_id"] for r in records if r["kind"] == "retired"}
@@ -110,22 +117,40 @@ def eligible_observations(records, root, config, stage, season, cutoff):
             previous = results.get(r["instance_id"])
             if previous is None or dt(r["verified_at"]) > dt(previous["verified_at"]):
                 results[r["instance_id"]] = r
+    policy = config.get("matchup", {}).get("history_snapshot")
+    game_day = policy == GAME_DAY_HISTORY
     natives = [r for r in records if r["kind"] == "forecast"]
-    if config.get("matchup", {}).get("history_snapshot") == "latest":
+    if policy in ("latest", GAME_DAY_HISTORY):
         # v1.28: a game forecast under several tags trains on its latest first snapshot,
         # the one nearest tip and on the game day when one exists, as the season replay
         # does. Configurations without the key keep the ledger-order choice they were fitted with.
         natives.sort(key=lambda r: (dt(r["captured_at"]), r["id"]))
+    if game_day:
+        # v1.31: as the v1.30 season replay, only snapshots captured on the game's Eastern date
+        # train the fit. A game-day lock stands in for an earlier-day first snapshot; a seed or
+        # backfill snapshot must also be on game day; a game with neither is left out.
+        observations = {k: o for k, o in observations.items() if on_game_day(o["snapshot_utc"], o["tip_utc"])}
+    stages = (stage, "lock") if game_day and stage == "first" else (stage,)
+    chosen = {}
     for f in natives:
-        if f["stage"] != stage or f.get("provenance") != "native":
+        if f["stage"] not in stages or f.get("provenance") != "native":
             continue
         game = f["game"]
         if season_of(game) != season or f["instance_id"] in retired or f["instance_id"] not in results:
             continue
         if "home_score" not in f["raw"] or "home" not in game:
             continue
+        if game_day:
+            if not on_game_day(f["captured_at"], game["tip_utc"]):
+                continue
+            held = chosen.get(game["game_id"])
+            if held is not None and held["stage"] == stage and f["stage"] != stage:
+                continue  # A game-day first snapshot outranks a lock.
+        chosen[game["game_id"]] = f
+    for f in chosen.values():
+        game = f["game"]
         r = results[f["instance_id"]]
-        observations[game["game_id"]] = {
+        observation = {
             "observation_id": f["id"],
             "game_id": game["game_id"],
             "stage": stage,
@@ -144,6 +169,9 @@ def eligible_observations(records, root, config, stage, season, cutoff):
             "result_id": r["id"],
             "result_hash": digest(r),
         }
+        if game_day:
+            observation["snapshot_stage"] = f["stage"]
+        observations[game["game_id"]] = observation
     valid = []
     for o in observations.values():
         if not dt(o["snapshot_utc"]) < dt(o["tip_utc"]) <= dt(o["verified_at"]) <= dt(cutoff):

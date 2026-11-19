@@ -152,11 +152,6 @@ def _method(record):
     return record.get("methodology", record.get("config", {}).get("methodology", "sleeper_only_v1_19"))
 
 
-def _on_game_day(snapshot_utc, tip_utc):
-    """Captured on the game's Eastern calendar date."""
-    return dt(snapshot_utc).astimezone(ET).date() == dt(tip_utc).astimezone(ET).date()
-
-
 def replay_observations(records, root, config, season):
     """Seed games plus resolved earlier-version native snapshots, one per game."""
     return _replay(records, root, config, season)[0]
@@ -182,7 +177,7 @@ def _replay(records, root, config, season):
         for o in seed["observations"]:
             if o["stage"] != "first" or o["season"] != season:
                 continue
-            if game_day and not _on_game_day(o["snapshot_utc"], o["tip_utc"]):
+            if game_day and not matchup.on_game_day(o["snapshot_utc"], o["tip_utc"]):
                 continue
             day = dt(o["tip_utc"]).astimezone(ET).date() + timedelta(days=1)
             observations[o["game_id"]] = {
@@ -203,7 +198,7 @@ def _replay(records, root, config, season):
             for o in backfill["observations"]:
                 if o["stage"] != "first" or o["season"] != season or o["game_id"] in observations:
                     continue
-                if game_day and not _on_game_day(o["snapshot_utc"], o["tip_utc"]):
+                if game_day and not matchup.on_game_day(o["snapshot_utc"], o["tip_utc"]):
                     continue
                 day = dt(o["tip_utc"]).astimezone(ET).date() + timedelta(days=1)
                 observations[o["game_id"]] = {
@@ -238,7 +233,7 @@ def _replay(records, root, config, season):
             continue
         if result["home_score"] == result["away_score"]:
             continue
-        if game_day and not _on_game_day(f["captured_at"], game["tip_utc"]):
+        if game_day and not matchup.on_game_day(f["captured_at"], game["tip_utc"]):
             skipped[game["game_id"]] = f
             continue
         held = chosen.get(game["game_id"])
