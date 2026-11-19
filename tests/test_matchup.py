@@ -533,3 +533,35 @@ def test_v1_31_fit_history_uses_game_day_snapshots_only(config):
     # The seed is captured on game day, so all 117 seed games still train the fit.
     seeded = matchup.eligible_observations([], ".", config, "first", 2026, "2026-11-30T00:00:00+00:00")
     assert sum(o["provenance"] == "legacy-first" for o in seeded) == 117
+
+
+def test_v1_32_minutes_cap_scales_down_only_in_the_fit_and_replay(root, config):
+    from sleeper_nba.season import _replay
+
+    settings = config["matchup"]
+    assert matchup.minutes_scale(249.0, settings) == pytest.approx(240 / 249)
+    assert matchup.minutes_scale(215.0, settings) == 1.0  # Never scaled up.
+    assert matchup.minutes_scale(None, settings) == 1.0
+    assert matchup.minutes_scale(249.0, {}) == 1.0  # Configurations without the key.
+    # Seed and backfill teams take their minutes from the pinned file: MIA projected 249 minutes.
+    seeded = {
+        o["game_id"]: o
+        for o in matchup.eligible_observations([], root, config, "first", 2026, "2026-12-01T00:00:00+00:00")
+    }
+    seed = json.loads((root / settings["seed_file"]).read_text())
+    raw = next(o for o in seed["observations"] if o["game_id"] == "401909871")
+    side = "home" if raw["home"] == "MIA" else "away"
+    o = seeded["401909871"]
+    assert o[f"{side}_minutes_scale"] == pytest.approx(240 / 249)
+    assert o[f"projected_{side}_score"] == pytest.approx(raw[f"projected_{side}_score"] * 240 / 249)
+    assert sum(o["home_minutes_scale"] < 1 or o["away_minutes_scale"] < 1 for o in seeded.values()) == 5
+    # The season replay applies the same cap; configurations frozen without it do not.
+    capped = {o["game_id"]: o for o in _replay([], root, config, 2026)[0]}
+    assert capped["401909871"][f"projected_{side}_score"] == pytest.approx(o[f"projected_{side}_score"])
+    legacy = {**config, "matchup": {k: v for k, v in settings.items() if k != "team_minutes_cap"}}
+    plain = {o["game_id"]: o for o in _replay([], root, legacy, 2026)[0]}
+    assert plain["401909871"][f"projected_{side}_score"] == raw[f"projected_{side}_score"]
+    # A seed game without pinned minutes is an integrity failure, not a silent pass.
+    broken = {**settings, "seed_minutes": {**settings["seed_minutes"], "sha256": "0" * 64}}
+    with pytest.raises(ValueError):
+        matchup.cap_seed([raw], root, broken)

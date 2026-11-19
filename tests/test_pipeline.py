@@ -239,6 +239,23 @@ def test_final_reported_with_a_moved_tip_is_graded_not_voided(root, rows, config
     assert validate(root)["status"] == "valid"
 
 
+def test_v1_32_scales_an_over_240_team_down_before_the_team_terms(root, rows, config):
+    assert config["matchup"]["team_minutes_cap"] == 240
+    extra = {**rows[0], "player_id": "BOS-extra", "player": {"full_name": "Fixture BOS extra"}}
+    http = FixtureHTTP([*rows, extra])  # BOS: 9 x 30 = 270 minutes, 135 points.
+    capture(root, config, http=http, now=dt(AT))
+    first = next(f for f in Ledger(root).records("forecast") if f["stage"] == "first")
+    assert first["raw"]["home_score"] == 135 and first["raw"]["team_minutes"]["BOS"] == 270
+    fixed, adaptive = first["variants"]["fixed"], first["variants"]["adaptive"]
+    assert fixed["scoring"]["home_score"] == 135  # Raw and the fixed control are unchanged.
+    adjustment = adaptive["matchup_adjustment"]
+    assert adjustment["home_minutes_scale"] == pytest.approx(240 / 270)
+    assert adjustment["away_minutes_scale"] == 1.0  # NYK at 240 minutes is untouched.
+    expected = 135 * 240 / 270 + adjustment["home_correction"]
+    assert adaptive["scoring"]["home_score"] == pytest.approx(expected)
+    assert validate(root)["status"] == "valid"
+
+
 def test_postponement_voids_research_selections(root, rows, config):
     http = FixtureHTTP(rows)
     capture(root, config, http=http, now=dt(AT))

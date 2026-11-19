@@ -1,4 +1,4 @@
-methodology: sleeper_only_v1_31
+methodology: sleeper_only_v1_32
 sleeper_company: rotowire
 wp_initial: 10.0
 ats_bias_initial: 0.0
@@ -73,6 +73,14 @@ matchup:
   # replay; a game-day lock stands in for an earlier-day first snapshot, and a game with no
   # game-day capture is left out.
   history_snapshot: game_day_latest
+  # v1.32 (owner update, 19 November 2026): a team whose Sleeper projected minutes exceed a full
+  # game is scaled down to 240 minutes before the team terms (never scaled up). Raw scores and the
+  # fixed control are unchanged. Seed and backfill minutes come from the pinned file below
+  # (research/build_seed_minutes.py).
+  team_minutes_cap: 240.0
+  seed_minutes:
+    file: data/calibration_seeds/seed_team_minutes_2026-27.json
+    sha256: 3f6b5926457190812a510c4d144843a471374c82c30631087eb83b1b298dea77
   global_prior: 100.0
   venue_prior: 100.0
   coefficient_bound: 30.0
