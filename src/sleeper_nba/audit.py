@@ -8,7 +8,7 @@ from collections import Counter
 from . import matchup
 from .common import digest, dt, first_is_priced, first_window_open
 from .models import active_calibration, fit_parameters, weights
-from .pipeline import build_variants, confidence_history, grade_variants, latest_schedules
+from .pipeline import build_variants, confidence_history, frozen_final, grade_variants, latest_schedules
 from .projections import aggregate, eligible_stages
 from .sources import espn_quotes, parse_schedule
 
@@ -209,19 +209,31 @@ def replay_grades(records, forecasts):
     results = [r for r in records if r["kind"] == "result"]
     schedules = {r["instance_id"]: r["game"]["game_id"] for r in records if r["kind"] == "schedule"}
     scoreboards = {r["game"]["source_hash"]: r["game"] for r in records if r["kind"] == "schedule"}
+    teams = {}
+    for f in forecasts.values():
+        teams.setdefault(f["instance_id"], set()).add((f["game"]["home"], f["game"]["away"]))
     for r in results:
         archived = scoreboards.get(r["source_hash"])
         if archived:
-            for field in ("home_score", "away_score"):
-                check(r, field, r[field], archived[field])
+            check(
+                r,
+                "frozen final scores",
+                (r["home_score"], r["away_score"]),
+                frozen_final(archived, teams[r["instance_id"]]),
+            )
         if "evidence_id" in r:
             e = by_id[r["evidence_id"]]
             source = event_game(e, e["event"], e["requested_at"], e["captured_at"], e["url"])
             check(r, "final event game", source["game_id"], schedules[r["instance_id"]])
             check(r, "completed final", (source["completed"], source["status"]), (True, "post"))
             check(r, "result timestamp", r["verified_at"], e["captured_at"])
-            for field in ("source_hash", "home_score", "away_score"):
-                check(r, field, r[field], source[field])
+            check(r, "source hash", r["source_hash"], source["source_hash"])
+            check(
+                r,
+                "frozen final scores",
+                (r["home_score"], r["away_score"]),
+                frozen_final(source, teams[r["instance_id"]]),
+            )
     retirements = {r["instance_id"]: r for r in records if r["kind"] == "retired"}
     for f in forecasts.values():
         for r in results:

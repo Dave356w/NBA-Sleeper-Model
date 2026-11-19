@@ -425,11 +425,15 @@ def test_watcher_wakes_at_lock_target_retries_in_window_and_ticks(root, rows, co
 
 def test_capture_after_narrow_window_records_a_missed_lock(root, rows, config):
     http = FixtureHTTP(rows)
+    http.at = "2026-11-07T16:00:00+00:00"
+    early = FixtureHTTP([])
+    early.at = http.at
+    capture(root, config, http=early, now=dt(http.at))
     http.at = "2026-11-07T17:15:01+00:00"
     assert capture(root, config, http=http, now=dt(http.at))["forecasts"] == 1
     ledger = Ledger(root)
     assert [f["stage"] for f in ledger.records("forecast")] == ["first"]
-    assert [q["code"] for q in ledger.records("quality")] == ["missed_lock"]
+    assert sum(q["code"] == "missed_lock" for q in ledger.records("quality")) == 1
 
 
 def test_methodology_transition_captures_fresh_forecasts_once(root, rows, config):
@@ -532,3 +536,86 @@ def test_frozen_first_replays_both_fits_raw_price_and_revised_grade(root, config
     team_fit["manifest"][0]["actual_home_score"] += 1
     with pytest.raises(ValueError, match="team training history"):
         replay_ledger(root, records)
+
+
+@pytest.mark.parametrize("failure", ["missing_score", "reversed_sides", "different_team"])
+def test_final_source_is_settled_against_frozen_teams(root, rows, config, monkeypatch, failure):
+    class FinalFeed(FixtureHTTP):
+        def event(self):
+            raw = super().event()
+            if self.final and not self.correction:
+                home, away = raw["competitions"][0]["competitors"]
+                if failure == "missing_score":
+                    home.pop("score")
+                elif failure == "reversed_sides":
+                    home["homeAway"], away["homeAway"] = "away", "home"
+                else:
+                    away["team"]["abbreviation"] = "POR"
+            return raw
+
+    http = FinalFeed(rows)
+    monkeypatch.setattr("sleeper_nba.common.utcnow", lambda: dt(http.at))
+    monkeypatch.setattr("sleeper_nba.pipeline.utcnow", lambda: dt(http.at))
+    assert capture(root, config, http=http, now=dt(http.at))["forecasts"] == 2
+    http.final = True
+    http.at = "2026-11-08T02:00:00Z"
+    ledger = Ledger(root)
+    grade(root, config, http=http)
+    validate(root)
+    build_site(root)
+    data = json.loads((root / "site/data.json").read_text())
+    if failure == "reversed_sides":
+        assert len(data["grades"]) == 2
+        for g in data["grades"].values():
+            assert (g["result"]["home_score"], g["result"]["away_score"]) == (120, 110)
+            assert g["variants"]["adaptive"]["selections"][0]["units"] == 0.5
+    else:
+        assert not data["grades"] and not ledger.records("result")
+    http.correction = True
+    http.at = "2026-11-08T03:00:00Z"
+    grade(root, config, http=http)
+    assert grade(root, config, http=http)["graded"] == 0
+    validate(root)
+    build_site(root)
+    data = json.loads((root / "site/data.json").read_text())
+    assert len(data["grades"]) == 2
+    for g in data["grades"].values():
+        assert (g["result"]["home_score"], g["result"]["away_score"]) == (125, 110)
+        for v in g["variants"].values():
+            pick = v["selections"][0]
+            assert pick["side"] == "home" and pick["outcome"] == "win" and pick["units"] == 0.5
+    row = next(r for r in data["season"]["rows"] if r["game_id"] == "fixture-1")
+    assert (row["home"], row["actual_home_score"], row["away"], row["actual_away_score"]) == (
+        "BOS",
+        125,
+        "NYK",
+        110,
+    )
+
+
+@pytest.mark.parametrize("failed_dates", [{"20261106"}, {"20261106", "20261107", "20261108"}, set()])
+def test_watcher_run_reports_partial_and_total_schedule_outages(
+    root, rows, monkeypatch, failed_dates, capsys
+):
+    from sleeper_nba.cli import main
+
+    class Feed(FixtureHTTP):
+        def request(self, url, params=None):
+            if "scoreboard" in url and params["dates"] in failed_dates:
+                raise SourceError("fixture outage")
+            return super().request(url, params)
+
+    http = Feed(rows)
+    monkeypatch.setattr("sleeper_nba.pipeline.HTTP", lambda: http)
+    monkeypatch.setattr("sleeper_nba.pipeline.utcnow", lambda: dt(AT))
+    monkeypatch.setattr("sleeper_nba.common.utcnow", lambda: dt(AT))
+    if failed_dates:
+        with pytest.raises(SystemExit) as stopped:
+            main(["--root", str(root), "run"])
+        assert stopped.value.code == 1
+    else:
+        main(["--root", str(root), "run"])
+    report = json.loads(capsys.readouterr().out)
+    assert {d.replace("-", "") for d in report["capture"]["schedule_failures"]} == failed_dates
+    assert report["validation"]["status"] == "valid"
+    assert report["capture"]["forecasts"] == (0 if "20261107" in failed_dates else 2)

@@ -48,6 +48,76 @@ def latest_schedules(records):
     return result
 
 
+def lock_outcomes(records, config, as_of):
+    """Operational lock capture by slate, across all native versions."""
+    # A game captured under multiple releases contributes one operational lock.
+    forecasts = sorted(
+        (
+            f
+            for f in records
+            if f["kind"] == "forecast" and f.get("provenance") == "native" and dt(f["captured_at"]) <= as_of
+        ),
+        key=lambda f: (dt(f["captured_at"]), f["id"]),
+    )
+    retired = {r["instance_id"] for r in records if r["kind"] == "retired" and dt(r["at"]) <= as_of}
+    locks, policies = {}, {}
+    for f in forecasts:
+        policies[f["instance_id"]] = f["config"]
+        if f["stage"] == "lock":
+            locks.setdefault(f["instance_id"], f["lead_hours"])
+    schedules = [r for r in records if r["kind"] == "schedule" and dt(r["at"]) <= as_of]
+    launch = min((dt(r["at"]) for r in schedules), default=None)
+    recorded_ends = {
+        r["instance_id"]: dt(r["window_end"])
+        for r in records
+        if r["kind"] == "quality" and r["code"] == "missed_lock" and dt(r["at"]) <= as_of
+    }
+    outcomes = {}
+    for schedule_record in latest_schedules(schedules).values():
+        game = schedule_record["game"]
+        instance = schedule_record["instance_id"]
+        if (
+            game["competition_class"] != "regular"
+            or instance in retired
+            or any(status in game["status_name"] for status in ("POSTPONED", "CANCELED", "CANCELLED"))
+        ):
+            continue
+        end = (
+            dt(schedule_record["lock_window_end"])
+            if schedule_record.get("lock_window_end")
+            else recorded_ends.get(instance) or lock_window_end(game, policies.get(instance, config))
+        )
+        if end < launch:
+            continue
+        outcome = "locked" if instance in locks else "missed" if end < as_of else "pending"
+        outcomes[instance] = {
+            "instance_id": instance,
+            "game_id": game["game_id"],
+            "slate_date": game["slate_date"],
+            "status": outcome,
+            "elapsed": end < as_of,
+            "lead_hours": locks.get(instance),
+            "window_end": iso(end),
+            "target": iso(
+                dt(game["tip_utc"]) - timedelta(hours=policies.get(instance, config)["lock_hours"])
+            ),
+        }
+    return outcomes
+
+
+def missed_lock_event(outcome, at):
+    return {
+        "id": "missed_lock:" + outcome["instance_id"],
+        "kind": "quality",
+        "code": "missed_lock",
+        "instance_id": outcome["instance_id"],
+        "context": outcome["game_id"],
+        "at": at,
+        "target": outcome["target"],
+        "window_end": outcome["window_end"],
+    }
+
+
 def assign_instance(game, records, config=None):
     previous = latest_schedules(records).get(game["game_id"])
     retired = {r["instance_id"] for r in records if r["kind"] == "retired"}
@@ -144,6 +214,7 @@ def capture(root, config, dry_run=False, http=None, now=None):
         for p in matchup.load_previews(root)["forecasts"]
         if dt(p["captured_at"]) < dt(p["game"]["tip_utc"])
     }
+    schedule_failures = []
     for date in dates_around(now):
         try:
             found, _ = schedule(http, date)
@@ -154,7 +225,10 @@ def capture(root, config, dry_run=False, http=None, now=None):
                 additions.extend(new)
                 games.append((game, source_event))
         except SourceError as exc:
+            schedule_failures.append(date)
             additions.append(event("schedule_unavailable", date, message=str(exc)))
+    outcomes = lock_outcomes(records + additions, config, now)
+    additions.extend(missed_lock_event(o, iso(now)) for o in outcomes.values() if o["status"] == "missed")
     try:
         rows, envelopes, state, warnings = sleeper_feed(http)
         for warning in warnings:
@@ -165,7 +239,12 @@ def capture(root, config, dry_run=False, http=None, now=None):
         additions = [r for r in additions if r["id"] not in existing_ids]
         if not dry_run:
             ledger.append(additions)
-        return {"forecasts": 0, "status": "sleeper_unavailable", "events": len(additions)}
+        return {
+            "forecasts": 0,
+            "status": "sleeper_unavailable",
+            "schedule_failures": schedule_failures,
+            "events": len(additions),
+        }
     # ESPN is the sole market adapter. Its retrieval completion time is the
     # operational quote timestamp; sportsbook update time is not asserted.
     live_quotes = {g["game_id"]: espn_quotes(g, e) for g, e in games}
@@ -202,28 +281,15 @@ def capture(root, config, dry_run=False, http=None, now=None):
             and r["instance_id"] == instance
             and r.get("methodology", r.get("config", {}).get("methodology")) == config.get("methodology")
         }
-        target = dt(game["tip_utc"]) - timedelta(hours=config["lock_hours"])
-        lock_end = lock_window_end(game, config)
-        if (
-            now > lock_end
-            and "lock" not in existing
-            and not any(r["kind"] == "retired" and r["instance_id"] == instance for r in all_records)
-        ):
-            key = "missed_lock:" + instance
-            if not any(r["id"] == key for r in all_records):
-                additions.append(
-                    {
-                        "id": key,
-                        "kind": "quality",
-                        "code": "missed_lock",
-                        "instance_id": instance,
-                        "context": game["game_id"],
-                        "at": iso(now),
-                        "target": iso(target),
-                        "window_end": iso(lock_end),
-                    }
-                )
         if game["status"] != "pre" or now >= dt(game["tip_utc"]):
+            continue
+        if any(
+            r["kind"] == "forecast"
+            and r["instance_id"] == instance
+            and (r["game"]["home"], r["game"]["away"]) != (game["home"], game["away"])
+            for r in all_records
+        ):
+            additions.append(event("changed_pregame_teams", instance))
             continue
         relevant = [e for e in envelopes if game_rows(game, e["payload"])]
         captured_at = max((e["captured_at"] for e in relevant), default=iso(now))
@@ -330,7 +396,13 @@ def capture(root, config, dry_run=False, http=None, now=None):
                     allow_nan=False,
                 ),
             )
-    return {"forecasts": forecast_count, "records": len(additions), "dry_run": dry_run, "status": "ok"}
+    return {
+        "forecasts": forecast_count,
+        "records": len(additions),
+        "dry_run": dry_run,
+        "schedule_failures": schedule_failures,
+        "status": "schedule_unavailable" if schedule_failures else "ok",
+    }
 
 
 def next_wake(
@@ -418,6 +490,19 @@ def grade_variants(forecast, result, retirement):
     return variants
 
 
+def frozen_final(game, teams):
+    """Orient explicitly reported scores to one consistent frozen matchup."""
+    scores = {game["home"]: game["home_score"], game["away"]: game["away_score"]}
+    if len(teams) != 1 or len(scores) != 2:
+        raise ValueError("inconsistent_final_teams")
+    home, away = next(iter(teams))
+    if {home, away} != set(scores):
+        raise ValueError("inconsistent_final_teams")
+    if any(type(v) is not int or v < 0 for v in scores.values()):
+        raise ValueError("incomplete_final_scores")
+    return scores[home], scores[away]
+
+
 def grade(root, config, http=None):
     ledger, http = Ledger(root), http or HTTP()
     records, additions = ledger.records(), []
@@ -434,10 +519,12 @@ def grade(root, config, http=None):
     for f in forecasts:
         if f["instance_id"] not in latest_results or utcnow() - dt(f["game"]["tip_utc"]) < timedelta(days=7):
             dates.add(f["game"]["slate_date"])
+    schedule_failures = []
     for date in sorted(dates):
         try:
             found, _ = schedule(http, date)
         except SourceError as exc:
+            schedule_failures.append(date)
             additions.append(event("results_unavailable", date, message=str(exc)))
             continue
         for game, source_event in found:
@@ -446,21 +533,30 @@ def grade(root, config, http=None):
             game, new = assign_instance(game, records + additions, config)
             additions.extend(new)
             instance = game["instance_id"]
-            if not game["completed"] or game["status"] != "post" or game["home_score"] == game["away_score"]:
+            if not game["completed"] or game["status"] != "post":
                 continue
-            if not any(f["instance_id"] == instance for f in forecasts):
+            teams = {
+                (f["game"]["home"], f["game"]["away"]) for f in forecasts if f["instance_id"] == instance
+            }
+            if not teams:
+                continue
+            try:
+                home_score, away_score = frozen_final(game, teams)
+            except ValueError as exc:
+                additions.append(event(str(exc), instance, at=game["source_captured_at"]))
+                continue
+            if home_score == away_score:
                 continue
             old = latest_results.get(instance)
-            if old and (old["home_score"], old["away_score"]) == (game["home_score"], game["away_score"]):
+            if old and (old["home_score"], old["away_score"]) == (home_score, away_score):
                 continue
             result = {
-                "id": "result:"
-                + digest([instance, game["home_score"], game["away_score"], game["source_captured_at"]]),
+                "id": "result:" + digest([instance, home_score, away_score, game["source_captured_at"]]),
                 "kind": "result",
                 "instance_id": instance,
                 "verified_at": game["source_captured_at"],
-                "home_score": game["home_score"],
-                "away_score": game["away_score"],
+                "home_score": home_score,
+                "away_score": away_score,
                 "source_hash": game["source_hash"],
                 "supersedes": old["id"] if old else None,
                 "includes_overtime": True,
@@ -504,7 +600,11 @@ def grade(root, config, http=None):
         )
     additions = [r for r in additions if r["id"] not in existing]
     ledger.append(additions)
-    return {"graded": sum(r["kind"] == "grade" for r in additions), "records": len(additions)}
+    return {
+        "schedule_failures": schedule_failures,
+        "graded": sum(r["kind"] == "grade" for r in additions),
+        "records": len(additions),
+    }
 
 
 def confidence_history(records, root, config, stage, cutoff):
