@@ -192,6 +192,53 @@ def test_schedule_change_retires_then_reschedules(game):
     assert not any(a["kind"] == "retired" for a in additions)
 
 
+def test_tip_revision_after_start_keeps_the_played_instance(game):
+    original, schedules = assign_instance(game, [])
+    for state, name in (("in", "STATUS_IN_PROGRESS"), ("post", "STATUS_FINAL")):
+        late = {
+            **game,
+            "tip_utc": "2026-11-07T22:40:00+00:00",
+            "status": state,
+            "status_name": name,
+            "schedule_revision": "late-" + state,
+        }
+        same, additions = assign_instance(late, schedules)
+        assert same["instance_id"] == original["instance_id"]
+        assert not any(a["kind"] == "retired" for a in additions)
+        (flag,) = [a for a in additions if a["kind"] == "quality"]
+        assert flag["code"] == "tip_revision_after_start" and flag["reported_tip"] == late["tip_utc"]
+        # Seen again, the change is not flagged twice.
+        again, more = assign_instance(late, schedules + additions)
+        assert not any(a["kind"] == "quality" for a in more)
+    # A postponement still retires the instance whatever the status.
+    postponed = {**game, "status": "post", "status_name": "STATUS_POSTPONED", "schedule_revision": "pp"}
+    _, additions = assign_instance(postponed, schedules)
+    assert [a["reason"] for a in additions if a["kind"] == "retired"] == ["postponed_or_cancelled"]
+
+
+def test_final_reported_with_a_moved_tip_is_graded_not_voided(root, rows, config, monkeypatch):
+    class Moved(FixtureHTTP):
+        def event(self):
+            event = super().event()
+            if self.final:
+                event["date"] = "2026-11-07T22:30Z"  # Start time rewritten after the game.
+            return event
+
+    http = Moved(rows)
+    monkeypatch.setattr("sleeper_nba.pipeline.utcnow", lambda: dt(http.at))
+    capture(root, config, http=http, now=dt(AT))
+    http.final = True
+    http.at = "2026-11-08T02:00:00+00:00"
+    assert grade(root, config, http=http)["graded"] == 2
+    records = Ledger(root).records()
+    assert not any(r["kind"] == "retired" for r in records)
+    grades = latest_grades(records).values()
+    assert all(not g["void"] and g["result"]["home_score"] == 120 for g in grades)
+    assert [r["code"] for r in records if r["kind"] == "quality"] == ["tip_revision_after_start"]
+    assert grade(root, config, http=http)["graded"] == 0
+    assert validate(root)["status"] == "valid"
+
+
 def test_postponement_voids_research_selections(root, rows, config):
     http = FixtureHTTP(rows)
     capture(root, config, http=http, now=dt(AT))

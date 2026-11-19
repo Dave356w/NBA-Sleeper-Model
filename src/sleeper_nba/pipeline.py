@@ -130,10 +130,25 @@ def assign_instance(game, records, config=None):
     if previous:
         instance = previous["instance_id"]
         baseline = previous["baseline_tip"]
-        major = (
+        shifted = (
             abs((dt(game["tip_utc"]) - dt(baseline)).total_seconds()) > 900
             or game["slate_date"] != dt(baseline).astimezone(ET).date().isoformat()
         )
+        # A revised schedule retires the instance only while the game is still scheduled (§11).
+        # Once it has started or finished, a changed start time is timing evidence, not a new
+        # schedule: the played game keeps its instance and its grades, and the change is flagged.
+        major = shifted and game["status"] == "pre"
+        if shifted and not major and not terminal:
+            flag = event(
+                "tip_revision_after_start",
+                instance,
+                at=game["source_captured_at"],
+                baseline_tip=baseline,
+                reported_tip=game["tip_utc"],
+                status=game["status_name"],
+            )
+            if all(r["id"] != flag["id"] for r in records):
+                additions.append(flag)
         if (major or terminal) and instance not in retired:
             additions.append(
                 {
