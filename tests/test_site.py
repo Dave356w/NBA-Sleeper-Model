@@ -209,7 +209,7 @@ def test_export_and_reporting_expose_lead_time_minutes_and_lock_coverage(root, r
     grade(root, config, http=http)
     build_site(root)
     data = json.loads((root / "site" / "data.json").read_text())
-    assert data["methodology_version"] == "1.29"
+    assert data["methodology_version"] == "1.30"
     assert data["selection_markets"] == ["moneyline"]
     assert data["sample_gates"] == {"forecast_games": 100, "settled_bets": 250}
     assert (
@@ -320,6 +320,61 @@ def test_season_record_review_fixes_season_scope_quote_timing_and_result_revisio
     assert len(replay_rows(observations, config)) == 118
 
 
+def test_v1_30_replay_uses_game_day_snapshots_only(root, rows, config):
+    from datetime import timedelta
+
+    from sleeper_nba.common import iso
+    from sleeper_nba.season import _replay
+
+    legacy_only(root, config)
+    http = FixtureHTTP(rows)
+    capture(root, config, http=http, now=dt(AT))
+    http.final = True
+    http.at = "2026-11-08T02:00:00+00:00"
+    grade(root, config, http=http)
+    records = Ledger(root).records()
+    current = next(f for f in records if f["kind"] == "forecast" and f["stage"] == "first")
+    result = next(r for r in records if r["kind"] == "result")
+    game_id = current["game"]["game_id"]
+    assert config["replay_snapshot"] == "game_day_et_v1"
+
+    def older(stage, captured_at, bump):
+        f = copy.deepcopy(current)
+        f["id"] = f"older:{stage}:{captured_at}"
+        f["stage"], f["captured_at"] = stage, captured_at
+        f["methodology"] = f["config"]["methodology"] = "sleeper_only_v1_24"
+        f["raw"] = {**f["raw"], "home_score": f["raw"]["home_score"] + bump}
+        return f
+
+    game_day = current["captured_at"]  # 12:00 ET on the game's Eastern date.
+    day_before = iso(dt(game_day) - timedelta(days=1))
+    first_early, first_today = older("first", day_before, 1), older("first", game_day, 2)
+    lock = older("lock", iso(dt(game_day) + timedelta(minutes=1)), 3)
+    legacy = {k: v for k, v in config.items() if k != "replay_snapshot"}
+
+    def replayed(records, cfg):
+        observations, excluded = _replay(records, root, cfg, 2026)
+        native = [o for o in observations if o["game_id"] == game_id]
+        return native, [e["game_id"] for e in excluded]
+
+    # A game-day lock stands in for a first snapshot captured the day before.
+    (o,), excluded = replayed([first_early, lock, result], config)
+    assert (o["snapshot_stage"], o["snapshot_utc"], excluded) == ("lock", lock["captured_at"], [])
+    assert o["projected_home_score"] == lock["raw"]["home_score"]
+    # A game-day first snapshot is preferred to a lock, as before.
+    (o,), _ = replayed([first_early, first_today, lock, result], config)
+    assert (o["snapshot_stage"], o["snapshot_utc"]) == ("first", game_day)
+    # With no game-day capture the game is excluded and listed.
+    native, excluded = replayed([first_early, result], config)
+    assert native == [] and excluded == [game_id]
+    # Configurations frozen without the key keep the latest first snapshot, whenever captured.
+    (o,), excluded = replayed([first_early, lock, result], legacy)
+    assert (o["snapshot_stage"], o["snapshot_utc"], excluded) == ("first", day_before, [])
+    # The seed is captured on game day, so the policy keeps all 117 seed games.
+    seed_games = [o for o in _replay([], root, config, 2026)[0] if o["segment"] == "replay_legacy"]
+    assert len(seed_games) == 117
+
+
 def test_site_exports_pooled_rows_and_display_only_live_win_chance(root):
     import math
 
@@ -345,6 +400,7 @@ def test_site_exports_pooled_rows_and_display_only_live_win_chance(root):
         "home",
         "away",
         "segment",
+        "snapshot_stage",
         "margin",
         "wp_home",
         "actual_home_score",
