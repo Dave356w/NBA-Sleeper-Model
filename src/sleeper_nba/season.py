@@ -193,8 +193,13 @@ def replay_observations(records, root, config, season):
                 }
     retired = {r["instance_id"] for r in records if r["kind"] == "retired"}
     results, revisions = _latest_results(records), _result_revisions(records)
-    for f in records:
-        if f["kind"] != "forecast" or f["stage"] != "first" or f.get("provenance") != "native":
+    # A game forecast under several earlier tags replays its latest earlier-version first
+    # snapshot. Ledger order follows transaction hashes, so the order is fixed explicitly.
+    natives = sorted(
+        (r for r in records if r["kind"] == "forecast"), key=lambda r: (dt(r["captured_at"]), r["id"])
+    )
+    for f in natives:
+        if f["stage"] != "first" or f.get("provenance") != "native":
             continue
         if _method(f) == config["methodology"] or f["instance_id"] in retired:
             continue
@@ -265,7 +270,7 @@ def replay_rows(observations, config):
                 params, _, _ = fit_parameters(history, params, config)
             params_at[cutoff] = dict(params)
         raw = {"home_score": o["projected_home_score"], "away_score": o["projected_away_score"]}
-        scoring, _ = matchup.apply(raw, o, versions[cutoff])
+        scoring, _ = matchup.apply(raw, o, versions[cutoff], settings)
         scale = params_at[cutoff]["wp_a"]
         rows.append(
             {

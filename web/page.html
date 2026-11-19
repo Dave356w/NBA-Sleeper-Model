@@ -42,7 +42,7 @@ r.dataset.theme=t==='dark'||t==='light'?t:(window.matchMedia&&matchMedia('(prefe
 <button id="theme" type="button" class="theme-button" aria-label="Switch light or dark theme" title="Switch theme">{{ icon('theme') }}</button>
 </header>
 <main id="content" aria-live="polite" tabindex="-1"><div class="loading">Loading the recorded slate…</div></main>
-<footer class="foot"><span>Independent model · v{{ methodology_version }} · <span id="updated">Updated {{ updated_at }}</span>. Sleeper player projections with a learned opponent-defense correction; market prices are a benchmark only. Not betting advice.</span><a href="predictions.csv" download>Download live forecasts</a><a href="MODEL.md">Build specification</a><a href="https://github.com/Dave356w/NBA-Sleeper-Model" target="_blank" rel="noopener">Source</a></footer>
+<footer class="foot"><span>Independent model · v{{ methodology_version }} · <span id="updated">Updated {{ updated_at }}</span>. Sleeper player projections with learned team offense and opponent-defense corrections; market prices are a benchmark only. Not betting advice.</span><a href="predictions.csv" download>Download live forecasts</a><a href="MODEL.md">Build specification</a><a href="https://github.com/Dave356w/NBA-Sleeper-Model" target="_blank" rel="noopener">Source</a></footer>
 </div>
 <noscript>This dashboard requires JavaScript. Download the forecast CSV for the recorded predictions.</noscript>
 </body></html>

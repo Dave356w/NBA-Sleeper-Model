@@ -5,7 +5,7 @@
 
 **[Open the dashboard](https://dave356w.github.io/NBA-Sleeper-Model/)** · [Build specification](MODEL.md) · [Actions](https://github.com/Dave356w/NBA-Sleeper-Model/actions)
 
-An independent NBA forecasting system. Raw home/away scores are the sums of every valid Sleeper projected player's points. Version 1.20 added a learned opponent-defense correction to adaptive scoring; version 1.21 shrinks it harder; version 1.22 picks moneylines only and reports one pooled season record; version 1.23 applies the correction from the first graded game, on locks as well as first snapshots, and refits it after each slate; version 1.24 starts confidence calibration from the season's replayed games so the win-probability scale moves with results. A one-page summary of the current model is at the top of [MODEL.md](MODEL.md#current-model-at-a-glance-v124-as-of-17-november-2026). No Four Factors, efficiency, BPM, production-model outputs, or independent injury adjustments are used.
+An independent NBA forecasting system. Raw home/away scores are the sums of every valid Sleeper projected player's points. Version 1.20 added a learned opponent-defense correction to adaptive scoring; version 1.21 shrinks it harder; version 1.22 picks moneylines only and reports one pooled season record; version 1.23 applies the correction from the first graded game, on locks as well as first snapshots, and refits it after each slate; version 1.24 starts confidence calibration from the season's replayed games so the win-probability scale moves with results; version 1.25 adds each team's learned offense term to its own score and halves the defensive prior to 20. A one-page summary of the current model is at the top of [MODEL.md](MODEL.md#current-model-at-a-glance-v125-as-of-19-november-2026). No Four Factors, efficiency, BPM, production-model outputs, or independent injury adjustments are used.
 
 ## What runs
 
@@ -14,7 +14,7 @@ An independent NBA forecasting system. Raw home/away scores are the sums of ever
 - **ESPN DraftKings odds only, timestamped when fetched. No Odds API or paid-feed secret.** The sportsbook's own update time is unknown; fetch time establishes quote eligibility by the owner's registered policy.
 - Immutable first snapshots and locks. A lock is the first valid capture in the 15 minutes after T−5h (v1.21.1). Locks frozen under v1.20.1 were accepted until tip and keep that record.
 - A fixed WP-10 / ATS-14 / totals-19 control and versioned adaptive scoring.
-- **25-calendar-day residual-defense decay**, separate zero-centered ridge priors: defense 40 games (5 in v1.20), offense nuisance control 20, global/venue 100. Offensive coefficients help estimate defense but are not applied to scores.
+- **25-calendar-day team-residual decay**, separate zero-centered ridge priors: defense 20 games (5 in v1.20, 40 in v1.21–v1.24), offense 20, global/venue 100. From v1.25 each team's offense coefficient is added to its own score; through v1.24 it only helped estimate defense.
 - Raw and adjusted scores, component corrections, and an untracked Latest view alongside immutable first/lock tabs.
 - Winner probabilities, margin and total forecasts, no-vig edges, offered-price EV, moneyline selections, grades and public results. Spread and totals picks were retired in v1.22; their lines are kept to compare the forecasts with the market.
 - Weighted confidence calibration with a 75-game half-life, 30-game minimum, shrinkage toward a = 10, a 10% daily cap, rejection safeguards and complete training manifests. From v1.24 its history starts with the season's replayed games and locks use the first-stage calibration.
@@ -104,13 +104,17 @@ For an optional browser smoke test, install `pip install -e '.[browser]'`, then 
 
 See [MODEL.md](MODEL.md) for registered methodology and implementation clarifications. The original `Dave356w/nba-matchups` repository is unchanged.
 
+## v1.25 team offense applied
+
+At the owner's request (19 November 2026) the model now adds each team's fitted offense term to its own projected score, and the defensive prior is 20 instead of 40. Sleeper's projections misjudge some teams' scoring persistently (this season, for example, Charlotte by about 3 points a game), and through v1.24 that estimate was computed but discarded. In a walk-forward test of 80 offense/defense combinations on this season's 207 games (`research/team_terms_replay.py`) this setting was best, but its gain over v1.24 (margin error −0.05 points, log loss −0.003) is not distinguishable from zero, and last season's archive pointed slightly the other way. The season record is replayed under v1.25; earlier forecasts and grades are unchanged. See [MODEL.md](MODEL.md).
+
 ## v1.24 confidence calibration from the season history
 
 The owner wants the model to be dynamic. Until v1.24 the win-probability scale restarted at 10 with every methodology tag and needed 30 graded games of that tag, so it never moved. From v1.24 the first-stage confidence history starts with the season's earlier games replayed under the current method from results known before each game, then adds native games; locks use the same calibration. The minimum, weighting, shrinkage toward 10 and the 10% daily cap are unchanged. In a sequential test on this season's 139 replayed games this lowered log loss by 0.0019 (95% interval −0.0057 to +0.0025), which is not distinguishable from zero; it was adopted as a design choice. See [MODEL.md](MODEL.md).
 
 The public pages were restyled to match the NBA Composite pages, and Today now shows live and final scores read from ESPN in the reader's browser. Scores are display only and never enter the ledger.
 
-By owner update of 11 November 2026, Results and Performance show one record: the pooled v1.24 season record (live forecasts plus earlier games replayed with the same method), game by game and in total, without sample-size labels, live-only tables or the fixed control. Those figures remain in `data.json` and the ledger. Today also shows a live win chance during games, computed in the browser from the score, the clock and the saved DraftKings spread with coefficients copied from `nba-matchups` (`web/live_wp.json`); it is display only.
+By owner update of 11 November 2026, Results and Performance show one record: the pooled season record of the current version (live forecasts plus earlier games replayed with the same method), game by game and in total, without sample-size labels, live-only tables or the fixed control. Those figures remain in `data.json` and the ledger. Today also shows a live win chance during games, computed in the browser from the score, the clock and the saved DraftKings spread with coefficients copied from `nba-matchups` (`web/live_wp.json`); it is display only.
 
 ## v1.23 residual defense from game 1
 

@@ -94,7 +94,7 @@ def build_variants(raw, game, records, config, captured_at, stage, quotes, previ
         adjustment = None
         if variant == "adaptive" and matchup.enabled(config):
             defense = matchup.active(records, stage, captured_at, matchup.season_of(game), config)
-            scoring, adjustment = matchup.apply(raw, game, defense)
+            scoring, adjustment = matchup.apply(raw, game, defense, config["matchup"])
         output = probabilities(scoring, params)
         markets, selections = evaluate(output, params, quotes, captured_at, game, config, stage)
         variants[variant] = {

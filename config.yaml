@@ -1,4 +1,4 @@
-methodology: sleeper_only_v1_24
+methodology: sleeper_only_v1_25
 sleeper_company: rotowire
 wp_initial: 10.0
 ats_bias_initial: 0.0
@@ -46,8 +46,10 @@ matchup:
   stage_source: {lock: first}
   # v1.23: refit once each slate is fully graded, not once per UTC day.
   refit: slate
-  defense_prior: 40.0
+  # v1.25 (owner update, 19 November 2026): apply the fitted offense terms; defense prior 40 -> 20.
+  defense_prior: 20.0
   offense_prior: 20.0
+  apply_offense: true
   global_prior: 100.0
   venue_prior: 100.0
   coefficient_bound: 30.0
