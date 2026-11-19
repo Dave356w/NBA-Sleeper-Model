@@ -26,7 +26,7 @@ import numpy as np
 
 from .common import TEAMS, digest, dt
 
-METHOD = "sleeper_only_v1_26"
+METHOD = "sleeper_only_v1_27"
 # A slate stops holding back a refit once its ungraded games are this old.
 PENDING_HOURS = 24
 TEAMS_SORTED = sorted(TEAMS)

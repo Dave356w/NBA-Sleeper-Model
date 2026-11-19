@@ -12,7 +12,17 @@ import numpy
 import scipy
 
 from . import __version__, matchup
-from .common import ET, digest, dt, first_window_open, iso, load_config, lock_window_end, utcnow
+from .common import (
+    ET,
+    digest,
+    dt,
+    first_is_priced,
+    first_window_open,
+    iso,
+    load_config,
+    lock_window_end,
+    utcnow,
+)
 from .markets import evaluate, settle
 from .models import (
     DEFAULTS,
@@ -260,6 +270,10 @@ def capture(root, config, dry_run=False, http=None, now=None):
                 previews[instance] = preview
         for stage in stages:
             variants = build_variants(raw, game, all_records, config, captured_at, stage, quotes)
+            if stage == "first" and not first_window_open(
+                game, config, captured_at, first_is_priced(variants)
+            ):
+                continue  # v1.27: wait for a qualifying moneyline until the lock target.
             forecast_id = f"forecast:{instance}:{stage}"
             if any(r["id"] == forecast_id for r in all_records):
                 # Earlier methodologies remain immutable; a new version freezes
@@ -595,8 +609,10 @@ def validate(root):
             for name in ["home_score", "away_score", "margin", "total", "source_hash"]:
                 if recomputed[name] != r["raw"][name]:
                     raise ValueError("Raw snapshot not reproducible")
-            if r["stage"] == "first" and not first_window_open(r["game"], r["config"], r["captured_at"]):
-                raise ValueError("First snapshot before its game day")
+            if r["stage"] == "first" and not first_window_open(
+                r["game"], r["config"], r["captured_at"], first_is_priced(r["variants"])
+            ):
+                raise ValueError("First snapshot outside its first-snapshot policy")
             if r["stage"] == "lock":
                 c = r["config"]
                 target = dt(r["game"]["tip_utc"]) - timedelta(hours=c["lock_hours"])
