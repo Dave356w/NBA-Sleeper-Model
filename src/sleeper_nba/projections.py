@@ -3,7 +3,7 @@ from __future__ import annotations
 import math
 from datetime import timedelta
 
-from .common import canonical, digest, dt, lock_window_end, team
+from .common import canonical, digest, dt, first_window_open, lock_window_end, team
 
 
 class InvalidProjection(ValueError):
@@ -128,7 +128,7 @@ def eligible_stages(game, captured_at, existing, config):
     if now >= tip or game["status"] != "pre":
         return []
     stages = []
-    if "first" not in existing:
+    if "first" not in existing and first_window_open(game, config, captured_at):
         stages.append("first")
     target = tip - timedelta(hours=config["lock_hours"])
     if "lock" not in existing and target <= now <= lock_window_end(game, config):

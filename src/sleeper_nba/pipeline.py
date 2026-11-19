@@ -12,7 +12,7 @@ import numpy
 import scipy
 
 from . import __version__, matchup
-from .common import ET, digest, dt, iso, load_config, lock_window_end, utcnow
+from .common import ET, digest, dt, first_window_open, iso, load_config, lock_window_end, utcnow
 from .markets import evaluate, settle
 from .models import (
     DEFAULTS,
@@ -595,6 +595,8 @@ def validate(root):
             for name in ["home_score", "away_score", "margin", "total", "source_hash"]:
                 if recomputed[name] != r["raw"][name]:
                     raise ValueError("Raw snapshot not reproducible")
+            if r["stage"] == "first" and not first_window_open(r["game"], r["config"], r["captured_at"]):
+                raise ValueError("First snapshot before its game day")
             if r["stage"] == "lock":
                 c = r["config"]
                 target = dt(r["game"]["tip_utc"]) - timedelta(hours=c["lock_hours"])

@@ -1,0 +1,124 @@
+{
+  "generated_for": "v1.26 game-day first snapshot (owner request, 19 November 2026); retrospective",
+  "inputs": {
+    "box_file": "research/inputs/espn_box_2026-27_2026-11-19.csv",
+    "box_sha256": "7ea343bb30f0f9ef08d7fd86c61b77224a2713a1072564379f2e778975c6af12",
+    "sleeper_csv_sha256": "f29f07e003dd5fd98841879b2b2089454c4496b5a0be9253718425bbd8c0d92f",
+    "ledger_records": 1044
+  },
+  "matchups_first_vs_pre": {
+    "games": 208,
+    "snapshots": {
+      "matchups_first": {
+        "median_lead_hours": 18.44527777777778,
+        "margin_mae": 11.34548076923077,
+        "total_mae": 14.572884615384615,
+        "total_bias": -2.4979807692307707
+      },
+      "matchups_pre": {
+        "median_lead_hours": 0.9572222222222222,
+        "margin_mae": 11.385,
+        "total_mae": 14.54903846153846,
+        "total_bias": -2.013942307692308
+      }
+    },
+    "versus_matchups_first": {
+      "matchups_pre": {
+        "margin_mae": {
+          "mean": 0.039519230769229946,
+          "ci95": [
+            -0.12352764423077017,
+            0.21144471153846234
+          ]
+        },
+        "total_mae": {
+          "mean": -0.023846153846155252,
+          "ci95": [
+            -0.24130528846154073,
+            0.20081850961538333
+          ]
+        }
+      }
+    }
+  },
+  "ledger_first_vs_game_day": {
+    "games": 52,
+    "snapshots": {
+      "ledger_first": {
+        "median_lead_hours": 39.654636043611106,
+        "margin_mae": 13.258461538461539,
+        "total_mae": 14.119615384615384,
+        "total_bias": -1.3900000000000001
+      },
+      "matchups_first": {
+        "median_lead_hours": 18.77638888888889,
+        "margin_mae": 12.86769230769231,
+        "total_mae": 12.560000000000002,
+        "total_bias": 0.02153846153846053
+      },
+      "ledger_lock": {
+        "median_lead_hours": 4.997718489444445,
+        "margin_mae": 12.835769230769232,
+        "total_mae": 13.061538461538458,
+        "total_bias": 0.7315384615384593
+      },
+      "matchups_pre": {
+        "median_lead_hours": 0.3263888888888889,
+        "margin_mae": 12.966923076923077,
+        "total_mae": 13.127692307692305,
+        "total_bias": 0.7565384615384594
+      }
+    },
+    "versus_ledger_first": {
+      "matchups_first": {
+        "margin_mae": {
+          "mean": -0.39076923076923037,
+          "ci95": [
+            -0.9363894230769206,
+            0.15635576923077055
+          ]
+        },
+        "total_mae": {
+          "mean": -1.5596153846153855,
+          "ci95": [
+            -2.47658173076923,
+            -0.5920673076923085
+          ]
+        }
+      },
+      "ledger_lock": {
+        "margin_mae": {
+          "mean": -0.4226923076923086,
+          "ci95": [
+            -1.0821201923076926,
+            0.2511634615384595
+          ]
+        },
+        "total_mae": {
+          "mean": -1.058076923076925,
+          "ci95": [
+            -1.9346634615384612,
+            -0.1259326923076936
+          ]
+        }
+      },
+      "matchups_pre": {
+        "margin_mae": {
+          "mean": -0.29153846153846175,
+          "ci95": [
+            -1.0038509615384643,
+            0.40327403846154
+          ]
+        },
+        "total_mae": {
+          "mean": -0.9919230769230777,
+          "ci95": [
+            -1.9181009615384612,
+            -0.0030336538461531704
+          ]
+        }
+      }
+    }
+  },
+  "note": "Team sums of raw Sleeper points only; no defense, offense or calibration terms."
+}

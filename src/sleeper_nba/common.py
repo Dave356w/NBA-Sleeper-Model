@@ -63,6 +63,20 @@ def team(value):
     return result
 
 
+def first_window_open(game, config, at):
+    """Whether a first snapshot may be frozen at `at` under the forecast's frozen policy.
+
+    Configurations without `first_policy` freeze the earliest valid pregame capture.
+    `game_day_et_v1` (v1.26) waits for the game's Eastern calendar date.
+    """
+    policy = config.get("first_policy")
+    if policy is None:
+        return True
+    if policy == "game_day_et_v1":
+        return dt(at).astimezone(ET).date().isoformat() >= game["slate_date"]
+    raise ValueError(f"Unknown first policy: {policy!r}")
+
+
 def lock_window_end(game, config):
     """Honor each frozen forecast's policy, including historical narrow windows."""
     tip = dt(game["tip_utc"])
