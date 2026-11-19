@@ -1,4 +1,4 @@
-methodology: sleeper_only_v1_28
+methodology: sleeper_only_v1_29
 sleeper_company: rotowire
 wp_initial: 10.0
 ats_bias_initial: 0.0
@@ -16,7 +16,10 @@ totals_sigma_bounds: [7.0, 45.0]
 daily_scale_movement: 0.10
 daily_bias_movement: 1.0
 team_minutes_bounds: [200.0, 280.0]
-lock_policy: five_hours_15min_v2
+# v1.29 (owner update, 19 November 2026): on-time lock in the 15 minutes after T-5h; if that
+# window passes with no valid capture, the first valid capture until T-2h is a labelled late lock.
+lock_policy: five_hours_late_v3
+lock_late_hours: 2
 # v1.26 (owner update, 19 November 2026): the first snapshot waits for the game's Eastern date.
 # v1.27: it also waits for a qualifying DraftKings moneyline, freezing unpriced from T-5h.
 first_policy: game_day_priced_et_v1

@@ -42,7 +42,13 @@ jobs:
           python-version: '3.12'
           cache: pip
       - run: pip install -r requirements.txt
-      - run: pytest -q
+      # Tests gate merges in CI. Here a failure must not stop live capture: on 14 November an
+      # aged test fixture failed this step and blocked every capture for about 72 hours.
+      # The watch still runs; the job is marked failed at the end so the failure stays visible.
+      - name: Tests (non-blocking)
+        id: tests
+        continue-on-error: true
+        run: pytest -q
       - name: Watch, capture and persist
         id: watch
         run: |
@@ -106,6 +112,11 @@ jobs:
         # watchdog restarts the chain instead.
         if: ${{ !cancelled() && steps.watch.outcome != 'skipped' }}
         run: gh workflow run watch.yml --ref main -f minutes="$WATCH_MINUTES" -f tick_seconds="$TICK_SECONDS" -f idle_seconds="$IDLE_SECONDS"
+      - name: Report failed tests
+        if: ${{ steps.tests.outcome == 'failure' }}
+        run: |
+          echo "::error::The pre-capture test run failed; capture continued. Fix the failing tests."
+          exit 1
       - name: Report failed runs
         if: ${{ steps.watch.outputs.failures != '' && steps.watch.outputs.failures != '0' }}
         run: |

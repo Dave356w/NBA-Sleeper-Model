@@ -20,6 +20,8 @@ from .common import (
     first_window_open,
     iso,
     load_config,
+    lock_primary_end,
+    lock_timing,
     lock_window_end,
     utcnow,
 )
@@ -60,11 +62,12 @@ def lock_outcomes(records, config, as_of):
         key=lambda f: (dt(f["captured_at"]), f["id"]),
     )
     retired = {r["instance_id"] for r in records if r["kind"] == "retired" and dt(r["at"]) <= as_of}
-    locks, policies = {}, {}
+    locks, policies, late = {}, {}, {}
     for f in forecasts:
         policies[f["instance_id"]] = f["config"]
-        if f["stage"] == "lock":
-            locks.setdefault(f["instance_id"], f["lead_hours"])
+        if f["stage"] == "lock" and f["instance_id"] not in locks:
+            locks[f["instance_id"]] = f["lead_hours"]
+            late[f["instance_id"]] = f.get("lock_timing") == "late"
     schedules = [r for r in records if r["kind"] == "schedule" and dt(r["at"]) <= as_of]
     launch = min((dt(r["at"]) for r in schedules), default=None)
     recorded_ends = {
@@ -97,6 +100,7 @@ def lock_outcomes(records, config, as_of):
             "status": outcome,
             "elapsed": end < as_of,
             "lead_hours": locks.get(instance),
+            "late": late.get(instance, False),
             "window_end": iso(end),
             "target": iso(
                 dt(game["tip_utc"]) - timedelta(hours=policies.get(instance, config)["lock_hours"])
@@ -364,6 +368,12 @@ def capture(root, config, dry_run=False, http=None, now=None):
                 "implementation": implementation,
                 "game": game,
                 "lead_hours": (dt(game["tip_utc"]) - dt(captured_at)).total_seconds() / 3600,
+                # v1.29: a lock after the on-time window is labelled late, with its real lead time.
+                **(
+                    {"lock_timing": lock_timing(game, config, captured_at)}
+                    if stage == "lock" and lock_timing(game, config, captured_at)
+                    else {}
+                ),
                 "raw": raw,
                 "variants": variants,
                 "config": config,
@@ -454,8 +464,11 @@ def next_wake(
         if game["status"] != "pre" or instance in locked or now > lock_window_end(game, config):
             continue
         target = tip - timedelta(hours=config["lock_hours"])
-        if now >= target:
+        if target <= now <= lock_primary_end(game, config):
             consider(float(retry_seconds), "lock_window_open", game)
+        elif now > lock_primary_end(game, config):
+            # v1.29 late window: the ordinary tick keeps trying without a minute-by-minute loop.
+            consider(float(tick_seconds), "late_lock_window", game)
         else:
             # A few seconds past the target so the capture timestamp is inside the window.
             consider((target - now).total_seconds() + 5, "lock_target", game)
@@ -745,6 +758,8 @@ def validate(root):
                 target = dt(r["game"]["tip_utc"]) - timedelta(hours=c["lock_hours"])
                 if not target <= dt(r["captured_at"]) <= lock_window_end(r["game"], c):
                     raise ValueError("Outside-window lock")
+                if r.get("lock_timing") != lock_timing(r["game"], c, r["captured_at"]):
+                    raise ValueError("Lock timing label does not match its capture time")
             for variant, output in r["variants"].items():
                 scoring = output.get("scoring", r["raw"])
                 if variant == "fixed" and any(

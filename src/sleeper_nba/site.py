@@ -37,10 +37,11 @@ def summarize_lock_outcomes(outcomes):
         if not outcome["elapsed"]:
             continue
         row = slates.setdefault(
-            outcome["slate_date"], {"slate_date": outcome["slate_date"], "leads": [], "missed": 0}
+            outcome["slate_date"], {"slate_date": outcome["slate_date"], "leads": [], "missed": 0, "late": 0}
         )
         if outcome["status"] == "locked":
             row["leads"].append(outcome["lead_hours"])
+            row["late"] += bool(outcome.get("late"))
         else:
             row["missed"] += 1
     result = []

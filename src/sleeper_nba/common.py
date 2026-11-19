@@ -89,13 +89,36 @@ def first_is_priced(variants):
     return any(m["market"] == "moneyline" and m.get("eligible") for m in variants["fixed"].get("markets", []))
 
 
-def lock_window_end(game, config):
-    """Honor each frozen forecast's policy, including historical narrow windows."""
-    tip = dt(game["tip_utc"])
+LOCK_POLICIES = (None, "five_hours_to_tip_v1", "five_hours_15min_v2", "five_hours_late_v3")
+
+
+def lock_primary_end(game, config):
+    """End of the on-time lock window: 15 minutes after T-5h (the whole pregame for v1)."""
     policy = config.get("lock_policy")
-    if policy == "five_hours_to_tip_v1":
-        return tip
-    # Unlabeled historical forecasts and the v2 policy share the narrow window.
-    if policy not in (None, "five_hours_15min_v2"):
+    if policy not in LOCK_POLICIES:
         raise ValueError(f"Unknown lock policy: {policy!r}")
-    return tip - timedelta(hours=config["lock_hours"]) + timedelta(minutes=config["lock_tolerance_minutes"])
+    if policy == "five_hours_to_tip_v1":
+        return dt(game["tip_utc"])
+    return (
+        dt(game["tip_utc"])
+        - timedelta(hours=config["lock_hours"])
+        + timedelta(minutes=config["lock_tolerance_minutes"])
+    )
+
+
+def lock_window_end(game, config):
+    """Honor each frozen forecast's policy, including historical narrow windows.
+
+    `five_hours_late_v3` (v1.29) keeps the on-time window and, when it passes with no
+    valid capture, accepts a late lock until `lock_late_hours` before tip.
+    """
+    if config.get("lock_policy") == "five_hours_late_v3":
+        return dt(game["tip_utc"]) - timedelta(hours=config["lock_late_hours"])
+    return lock_primary_end(game, config)
+
+
+def lock_timing(game, config, at):
+    """`on_time` or `late` for a v1.29 lock captured at `at`; None for earlier policies."""
+    if config.get("lock_policy") != "five_hours_late_v3":
+        return None
+    return "late" if dt(at) > lock_primary_end(game, config) else "on_time"

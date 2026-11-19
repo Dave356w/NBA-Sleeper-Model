@@ -209,7 +209,7 @@ def test_export_and_reporting_expose_lead_time_minutes_and_lock_coverage(root, r
     grade(root, config, http=http)
     build_site(root)
     data = json.loads((root / "site" / "data.json").read_text())
-    assert data["methodology_version"] == "1.28"
+    assert data["methodology_version"] == "1.29"
     assert data["selection_markets"] == ["moneyline"]
     assert data["sample_gates"] == {"forecast_games": 100, "settled_bets": 250}
     assert (
@@ -256,6 +256,7 @@ def test_lock_coverage_counts_uncaptured_misses_but_not_prelaunch_windows(root, 
         {
             "slate_date": "2026-11-07",
             "missed": 1,
+            "late": 0,
             "locked": 0,
             "games": 1,
             "median_lead_hours": None,
@@ -437,6 +438,8 @@ def test_v1_27_closing_prices_fill_only_unpriced_season_games(root):
 
 
 def test_elapsed_schedule_window_counts_even_if_watcher_never_returns(root, config):
+    # Pins the v2 narrow window, which still governs every lock frozen under it (v1.29 adds late locks).
+    config = {**config, "lock_policy": "five_hours_15min_v2"}
     from sleeper_nba.pipeline import lock_outcomes
     from sleeper_nba.site import summarize_lock_outcomes
 

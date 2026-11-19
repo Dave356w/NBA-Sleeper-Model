@@ -31,3 +31,23 @@ jobs:
           else
             echo "Watcher already active ($active run(s))."
           fi
+      - name: Alert when capture has stalled
+        # Every watcher run commits data/live_previews.json (it carries a fresh updated_at), so a
+        # long gap means no capture is happening even if a run looks active. A failed scheduled
+        # run notifies the repository owner.
+        env:
+          STALL_HOURS: '3'
+        run: |
+          set -eu
+          last=$(gh api "repos/$GH_REPO/commits?sha=main&path=data/live_previews.json&per_page=1" --jq '.[0].commit.committer.date')
+          age=$(( $(date -u +%s) - $(date -u -d "$last" +%s) ))
+          echo "Last capture commit: $last (${age}s ago)"
+          failed=$(gh api "repos/$GH_REPO/actions/workflows/watch.yml/runs?status=completed&per_page=2" --jq '[.workflow_runs[].conclusion] | map(select(. == "failure")) | length')
+          if [ "$age" -gt $(( STALL_HOURS * 3600 )) ]; then
+            echo "::error::No watcher capture committed for more than ${STALL_HOURS}h (last $last)."
+            exit 1
+          fi
+          if [ "$failed" -ge 2 ]; then
+            echo "::error::The last two completed watcher runs failed; check the watch workflow."
+            exit 1
+          fi
