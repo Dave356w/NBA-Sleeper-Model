@@ -1,5 +1,5 @@
 {
-  "code_commit": "118681fb3ad1431552beb860eab47e90f257907b",
+  "code_commit": "f026c30c4dd65cf12fe1e7d723189ceff3c4491d",
   "config": {
     "ats_bias_bounds": [
       -15.0,
@@ -29,7 +29,8 @@
     "half_life": 75,
     "learn_scalar_biases": false,
     "lock_hours": 5,
-    "lock_policy": "five_hours_15min_v2",
+    "lock_late_hours": 2,
+    "lock_policy": "five_hours_late_v3",
     "lock_tolerance_minutes": 15,
     "market_clock_tolerance_seconds": 60,
     "market_max_age_minutes": 15,
@@ -59,7 +60,7 @@
       },
       "venue_prior": 100.0
     },
-    "methodology": "sleeper_only_v1_28",
+    "methodology": "sleeper_only_v1_29",
     "minimum_games": 30,
     "price_bounds": [
       -135,
@@ -94,8 +95,8 @@
     ],
     "wp_initial": 10.0
   },
-  "config_hash": "1bcda7741303f2765182c5be8f92f35a6c4fac15a652ee24aaea0f794ec008ca",
-  "created_at": "2026-11-19T18:40:28.329378+00:00",
+  "config_hash": "f9d3dcb986c4a1255c2f186cbea121bc1ca113b5133fac7b64bf9783072aa641",
+  "created_at": "2026-11-19T21:27:22.882484+00:00",
   "diagnostics": {
     "alpha": 0.6164633583740051,
     "ats_bias_target": 0.0,
@@ -110,7 +111,7 @@
     "wp_objective": 56.96047721161521,
     "wp_target": 11.254488936222367
   },
-  "id": "calibration:2224ed2df93a1e4a7a906423f24badd66939bb5cd048d07bcd0c197122706415",
+  "id": "calibration:694d2ea9d8bf237a8a93cd6039679a50276160d1d30a3f08c8d7be72d2959d72",
   "kind": "calibration",
   "manifest": [
     {
@@ -2599,7 +2600,7 @@
     }
   ],
   "manifest_hash": "9d3ef3d1b40fe5ef4c1628a262abfaef9dd772f5eea555da21fb44cf8332dc09",
-  "methodology": "sleeper_only_v1_28",
+  "methodology": "sleeper_only_v1_29",
   "n_eff": 160.73128130874866,
   "params": {
     "ats_bias": 0.0,
@@ -2621,5 +2622,5 @@
     "wp": "accepted"
   },
   "training_count": 207,
-  "training_cutoff": "2026-11-19T18:40:28.329378+00:00"
+  "training_cutoff": "2026-11-19T21:27:22.882484+00:00"
 }
