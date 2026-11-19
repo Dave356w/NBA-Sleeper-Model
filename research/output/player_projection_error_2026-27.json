@@ -1,0 +1,171 @@
+{
+  "generated_for": "v1.25 player projection review (owner request, 19 November 2026); retrospective, research only",
+  "inputs": {
+    "box_file": "research/inputs/espn_box_2026-27_2026-11-19.csv",
+    "box_sha256": "7ea343bb30f0f9ef08d7fd86c61b77224a2713a1072564379f2e778975c6af12",
+    "sleeper_csv_sha256": "f29f07e003dd5fd98841879b2b2089454c4496b5a0be9253718425bbd8c0d92f",
+    "ledger_records": 1017
+  },
+  "games": 208,
+  "games_by_source": {
+    "nba-matchups": 126,
+    "ledger": 82
+  },
+  "team_games": 416,
+  "unmatched_team_games": 0,
+  "player_games": 4717,
+  "player_error": {
+    "bias": -0.5273584905660378,
+    "mae": 4.96185923256307,
+    "correlation": 0.6683343949226961,
+    "did_not_play": 0.13610345558617765,
+    "by_projected_points": [
+      {
+        "projected_points": [
+          0,
+          5
+        ],
+        "n": 1126,
+        "did_not_play": 0.3321492007104796,
+        "bias_all": 0.7200088809946714,
+        "bias_played": 1.9007712765957445,
+        "mae_played": 3.566436170212766
+      },
+      {
+        "projected_points": [
+          5,
+          10
+        ],
+        "n": 1400,
+        "did_not_play": 0.08714285714285715,
+        "bias_all": -0.4990428571428572,
+        "bias_played": 0.15863067292644756,
+        "mae_played": 4.340211267605634
+      },
+      {
+        "projected_points": [
+          10,
+          15
+        ],
+        "n": 1079,
+        "did_not_play": 0.056533827618164965,
+        "bias_all": -1.426654309545876,
+        "bias_played": -0.7869646365422397,
+        "mae_played": 4.99221021611002
+      },
+      {
+        "projected_points": [
+          15,
+          20
+        ],
+        "n": 682,
+        "did_not_play": 0.08357771260997067,
+        "bias_all": -1.4365102639296186,
+        "bias_played": 0.022703999999999985,
+        "mae_played": 5.793711999999999
+      },
+      {
+        "projected_points": [
+          20,
+          25
+        ],
+        "n": 379,
+        "did_not_play": 0.06596306068601583,
+        "bias_all": -0.44783641160949866,
+        "bias_played": 1.041638418079096,
+        "mae_played": 6.363841807909605
+      },
+      {
+        "projected_points": [
+          25,
+          99
+        ],
+        "n": 51,
+        "did_not_play": 0.058823529411764705,
+        "bias_all": 1.7484313725490193,
+        "bias_played": 3.54125,
+        "mae_played": 7.27
+      }
+    ],
+    "by_injury_status": {
+      "DTD": {
+        "n": 238,
+        "did_not_play": 0.5,
+        "projected": 11.019285714285715,
+        "actual": 5.899159663865547
+      },
+      "GTD": {
+        "n": 40,
+        "did_not_play": 0.425,
+        "projected": 10.104,
+        "actual": 5.025
+      },
+      "None": {
+        "n": 4378,
+        "did_not_play": 0.10666971219735039,
+        "projected": 10.14211968935587,
+        "actual": 9.958885335769757
+      },
+      "Out": {
+        "n": 61,
+        "did_not_play": 0.639344262295082,
+        "projected": 8.518032786885248,
+        "actual": 4.19672131147541
+      }
+    }
+  },
+  "team_error_sources": {
+    "bias": -1.5734374999999998,
+    "mae": 9.687091346153846,
+    "played_error_mean": 3.3266586538461533,
+    "dnp_lost_mean": 9.306346153846153,
+    "unprojected_mean": 4.40625,
+    "flagged_points_slope": {
+      "slope": 0.05142096456972347,
+      "ci95": [
+        -0.051972631654505067,
+        0.15030762442079668
+      ]
+    }
+  },
+  "player_trends_walk_forward": {
+    "n": 2883,
+    "past_error": {
+      "slope": 0.36318569995246963,
+      "ci95": [
+        0.27441446068504766,
+        0.44910710847468926
+      ]
+    },
+    "last5_points_minus_projection": {
+      "slope": 0.43699149633431167,
+      "ci95": [
+        0.359911569505249,
+        0.5091016359839485
+      ]
+    },
+    "last3_minutes_minus_projection": {
+      "slope": 0.3018775225380045,
+      "ci95": [
+        0.25802592966584315,
+        0.3460849836521699
+      ]
+    },
+    "mae": 5.012459243843219
+  },
+  "team_level": {
+    "summed_player_trend": {
+      "slope": 0.2087885253919148,
+      "ci95": [
+        -0.274170170211498,
+        0.6892710671026046
+      ]
+    },
+    "team_mae": 9.687091346153846,
+    "team_mae_with_trend": 9.933249141678798,
+    "margin_games": 208,
+    "margin_mae": 11.585528846153846,
+    "margin_mae_with_trend": 11.826481272164592
+  },
+  "conclusion": "Player-level errors persist and Sleeper projects injury-flagged players at full value, but neither predicts team scores: teammates absorb the minutes and shots."
+}
