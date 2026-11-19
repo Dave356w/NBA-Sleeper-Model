@@ -1,19 +1,19 @@
 # Sleeper-Only NBA Prediction Model
 
-Implementation specification · v1.30 · 19 November 2026
+Implementation specification · v1.31 · 19 November 2026
 
 Suggested repository: `sleeper-nba-model`  
 Runtime: Python 3.12  
 Deployment: GitHub Actions and GitHub Pages  
 Status: Build specification for a new, independent model. No existing production repository is to be changed.
 
-## Current model at a glance (v1.30, as of 19 November 2026)
+## Current model at a glance (v1.31, as of 19 November 2026)
 
-Documentation only: this section restates the rules in force for new forecasts tagged `sleeper_only_v1_30`, in processing order, with the live `config.yaml` values. It changes nothing. Where it and a dated section below differ, the dated section governs and this summary is corrected. The sections below are the append-only history: each version's section overrides earlier ones, and the numbered base specification (§1–23) applies where nothing later overrides it.
+Documentation only: this section restates the rules in force for new forecasts tagged `sleeper_only_v1_31`, in processing order, with the live `config.yaml` values. It changes nothing. Where it and a dated section below differ, the dated section governs and this summary is corrected. The sections below are the append-only history: each version's section overrides earlier ones, and the numbered base specification (§1–23) applies where nothing later overrides it.
 
 1. **Capture.** Sleeper's game-specific player projections (company `rotowire`), the ESPN schedule and ESPN's DraftKings odds, each timestamped at fetch (§3; capture policy v1.21.1). The `watch.yml` job captures on its own schedule and `watchdog.yml` restarts it; no other writer.
 2. **Raw scores.** `H` and `A` are the sums of the projected points of every valid projected player; each team's projected minutes must be 200–280 (§4–5). `M = H − A`, `T = H + A`. Raw scores are never changed and never include home-court, pace or injury terms. The fixed control scores them with a = 10, ATS SD 14 and totals SD 19 (§9).
-3. **Team adjustment** (v1.20, timing from v1.23, offense and priors from v1.25). After each fully graded slate, a weighted ridge regression fits `actual − raw team points = global + venue + offense_control(team) + defense(opponent)`, with weights halving every 25 calendar days from tip. The zero-centered priors are defense 20 games, offense 20, global 100 and venue 100; coefficients are bounded at ±30. The fit starts from the first graded game (`minimum_games: 1`). Its history is the pinned 117-game legacy-first seed, the pinned 17 November outage backfill (from its creation) and graded native first snapshots, a native game superseding a seeded one; a game with first snapshots under several tags uses its latest one (v1.28, `history_snapshot: latest`). Applied to scores:
+3. **Team adjustment** (v1.20, timing from v1.23, offense and priors from v1.25). After each fully graded slate, a weighted ridge regression fits `actual − raw team points = global + venue + offense_control(team) + defense(opponent)`, with weights halving every 25 calendar days from tip. The zero-centered priors are defense 20 games, offense 20, global 100 and venue 100; coefficients are bounded at ±30. The fit starts from the first graded game (`minimum_games: 1`). Its history is the pinned 117-game legacy-first seed, the pinned 17 November outage backfill (from its creation) and graded native first snapshots, a native game superseding a seeded one; a game with first snapshots under several tags uses its latest one (v1.28), and from v1.31 (`history_snapshot: game_day_latest`) only snapshots captured on the game's Eastern date qualify: a game-day native lock stands in for an earlier-day first snapshot, and a game with no game-day capture is left out. Applied to scores:
    ```text
    H_adj = H + global + venue/2 + offense(home) + defense(away)
    A_adj = A + global − venue/2 + offense(away) + defense(home)
@@ -24,10 +24,27 @@ Documentation only: this section restates the rules in force for new forecasts t
 6. **Picks** (v1.22; value series retired in v1.27). Only the moneyline creates selections, and from v1.27 only the directional series (`selection_series: [directional]`): the predicted winner at the saved price. The value series (either side at least 0.05 above the no-vig probability with positive expected value, §12) no longer registers; edges and expected values stay on each market record as context. Quotes must be DraftKings, paired with the capture within 5 minutes and no more than 15 minutes old. Spread and total quotes are kept as context only.
 7. **Timing** (§11; first snapshot from v1.27). The first snapshot is the earliest valid pregame capture on the game's Eastern calendar date that carries a qualifying DraftKings moneyline; if none has by the lock target (T−5h), it freezes unpriced at the first capture from then (`first_policy: game_day_priced_et_v1`). The lock is the first valid capture in the 15 minutes after T−5h; if that window passes with no valid capture, the first valid capture until T−2h is a late lock, labelled `lock_timing: late` with its real lead time (`five_hours_late_v3`, v1.29). A game with no valid capture by T−2h is recorded as missed and never backfilled. Nothing is captured at or after tip.
 8. **Grading** (§13). Graded against ESPN finals including overtime. Score corrections are re-checked for 7 days after tip and graded as new revisions. Units are one per pick: payout on a win, −1 on a loss.
-9. **Public record** (v1.22, 11 November reporting update). Results and Performance show one pooled first-snapshot record: live v1.30 forecasts plus the season's earlier games replayed under v1.30 from results known before each game. From v1.30 (`replay_snapshot: game_day_et_v1`) every replayed snapshot was captured on the game's Eastern date: an earlier-version first snapshot from an earlier day is replaced by that game's game-day native lock, and a game with no game-day capture is left out and listed in `season.replay_excluded`. Where a game's frozen snapshot has no price, its moneyline, spread and total are the DraftKings close from the pinned ESPN file (`closing_backfill`, v1.27); `price_basis` records which. The replay writes nothing to the ledger. Pages show the model-pick moneyline series and a rolling ROI chart; the value series and all parts of the record stay in `data.json` and the ledger (17 November update).
+9. **Public record** (v1.22, 11 November reporting update). Results and Performance show one pooled first-snapshot record: live v1.31 forecasts plus the season's earlier games replayed under v1.31 from results known before each game. From v1.30 (`replay_snapshot: game_day_et_v1`) every replayed snapshot was captured on the game's Eastern date: an earlier-version first snapshot from an earlier day is replaced by that game's game-day native lock, and a game with no game-day capture is left out and listed in `season.replay_excluded`. Where a game's frozen snapshot has no price, its moneyline, spread and total are the DraftKings close from the pinned ESPN file (`closing_backfill`, v1.27); `price_basis` records which. The replay writes nothing to the ledger. Pages show the model-pick moneyline series and a rolling ROI chart; the value series and all parts of the record stay in `data.json` and the ledger (17 November update).
 10. **Integrity.** The ledger in `data/transactions` is append-only and hash-verified. Accepted forecasts, grades and fits are never rewritten, and every methodology change is prospective and versioned (`AGENTS.md`).
 
-## Active methodology — v1.30 game-day snapshots in the season replay
+## Active methodology — v1.31 game-day snapshots in the team fit
+
+Owner update, 19 November 2026. One change; everything else is unchanged from v1.30. New forecasts are tagged `sleeper_only_v1_31`; frozen records of every earlier version, and their grades, fits and calibrations, are never rewritten.
+
+**What changed.** The live team fit (`matchup.eligible_observations`), which scores first snapshots and locks, now follows the v1.30 replay rule (`matchup.history_snapshot: game_day_latest`). For each game:
+
+1. the latest game-day native first snapshot of any tag;
+2. otherwise the latest game-day native lock, as a first-stage observation marked `snapshot_stage: lock`;
+3. otherwise the game's seed or backfill snapshot, which must also be on game day;
+4. otherwise the game is left out.
+
+Fits recorded under `latest` (v1.28–v1.30) or without the key keep their histories and re-validate unchanged. The season replay already fitted its own team terms from game-day snapshots in v1.30, so the public record and the confidence history do not change. Only live forecasts' team terms change.
+
+**Why.** It is consistent with v1.26 (first snapshots on game day) and v1.30 (replay on game day). Live forecasts and the public record now use team terms fitted from the same games.
+
+**Effect.** On the ledger at 22:00 UTC on 19 November the fit goes from 207 to 185 games: 117 seed, 8 backfill, 28 game-day native first snapshots and 32 game-day locks, matching the replay. The 22 games of 8, 9 and 15 November with no game-day capture drop out. The global term moves from −0.91 to −0.83 and venue from 0.00 to −0.07. Team terms move by 0.28 points on average, the largest being LAL offense (−1.09), WAS defense (−0.81) and SAS defense (+0.77). On that night's four games the adjusted margin moved by 0.1–0.5 points. Whether dropping the 22 day-before games helps or hurts accuracy has not been measured; this is a consistency change, not a demonstrated gain.
+
+## v1.30 methodology — game-day snapshots in the season replay (still current)
 
 Owner update, 19 November 2026. One change; everything else is unchanged from v1.29. New forecasts are tagged `sleeper_only_v1_30`; frozen records of every earlier version, and their grades, fits and calibrations, are never rewritten.
 
@@ -38,7 +55,7 @@ Owner update, 19 November 2026. One change; everything else is unchanged from v1
 3. otherwise the game's seed or backfill snapshot, if it has one, which must also be on game day;
 4. otherwise the game is excluded from the replay and listed in `season.replay_excluded` with reason `no_game_day_capture`.
 
-Seed and backfill snapshots are held to the same rule; all 125 in this season's record were captured on game day, so none is affected. Rows carry `snapshot_stage` in `data.json`. Configurations frozen without the key keep the latest earlier-version first snapshot whenever it was captured, so v1.24–v1.29 calibrations re-validate unchanged. The team fit is not changed by this version: it still trains on each game's latest native first snapshot (v1.28). Replay still writes no forecast, selection, grade or ledger record.
+Seed and backfill snapshots are held to the same rule; all 125 in this season's record were captured on game day, so none is affected. Rows carry `snapshot_stage` in `data.json`. Configurations frozen without the key keep the latest earlier-version first snapshot whenever it was captured, so v1.24–v1.29 calibrations re-validate unchanged. In v1.30 the live team fit was not changed: it still trained on each game's latest native first snapshot (v1.28) until v1.31. Replay still writes no forecast, selection, grade or ledger record.
 
 **Why.** From v1.26 a first snapshot must be taken on game day, but the v1.25–v1.29 replay used earlier tags' first snapshots as frozen, and those were often captured the day before. In the 207-game v1.29 record, 54 of the 82 native replay games (8, 9, 12, 13, 14, 15 and 18 November) came from snapshots 25–46 hours before tip, including all 12 games of 18 November, captured at 22:34 UTC on 17 November when the watcher restarted. 32 of the 54 have a game-day lock; 22 (8, 9 and 15 November) have no game-day capture.
 

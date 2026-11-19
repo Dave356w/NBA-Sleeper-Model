@@ -462,10 +462,13 @@ def test_v1_25_replay_uses_the_latest_earlier_version_snapshot_whatever_the_ledg
 
 
 def test_v1_28_fit_history_uses_the_latest_native_first_snapshot(config):
-    assert config["matchup"]["history_snapshot"] == "latest"
+    # Pins v1.28 `latest`, which still governs every fit recorded under it (v1.31 adds game-day only).
     cfg = {
         **config,
-        "matchup": {k: v for k, v in config["matchup"].items() if not k.startswith(("seed", "backfill"))},
+        "matchup": {
+            **{k: v for k, v in config["matchup"].items() if not k.startswith(("seed", "backfill"))},
+            "history_snapshot": "latest",
+        },
     }
     early = native(
         "g1", "BOS", "NYK", "2026-11-12T00:30:00+00:00", "2026-11-11", captured="2026-11-10T08:00:00+00:00"
@@ -485,3 +488,48 @@ def test_v1_28_fit_history_uses_the_latest_native_first_snapshot(config):
     legacy = {**cfg, "matchup": {k: v for k, v in cfg["matchup"].items() if k != "history_snapshot"}}
     (o,) = matchup.eligible_observations([late, early, result], ".", legacy, "first", 2026, cutoff)
     assert o["projected_home_score"] == 101.0
+
+
+def test_v1_31_fit_history_uses_game_day_snapshots_only(config):
+    assert config["matchup"]["history_snapshot"] == "game_day_latest"
+    cfg = {
+        **config,
+        "matchup": {k: v for k, v in config["matchup"].items() if not k.startswith(("seed", "backfill"))},
+    }
+    tip, slate = "2026-11-12T00:30:00+00:00", "2026-11-11"  # 19:30 ET on 11 November.
+    early = native("g1", "BOS", "NYK", tip, slate, captured="2026-11-10T18:00:00+00:00")
+    today = native("g1", "BOS", "NYK", tip, slate, captured="2026-11-11T16:00:00+00:00")
+    lock = native("g1", "BOS", "NYK", tip, slate, captured="2026-11-11T19:30:00+00:00")
+    early["id"], today["id"], lock["id"] = (
+        "forecast:g1:first:v1_24",
+        "forecast:g1:first:v1_27",
+        "forecast:g1:lock",
+    )
+    lock["stage"] = "lock"
+    for f, score in ((early, 101.0), (today, 105.0), (lock, 109.0)):
+        f["raw"] = {**f["raw"], "home_score": score}
+    result = final("g1", "2026-11-12T03:00:00+00:00")
+    cutoff = "2026-11-12T04:00:00+00:00"
+
+    def fitted(records, settings=cfg):
+        return matchup.eligible_observations(records, ".", settings, "first", 2026, cutoff)
+
+    # A game-day lock stands in for a first snapshot captured the day before.
+    for records in ([early, lock, result], [lock, early, result]):
+        (o,) = fitted(records)
+        assert (o["projected_home_score"], o["snapshot_stage"], o["stage"]) == (109.0, "lock", "first")
+    # A game-day first snapshot outranks a later lock.
+    (o,) = fitted([lock, today, early, result])
+    assert (o["projected_home_score"], o["snapshot_stage"]) == (105.0, "first")
+    # With no game-day capture the game is left out.
+    assert fitted([early, result]) == []
+    # v1.28 `latest` keeps the latest first snapshot whenever captured, and no stage field.
+    latest = {**cfg, "matchup": {**cfg["matchup"], "history_snapshot": "latest"}}
+    (o,) = fitted([early, lock, result], latest)
+    assert o["projected_home_score"] == 101.0 and "snapshot_stage" not in o
+    # Lock-stage fits are unchanged: locks only, never first snapshots.
+    (o,) = matchup.eligible_observations([early, lock, result], ".", cfg, "lock", 2026, cutoff)
+    assert o["projected_home_score"] == 109.0
+    # The seed is captured on game day, so all 117 seed games still train the fit.
+    seeded = matchup.eligible_observations([], ".", config, "first", 2026, "2026-11-30T00:00:00+00:00")
+    assert sum(o["provenance"] == "legacy-first" for o in seeded) == 117
