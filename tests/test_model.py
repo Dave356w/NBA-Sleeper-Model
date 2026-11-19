@@ -386,3 +386,30 @@ def test_v1_22_selects_moneyline_only_and_keeps_spread_and_total_as_context(game
     assert {s["market"] for s in older} == {"moneyline", "ats", "totals"}
     with pytest.raises(ValueError, match="Unknown selection market"):
         evaluate(out, DEFAULTS, quotes, AT, game, {**config, "selection_markets": ["props"]}, "first")
+
+
+@pytest.mark.parametrize(
+    "at,policy,expected",
+    [
+        # 7 November 2026 is EST (UTC-5): the game's Eastern date starts at 05:00 UTC.
+        ("2026-11-06T12:00:00+00:00", "game_day_et_v1", []),
+        ("2026-11-07T04:59:59+00:00", "game_day_et_v1", []),
+        ("2026-11-07T05:00:00+00:00", "game_day_et_v1", ["first"]),
+        ("2026-11-07T17:00:00+00:00", "game_day_et_v1", ["first", "lock"]),
+        # Configurations frozen before v1.26 keep the earliest valid capture.
+        ("2026-11-06T12:00:00+00:00", None, ["first"]),
+    ],
+)
+def test_v1_26_first_snapshot_waits_for_the_game_day(game, config, at, policy, expected):
+    from sleeper_nba.common import first_window_open
+
+    assert config["first_policy"] == "game_day_et_v1"
+    frozen = (
+        {**config, "first_policy": policy}
+        if policy
+        else {k: v for k, v in config.items() if k != "first_policy"}
+    )
+    assert eligible_stages(game, at, set(), frozen) == expected
+    assert first_window_open(game, frozen, at) == ("first" in expected)
+    with pytest.raises(ValueError, match="Unknown first policy"):
+        first_window_open(game, {**config, "first_policy": "typo"}, at)

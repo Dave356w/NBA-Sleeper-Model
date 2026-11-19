@@ -1,4 +1,4 @@
-methodology: sleeper_only_v1_25
+methodology: sleeper_only_v1_26
 sleeper_company: rotowire
 wp_initial: 10.0
 ats_bias_initial: 0.0
@@ -17,6 +17,9 @@ daily_scale_movement: 0.10
 daily_bias_movement: 1.0
 team_minutes_bounds: [200.0, 280.0]
 lock_policy: five_hours_15min_v2
+# v1.26 (owner update, 19 November 2026): the first snapshot is the earliest valid
+# capture on the game's Eastern calendar date, not the earliest valid capture overall.
+first_policy: game_day_et_v1
 lock_hours: 5
 lock_tolerance_minutes: 15
 market_max_age_minutes: 15

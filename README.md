@@ -5,7 +5,7 @@
 
 **[Open the dashboard](https://dave356w.github.io/NBA-Sleeper-Model/)** · [Build specification](MODEL.md) · [Actions](https://github.com/Dave356w/NBA-Sleeper-Model/actions)
 
-An independent NBA forecasting system. Raw home/away scores are the sums of every valid Sleeper projected player's points. Version 1.20 added a learned opponent-defense correction to adaptive scoring; version 1.21 shrinks it harder; version 1.22 picks moneylines only and reports one pooled season record; version 1.23 applies the correction from the first graded game, on locks as well as first snapshots, and refits it after each slate; version 1.24 starts confidence calibration from the season's replayed games so the win-probability scale moves with results; version 1.25 adds each team's learned offense term to its own score and halves the defensive prior to 20. A one-page summary of the current model is at the top of [MODEL.md](MODEL.md#current-model-at-a-glance-v125-as-of-19-november-2026). No Four Factors, efficiency, BPM, production-model outputs, or independent injury adjustments are used.
+An independent NBA forecasting system. Raw home/away scores are the sums of every valid Sleeper projected player's points. Version 1.20 added a learned opponent-defense correction to adaptive scoring; version 1.21 shrinks it harder; version 1.22 picks moneylines only and reports one pooled season record; version 1.23 applies the correction from the first graded game, on locks as well as first snapshots, and refits it after each slate; version 1.24 starts confidence calibration from the season's replayed games so the win-probability scale moves with results; version 1.25 adds each team's learned offense term to its own score and halves the defensive prior to 20; version 1.26 freezes the first snapshot on the game's Eastern date instead of up to two days ahead. A one-page summary of the current model is at the top of [MODEL.md](MODEL.md#current-model-at-a-glance-v126-as-of-19-november-2026). No Four Factors, efficiency, BPM, production-model outputs, or independent injury adjustments are used.
 
 ## What runs
 
@@ -103,6 +103,10 @@ Tests cover numeric equations, aliases, zero/missing handling, incomplete covera
 For an optional browser smoke test, install `pip install -e '.[browser]'`, then `python -m playwright install chromium`, serve `site`, and run `python tests/browser_smoke.py`. It checks all pages, stage/model controls, desktop/mobile layout and JavaScript errors. Browser testing uses a real generated site; no fabricated performance sample is published.
 
 See [MODEL.md](MODEL.md) for registered methodology and implementation clarifications. The original `Dave356w/nba-matchups` repository is unchanged.
+
+## v1.26 game-day first snapshot
+
+At the owner's request (19 November 2026) the first snapshot is now the earliest valid capture on the game's Eastern date, about 19 hours before a 7 p.m. tip, instead of the earliest capture overall, which was often about 40 hours out. On 52 games, game-day snapshots had total error 1.6 points lower than the 40-hour snapshots (95% interval 0.6 to 2.5); margins were 0.4 points better, which is not distinguishable from zero. Snapshots 1 hour before tip were no better than game-day ones, so the T−5h lock is unchanged. Evidence: `research/snapshot_timing.py`. Earlier first snapshots are unchanged.
 
 ## v1.25 team offense applied
 
