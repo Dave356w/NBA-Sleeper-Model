@@ -161,6 +161,7 @@ def build_site(root):
             k: config["matchup"][k]
             for k in ["half_life_days", "minimum_games", "defense_prior", "offense_prior"]
         }
+        | {"apply_offense": matchup.applies_offense({}, config["matchup"])}
         if matchup.enabled(config)
         else {},
     }

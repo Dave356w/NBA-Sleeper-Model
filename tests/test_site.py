@@ -205,10 +205,12 @@ def test_export_and_reporting_expose_lead_time_minutes_and_lock_coverage(root, r
     grade(root, config, http=http)
     build_site(root)
     data = json.loads((root / "site" / "data.json").read_text())
-    assert data["methodology_version"] == "1.24"
+    assert data["methodology_version"] == "1.25"
     assert data["selection_markets"] == ["moneyline"]
     assert data["sample_gates"] == {"forecast_games": 100, "settled_bets": 250}
-    assert data["matchup_settings"]["defense_prior"] == 40
+    assert (
+        data["matchup_settings"]["defense_prior"] == 20 and data["matchup_settings"]["apply_offense"] is True
+    )
     stages = {f["stage"]: f for f in data["forecasts"]}
     for key, forecast in stages.items():
         buckets = data["performance"]["forecast"][f"{key}:adaptive"]["lead_buckets"]

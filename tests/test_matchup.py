@@ -32,7 +32,7 @@ def test_calendar_half_life_is_distinct_from_sample_shrinkage(config):
     assert weights.tolist() == [0.5, 1.0]
     with pytest.raises(ValueError, match="Future game"):
         matchup.calendar_weights(observations, "2026-11-25T12:00:00Z", 25)
-    assert config["matchup"]["defense_prior"] == 40 and config["matchup"]["offense_prior"] == 20
+    assert config["matchup"]["defense_prior"] == 20 and config["matchup"]["offense_prior"] == 20
 
 
 def test_seed_is_first_only_known_before_use_and_hashed(root, config):
@@ -213,7 +213,8 @@ def test_failed_team_refit_preserves_last_accepted_version(root, config, monkeyp
 def test_v1_21_prior_shrinks_seed_corrections_and_starts_its_own_history(root, config):
     at = iso(after_seed(root, config))
     observations = matchup.seed_observations(root, config, "first", 2026, at)
-    current = matchup.fit(observations, config["matchup"], at)["params"]["defense"]
+    v121 = {**config["matchup"], "defense_prior": 40.0}
+    current = matchup.fit(observations, v121, at)["params"]["defense"]
     previous = matchup.fit(observations, {**config["matchup"], "defense_prior": 5.0}, at)["params"]["defense"]
     assert max(map(abs, current.values())) < 0.5 * max(map(abs, previous.values()))
     # A v1.20 version in the ledger is never reused for v1.21 scoring.
@@ -227,7 +228,7 @@ def test_v1_21_prior_shrinks_seed_corrections_and_starts_its_own_history(root, c
     assert matchup.active(stale, "first", at, 2026, config)["id"].startswith("matchup-defaults:")
     fresh = matchup.prepare_versions(stale, root, config, at)
     assert {v["stage"] for v in fresh} == {"first"}
-    assert all(v["settings"]["defense_prior"] == 40 for v in fresh)
+    assert all(v["settings"]["defense_prior"] == config["matchup"]["defense_prior"] for v in fresh)
 
 
 def native(game_id, home, away, tip, slate, stage="first", captured=None):
@@ -394,3 +395,55 @@ def test_outage_backfill_is_pinned_prospective_and_replayed(root, config):
     path.write_text(json.dumps(data))
     with pytest.raises(ValueError, match="integrity"):
         matchup.seed_observations(root, config, "first", 2026, at)
+
+
+def test_v1_25_applies_offense_and_earlier_fits_keep_defense_only(root, config):
+    assert config["matchup"]["apply_offense"] is True and config["methodology"] == matchup.METHOD
+    params = {
+        "global": -1.0,
+        "venue": 2.0,
+        "offense_control": {t: 0.0 for t in matchup.TEAMS_SORTED} | {"BOS": 3.0, "NYK": -1.0},
+        "defense": {t: 0.0 for t in matchup.TEAMS_SORTED} | {"BOS": -2.0, "NYK": 0.5},
+    }
+    raw = {"home_score": 110.0, "away_score": 105.0}
+    game = {"home": "BOS", "away": "NYK"}
+    v125 = {"params": params, "settings": config["matchup"]}
+    scored, adjustment = matchup.apply(raw, game, v125)
+    # Home: raw + global + venue/2 + offense(BOS) + defense(NYK); away mirrors it.
+    assert scored["home_score"] == 110 - 1 + 1 + 3 + 0.5
+    assert scored["away_score"] == 105 - 1 - 1 - 1 - 2
+    assert adjustment["home_offense"] == 3.0 and adjustment["away_offense"] == -1.0
+    # A fit record frozen under v1.24 settings reproduces without offense, whatever the live config says.
+    v124 = {
+        "params": params,
+        "settings": {k: v for k, v in config["matchup"].items() if k != "apply_offense"},
+    }
+    legacy, legacy_adjustment = matchup.apply(raw, game, v124, config["matchup"])
+    assert legacy["home_score"] == 110 - 1 + 1 + 0.5 and legacy["away_score"] == 105 - 1 - 1 - 2
+    assert "home_offense" not in legacy_adjustment
+    # A replay fit carries no settings and follows the settings it is given.
+    bare = {"params": params}
+    assert matchup.apply(raw, game, bare, config["matchup"])[0] == scored
+    assert matchup.apply(raw, game, bare)[0] == legacy
+
+
+def test_v1_25_replay_uses_the_latest_earlier_version_snapshot_whatever_the_ledger_order(config):
+    from sleeper_nba import season
+
+    cfg = {
+        **config,
+        "matchup": {k: v for k, v in config["matchup"].items() if not k.startswith(("seed", "backfill"))},
+    }
+
+    def snapshot(method, captured, home_score):
+        f = native("g1", "BOS", "NYK", "2026-11-12T00:30:00+00:00", "2026-11-11", captured=captured)
+        f["id"] = f"forecast:g1:first:{method}"
+        f["raw"]["home_score"] = home_score
+        return f | {"methodology": method, "variants": {"fixed": {"markets": []}}}
+
+    early = snapshot("sleeper_only_v1_23", "2026-11-10T22:00:00+00:00", 111.0)
+    late = snapshot("sleeper_only_v1_24", "2026-11-11T18:30:00+00:00", 114.0)
+    result = final("g1", "2026-11-12T03:00:00+00:00")
+    for records in ([early, late, result], [late, early, result]):
+        (o,) = season.replay_observations(records, ".", cfg, 2026)
+        assert o["projected_home_score"] == 114.0 and o["snapshot_utc"] == late["captured_at"]
