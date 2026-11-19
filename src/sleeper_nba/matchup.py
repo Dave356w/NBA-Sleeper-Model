@@ -24,9 +24,9 @@ from pathlib import Path
 
 import numpy as np
 
-from .common import ET, TEAMS, digest, dt
+from .common import ET, TEAMS, digest, dt, iso
 
-METHOD = "sleeper_only_v1_31"
+METHOD = "sleeper_only_v1_32"
 # v1.31 (owner update, 19 November 2026): the team fit trains on game-day snapshots only.
 GAME_DAY_HISTORY = "game_day_latest"
 # A slate stops holding back a refit once its ungraded games are this old.
@@ -89,18 +89,66 @@ def backfill_files(root, config):
     ]
 
 
+def minutes_scale(minutes, settings):
+    """v1.32 (`team_minutes_cap`): the factor that brings a team's projected minutes down to the cap.
+
+    A team at or below the cap, or with no recorded minutes, keeps its projection (factor 1). The
+    rule only ever scales down: a short team is usually short-handed, not under-counted.
+    """
+    cap = (settings or {}).get("team_minutes_cap")
+    if cap is None or minutes is None or minutes <= cap:
+        return 1.0
+    return cap / minutes
+
+
+def capped(observation, home_minutes, away_minutes, settings):
+    """A copy of a scoring observation with its projected scores minutes-capped (v1.32)."""
+    home, away = minutes_scale(home_minutes, settings), minutes_scale(away_minutes, settings)
+    return {
+        **observation,
+        "projected_home_score": observation["projected_home_score"] * home,
+        "projected_away_score": observation["projected_away_score"] * away,
+        "home_minutes_scale": home,
+        "away_minutes_scale": away,
+    }
+
+
+def seed_minutes(root, settings):
+    """Pinned team minutes of the seed and backfill snapshots, keyed by (game, snapshot) (v1.32)."""
+    entry = (settings or {}).get("seed_minutes")
+    if not entry:
+        return {}
+    data = _pinned(root, entry["file"], entry["sha256"], "seed minutes")
+    return {(r["game_id"], iso(dt(r["snapshot_utc"]))): r["team_minutes"] for r in data["rows"]}
+
+
+def cap_seed(observations, root, settings):
+    """Apply the v1.32 minutes cap to seed or backfill observations; unchanged without the key."""
+    if (settings or {}).get("team_minutes_cap") is None:
+        return observations
+    minutes = seed_minutes(root, settings)
+    out = []
+    for o in observations:
+        teams = minutes.get((o["game_id"], iso(dt(o["snapshot_utc"]))))
+        if teams is None:
+            raise ValueError(f"No pinned team minutes for seed game {o['game_id']}")
+        out.append(capped(o, teams[o["home"]], teams[o["away"]], settings))
+    return out
+
+
 def seed_observations(root, config, stage, season, cutoff):
     if stage != "first" or not config.get("matchup", {}).get("seed_file"):
         return []
     seeds = [_pinned(root, config["matchup"]["seed_file"], config["matchup"]["seed_sha256"], "seed")]
     seeds += backfill_files(root, config)
-    return [
+    observations = [
         o
         for seed in seeds
         if dt(seed["created_at"]) <= dt(cutoff)
         for o in seed["observations"]
         if o["stage"] == stage and o["season"] == season and dt(o["verified_at"]) <= dt(cutoff)
     ]
+    return cap_seed(observations, root, config.get("matchup"))
 
 
 def on_game_day(snapshot_utc, tip_utc):
@@ -171,6 +219,11 @@ def eligible_observations(records, root, config, stage, season, cutoff):
         }
         if game_day:
             observation["snapshot_stage"] = f["stage"]
+        if config.get("matchup", {}).get("team_minutes_cap") is not None:
+            minutes = f["raw"].get("team_minutes", {})
+            observation = capped(
+                observation, minutes.get(game["home"]), minutes.get(game["away"]), config["matchup"]
+            )
         observations[game["game_id"]] = observation
     valid = []
     for o in observations.values():

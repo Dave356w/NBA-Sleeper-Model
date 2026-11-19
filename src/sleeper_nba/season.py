@@ -213,6 +213,13 @@ def _replay(records, root, config, season):
                     "provenance": o["provenance"],
                     "markets": _seed_markets(o.get("quotes"), o, config),
                 }
+    settings = config.get("matchup", {})
+    if settings.get("team_minutes_cap") is not None:
+        # v1.32: seed and backfill teams projected above a full game's minutes are scaled down,
+        # from the pinned team minutes of those snapshots.
+        observations = dict(
+            zip(observations, matchup.cap_seed(list(observations.values()), root, settings), strict=True)
+        )
     retired = {r["instance_id"] for r in records if r["kind"] == "retired"}
     results, revisions = _latest_results(records), _result_revisions(records)
     # A game forecast under several earlier tags replays its latest earlier-version first
@@ -262,6 +269,11 @@ def _replay(records, root, config, season):
             "provenance": "native",
             "markets": _forecast_markets(f, "fixed"),
         }
+        if settings.get("team_minutes_cap") is not None:
+            minutes = f["raw"].get("team_minutes", {})
+            observations[game_id] = matchup.capped(
+                observations[game_id], minutes.get(game["home"]), minutes.get(game["away"]), settings
+            )
     excluded = [
         {
             "game_id": game_id,

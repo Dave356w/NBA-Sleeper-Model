@@ -1,0 +1,1017 @@
+{
+  "schema_version": 1,
+  "provenance": "seed-team-minutes",
+  "purpose": "Projected team minutes of the pinned seed and backfill snapshots, for the v1.32 240-minute cap (scale down only). Reporting and team-fit input only; never a forecast, selection, grade or ledger record.",
+  "created_at": "2026-11-19T22:38:40.921396+00:00",
+  "source_repository": "Dave356w/nba-matchups",
+  "source_commit": "939f559b1bdd5f3b26dafe7e2d3587f8edd895db",
+  "source_file": "data/nba_sleeper.csv",
+  "source_sha256": "79bcf48f63d9f51544d7b3551f9385abbd5f66e94ef850229f7070daa99176ff",
+  "covers": {
+    "data/calibration_seeds/legacy_first_2026-27.json": "9d3a8e56998a4a7e738020614b3546e1afbc658d97370abe7cffe53714348705",
+    "data/calibration_seeds/gap_backfill_2026-11-17.json": "39e68bffb5ac6943bceb052026961b58f632e6f59dfb2c77811f2a6f93ddad90"
+  },
+  "rows": [
+    {
+      "game_id": "401909093",
+      "snapshot_utc": "2026-10-22T18:16:56Z",
+      "team_minutes": {
+        "PHI": 240.0,
+        "CLE": 240.0
+      }
+    },
+    {
+      "game_id": "401909094",
+      "snapshot_utc": "2026-10-22T18:16:56Z",
+      "team_minutes": {
+        "OKC": 240.0,
+        "DEN": 240.0
+      }
+    },
+    {
+      "game_id": "401909095",
+      "snapshot_utc": "2026-10-23T07:27:11Z",
+      "team_minutes": {
+        "BOS": 240.0,
+        "NYK": 240.0
+      }
+    },
+    {
+      "game_id": "401909096",
+      "snapshot_utc": "2026-10-23T07:27:11Z",
+      "team_minutes": {
+        "SAS": 240.0,
+        "HOU": 240.0
+      }
+    },
+    {
+      "game_id": "401909843",
+      "snapshot_utc": "2026-10-23T07:27:11Z",
+      "team_minutes": {
+        "CHA": 240.0,
+        "ATL": 240.0
+      }
+    },
+    {
+      "game_id": "401909844",
+      "snapshot_utc": "2026-10-23T07:27:11Z",
+      "team_minutes": {
+        "IND": 240.0,
+        "DAL": 240.0
+      }
+    },
+    {
+      "game_id": "401909845",
+      "snapshot_utc": "2026-10-23T07:27:11Z",
+      "team_minutes": {
+        "ORL": 240.0,
+        "MIN": 240.0
+      }
+    },
+    {
+      "game_id": "401909846",
+      "snapshot_utc": "2026-10-23T07:27:11Z",
+      "team_minutes": {
+        "WAS": 240.0,
+        "TOR": 240.0
+      }
+    },
+    {
+      "game_id": "401909847",
+      "snapshot_utc": "2026-10-23T07:27:11Z",
+      "team_minutes": {
+        "MIA": 240.0,
+        "DET": 240.0
+      }
+    },
+    {
+      "game_id": "401909848",
+      "snapshot_utc": "2026-10-23T07:27:11Z",
+      "team_minutes": {
+        "MIL": 240.0,
+        "CHI": 240.0
+      }
+    },
+    {
+      "game_id": "401909849",
+      "snapshot_utc": "2026-10-23T07:27:11Z",
+      "team_minutes": {
+        "UTA": 240.0,
+        "NOP": 240.0
+      }
+    },
+    {
+      "game_id": "401909850",
+      "snapshot_utc": "2026-10-23T07:27:11Z",
+      "team_minutes": {
+        "GSW": 240.0,
+        "MEM": 240.0
+      }
+    },
+    {
+      "game_id": "401909851",
+      "snapshot_utc": "2026-10-23T07:27:11Z",
+      "team_minutes": {
+        "LAL": 240.0,
+        "LAC": 240.0
+      }
+    },
+    {
+      "game_id": "401909852",
+      "snapshot_utc": "2026-10-23T07:27:11Z",
+      "team_minutes": {
+        "SAC": 240.0,
+        "POR": 240.0
+      }
+    },
+    {
+      "game_id": "401909853",
+      "snapshot_utc": "2026-10-24T05:48:21Z",
+      "team_minutes": {
+        "CHA": 240.0,
+        "MIA": 240.0
+      }
+    },
+    {
+      "game_id": "401909854",
+      "snapshot_utc": "2026-10-24T05:48:21Z",
+      "team_minutes": {
+        "CLE": 240.0,
+        "BKN": 240.0
+      }
+    },
+    {
+      "game_id": "401909855",
+      "snapshot_utc": "2026-10-24T05:48:21Z",
+      "team_minutes": {
+        "PHI": 240.0,
+        "MIL": 240.0
+      }
+    },
+    {
+      "game_id": "401909856",
+      "snapshot_utc": "2026-10-24T05:48:21Z",
+      "team_minutes": {
+        "ATL": 240.0,
+        "HOU": 240.0
+      }
+    },
+    {
+      "game_id": "401909857",
+      "snapshot_utc": "2026-10-24T05:48:21Z",
+      "team_minutes": {
+        "CHI": 240.0,
+        "WAS": 240.0
+      }
+    },
+    {
+      "game_id": "401909858",
+      "snapshot_utc": "2026-10-24T05:48:21Z",
+      "team_minutes": {
+        "DAL": 240.0,
+        "SAS": 240.0
+      }
+    },
+    {
+      "game_id": "401909859",
+      "snapshot_utc": "2026-10-24T05:48:21Z",
+      "team_minutes": {
+        "DEN": 240.0,
+        "NOP": 240.0
+      }
+    },
+    {
+      "game_id": "401909860",
+      "snapshot_utc": "2026-10-24T05:48:21Z",
+      "team_minutes": {
+        "PHX": 240.0,
+        "GSW": 240.0
+      }
+    },
+    {
+      "game_id": "401909861",
+      "snapshot_utc": "2026-10-25T04:35:41Z",
+      "team_minutes": {
+        "UTA": 240.0,
+        "LAL": 240.0
+      }
+    },
+    {
+      "game_id": "401909862",
+      "snapshot_utc": "2026-10-25T04:35:41Z",
+      "team_minutes": {
+        "BKN": 240.0,
+        "IND": 240.0
+      }
+    },
+    {
+      "game_id": "401909863",
+      "snapshot_utc": "2026-10-25T04:35:41Z",
+      "team_minutes": {
+        "NYK": 240.0,
+        "ORL": 240.0
+      }
+    },
+    {
+      "game_id": "401909864",
+      "snapshot_utc": "2026-10-25T04:35:41Z",
+      "team_minutes": {
+        "MIN": 240.0,
+        "TOR": 240.0
+      }
+    },
+    {
+      "game_id": "401909865",
+      "snapshot_utc": "2026-10-25T04:35:41Z",
+      "team_minutes": {
+        "OKC": 240.0,
+        "LAC": 240.0
+      }
+    },
+    {
+      "game_id": "401909866",
+      "snapshot_utc": "2026-10-25T04:35:41Z",
+      "team_minutes": {
+        "PHI": 240.0,
+        "DET": 240.0
+      }
+    },
+    {
+      "game_id": "401909867",
+      "snapshot_utc": "2026-10-25T04:35:41Z",
+      "team_minutes": {
+        "SAC": 240.0,
+        "MEM": 240.0
+      }
+    },
+    {
+      "game_id": "401909868",
+      "snapshot_utc": "2026-10-26T04:40:47Z",
+      "team_minutes": {
+        "CHA": 240.0,
+        "WAS": 240.0
+      }
+    },
+    {
+      "game_id": "401909869",
+      "snapshot_utc": "2026-10-26T04:40:47Z",
+      "team_minutes": {
+        "CLE": 240.0,
+        "MIN": 240.0
+      }
+    },
+    {
+      "game_id": "401909870",
+      "snapshot_utc": "2026-10-26T04:40:47Z",
+      "team_minutes": {
+        "BOS": 240.0,
+        "CHI": 240.0
+      }
+    },
+    {
+      "game_id": "401909871",
+      "snapshot_utc": "2026-10-26T04:40:47Z",
+      "team_minutes": {
+        "MIA": 249.0,
+        "DAL": 240.0
+      }
+    },
+    {
+      "game_id": "401909872",
+      "snapshot_utc": "2026-10-26T04:40:47Z",
+      "team_minutes": {
+        "MIL": 240.0,
+        "IND": 240.0
+      }
+    },
+    {
+      "game_id": "401909873",
+      "snapshot_utc": "2026-10-26T04:40:47Z",
+      "team_minutes": {
+        "OKC": 240.0,
+        "PHX": 240.0
+      }
+    },
+    {
+      "game_id": "401909874",
+      "snapshot_utc": "2026-10-26T04:40:47Z",
+      "team_minutes": {
+        "HOU": 240.0,
+        "ATL": 240.0
+      }
+    },
+    {
+      "game_id": "401909875",
+      "snapshot_utc": "2026-10-26T04:40:47Z",
+      "team_minutes": {
+        "UTA": 240.0,
+        "MEM": 240.0
+      }
+    },
+    {
+      "game_id": "401909876",
+      "snapshot_utc": "2026-10-26T04:40:47Z",
+      "team_minutes": {
+        "DEN": 240.0,
+        "GSW": 240.0
+      }
+    },
+    {
+      "game_id": "401909877",
+      "snapshot_utc": "2026-10-27T04:58:41Z",
+      "team_minutes": {
+        "BOS": 240.0,
+        "BKN": 240.0
+      }
+    },
+    {
+      "game_id": "401909878",
+      "snapshot_utc": "2026-10-27T04:58:41Z",
+      "team_minutes": {
+        "NYK": 240.0,
+        "DET": 240.0
+      }
+    },
+    {
+      "game_id": "401909879",
+      "snapshot_utc": "2026-10-27T04:58:41Z",
+      "team_minutes": {
+        "SAS": 240.0,
+        "SAC": 240.0
+      }
+    },
+    {
+      "game_id": "401909880",
+      "snapshot_utc": "2026-10-27T04:58:41Z",
+      "team_minutes": {
+        "LAL": 240.0,
+        "POR": 240.0
+      }
+    },
+    {
+      "game_id": "401909881",
+      "snapshot_utc": "2026-10-28T05:33:17Z",
+      "team_minutes": {
+        "ATL": 240.0,
+        "MIA": 240.0
+      }
+    },
+    {
+      "game_id": "401909882",
+      "snapshot_utc": "2026-10-28T05:33:17Z",
+      "team_minutes": {
+        "CLE": 240.0,
+        "WAS": 240.0
+      }
+    },
+    {
+      "game_id": "401909883",
+      "snapshot_utc": "2026-10-28T05:33:17Z",
+      "team_minutes": {
+        "DET": 240.0,
+        "CHA": 240.0
+      }
+    },
+    {
+      "game_id": "401909884",
+      "snapshot_utc": "2026-10-28T05:33:17Z",
+      "team_minutes": {
+        "IND": 240.0,
+        "PHI": 240.0
+      }
+    },
+    {
+      "game_id": "401909885",
+      "snapshot_utc": "2026-10-28T05:33:17Z",
+      "team_minutes": {
+        "TOR": 240.0,
+        "ORL": 240.0
+      }
+    },
+    {
+      "game_id": "401909886",
+      "snapshot_utc": "2026-10-28T05:33:17Z",
+      "team_minutes": {
+        "CHI": 240.0,
+        "NYK": 240.0
+      }
+    },
+    {
+      "game_id": "401909887",
+      "snapshot_utc": "2026-10-28T05:33:17Z",
+      "team_minutes": {
+        "MIL": 240.0,
+        "HOU": 240.0
+      }
+    },
+    {
+      "game_id": "401909888",
+      "snapshot_utc": "2026-10-28T05:33:17Z",
+      "team_minutes": {
+        "MIN": 240.0,
+        "GSW": 240.0
+      }
+    },
+    {
+      "game_id": "401909889",
+      "snapshot_utc": "2026-10-28T05:33:17Z",
+      "team_minutes": {
+        "NOP": 240.0,
+        "DEN": 240.0
+      }
+    },
+    {
+      "game_id": "401909890",
+      "snapshot_utc": "2026-10-28T05:33:17Z",
+      "team_minutes": {
+        "UTA": 240.0,
+        "SAS": 240.0
+      }
+    },
+    {
+      "game_id": "401909891",
+      "snapshot_utc": "2026-10-28T05:33:17Z",
+      "team_minutes": {
+        "DAL": 240.0,
+        "OKC": 240.0
+      }
+    },
+    {
+      "game_id": "401909892",
+      "snapshot_utc": "2026-10-28T05:33:17Z",
+      "team_minutes": {
+        "LAC": 240.0,
+        "LAL": 240.0
+      }
+    },
+    {
+      "game_id": "401909893",
+      "snapshot_utc": "2026-10-29T05:42:21Z",
+      "team_minutes": {
+        "ATL": 240.0,
+        "CLE": 240.0
+      }
+    },
+    {
+      "game_id": "401909894",
+      "snapshot_utc": "2026-10-29T05:42:21Z",
+      "team_minutes": {
+        "NOP": 240.0,
+        "SAC": 240.0
+      }
+    },
+    {
+      "game_id": "401909895",
+      "snapshot_utc": "2026-10-29T05:42:21Z",
+      "team_minutes": {
+        "POR": 240.0,
+        "MEM": 240.0
+      }
+    },
+    {
+      "game_id": "401909277",
+      "snapshot_utc": "2026-10-30T05:41:37Z",
+      "team_minutes": {
+        "WAS": 240.0,
+        "CHA": 240.0
+      }
+    },
+    {
+      "game_id": "401909278",
+      "snapshot_utc": "2026-10-30T05:41:37Z",
+      "team_minutes": {
+        "BOS": 240.0,
+        "CHI": 240.0
+      }
+    },
+    {
+      "game_id": "401909279",
+      "snapshot_utc": "2026-10-30T05:41:37Z",
+      "team_minutes": {
+        "BKN": 240.0,
+        "DET": 240.0
+      }
+    },
+    {
+      "game_id": "401909280",
+      "snapshot_utc": "2026-10-30T05:41:37Z",
+      "team_minutes": {
+        "PHI": 240.0,
+        "NYK": 240.0
+      }
+    },
+    {
+      "game_id": "401909281",
+      "snapshot_utc": "2026-10-30T05:41:37Z",
+      "team_minutes": {
+        "TOR": 240.0,
+        "ORL": 240.0
+      }
+    },
+    {
+      "game_id": "401909282",
+      "snapshot_utc": "2026-10-30T05:41:37Z",
+      "team_minutes": {
+        "MIA": 240.0,
+        "IND": 240.0
+      }
+    },
+    {
+      "game_id": "401909283",
+      "snapshot_utc": "2026-10-30T05:41:37Z",
+      "team_minutes": {
+        "DAL": 240.0,
+        "HOU": 240.0
+      }
+    },
+    {
+      "game_id": "401909284",
+      "snapshot_utc": "2026-10-30T05:41:37Z",
+      "team_minutes": {
+        "MIN": 240.0,
+        "LAC": 240.0
+      }
+    },
+    {
+      "game_id": "401909285",
+      "snapshot_utc": "2026-10-30T05:41:37Z",
+      "team_minutes": {
+        "GSW": 240.0,
+        "LAL": 240.0
+      }
+    },
+    {
+      "game_id": "401909286",
+      "snapshot_utc": "2026-10-30T05:41:37Z",
+      "team_minutes": {
+        "PHX": 240.0,
+        "DEN": 240.0
+      }
+    },
+    {
+      "game_id": "401909896",
+      "snapshot_utc": "2026-10-31T05:32:13Z",
+      "team_minutes": {
+        "UTA": 240.0,
+        "POR": 240.0
+      }
+    },
+    {
+      "game_id": "401909897",
+      "snapshot_utc": "2026-10-31T05:32:13Z",
+      "team_minutes": {
+        "CHA": 240.0,
+        "PHI": 240.0
+      }
+    },
+    {
+      "game_id": "401909898",
+      "snapshot_utc": "2026-10-31T05:32:13Z",
+      "team_minutes": {
+        "NOP": 240.0,
+        "ATL": 240.0
+      }
+    },
+    {
+      "game_id": "401909899",
+      "snapshot_utc": "2026-10-31T05:32:13Z",
+      "team_minutes": {
+        "MEM": 240.0,
+        "SAC": 240.0
+      }
+    },
+    {
+      "game_id": "401909900",
+      "snapshot_utc": "2026-10-31T05:32:13Z",
+      "team_minutes": {
+        "MIL": 240.0,
+        "CLE": 240.0
+      }
+    },
+    {
+      "game_id": "401909901",
+      "snapshot_utc": "2026-10-31T05:32:13Z",
+      "team_minutes": {
+        "SAS": 240.0,
+        "MIN": 240.0
+      }
+    },
+    {
+      "game_id": "401909902",
+      "snapshot_utc": "2026-10-31T05:32:13Z",
+      "team_minutes": {
+        "HOU": 240.0,
+        "OKC": 240.0
+      }
+    },
+    {
+      "game_id": "401909903",
+      "snapshot_utc": "2026-11-01T07:28:10Z",
+      "team_minutes": {
+        "ORL": 240.0,
+        "BOS": 240.0
+      }
+    },
+    {
+      "game_id": "401909905",
+      "snapshot_utc": "2026-11-01T07:28:10Z",
+      "team_minutes": {
+        "GSW": 240.0,
+        "LAC": 240.0
+      }
+    },
+    {
+      "game_id": "401909906",
+      "snapshot_utc": "2026-11-01T07:28:10Z",
+      "team_minutes": {
+        "LAL": 240.0,
+        "TOR": 240.0
+      }
+    },
+    {
+      "game_id": "401909907",
+      "snapshot_utc": "2026-11-02T05:57:45Z",
+      "team_minutes": {
+        "CLE": 240.0,
+        "OKC": 240.0
+      }
+    },
+    {
+      "game_id": "401909908",
+      "snapshot_utc": "2026-11-02T05:57:45Z",
+      "team_minutes": {
+        "CHA": 240.0,
+        "DET": 240.0
+      }
+    },
+    {
+      "game_id": "401909909",
+      "snapshot_utc": "2026-11-02T05:57:45Z",
+      "team_minutes": {
+        "IND": 240.0,
+        "ATL": 240.0
+      }
+    },
+    {
+      "game_id": "401909910",
+      "snapshot_utc": "2026-11-02T05:57:45Z",
+      "team_minutes": {
+        "NYK": 240.0,
+        "BKN": 240.0
+      }
+    },
+    {
+      "game_id": "401909911",
+      "snapshot_utc": "2026-11-02T05:57:45Z",
+      "team_minutes": {
+        "ORL": 240.0,
+        "WAS": 240.0
+      }
+    },
+    {
+      "game_id": "401909912",
+      "snapshot_utc": "2026-11-02T05:57:45Z",
+      "team_minutes": {
+        "PHI": 240.0,
+        "CHI": 240.0
+      }
+    },
+    {
+      "game_id": "401909913",
+      "snapshot_utc": "2026-11-02T05:57:45Z",
+      "team_minutes": {
+        "DAL": 240.0,
+        "SAC": 240.0
+      }
+    },
+    {
+      "game_id": "401909914",
+      "snapshot_utc": "2026-11-02T05:57:45Z",
+      "team_minutes": {
+        "MEM": 240.0,
+        "NOP": 240.0
+      }
+    },
+    {
+      "game_id": "401909915",
+      "snapshot_utc": "2026-11-02T05:57:45Z",
+      "team_minutes": {
+        "MIN": 240.0,
+        "MIL": 249.0
+      }
+    },
+    {
+      "game_id": "401909916",
+      "snapshot_utc": "2026-11-02T05:57:45Z",
+      "team_minutes": {
+        "HOU": 240.0,
+        "BOS": 240.0
+      }
+    },
+    {
+      "game_id": "401909917",
+      "snapshot_utc": "2026-11-02T05:57:45Z",
+      "team_minutes": {
+        "SAS": 240.0,
+        "UTA": 240.0
+      }
+    },
+    {
+      "game_id": "401909918",
+      "snapshot_utc": "2026-11-02T05:57:45Z",
+      "team_minutes": {
+        "DEN": 240.0,
+        "POR": 240.0
+      }
+    },
+    {
+      "game_id": "401909919",
+      "snapshot_utc": "2026-11-02T05:57:45Z",
+      "team_minutes": {
+        "GSW": 240.0,
+        "PHX": 240.0
+      }
+    },
+    {
+      "game_id": "401909920",
+      "snapshot_utc": "2026-11-02T05:57:45Z",
+      "team_minutes": {
+        "LAC": 240.0,
+        "TOR": 240.0
+      }
+    },
+    {
+      "game_id": "401909921",
+      "snapshot_utc": "2026-11-02T05:57:45Z",
+      "team_minutes": {
+        "LAL": 240.0,
+        "MIA": 240.0
+      }
+    },
+    {
+      "game_id": "401909922",
+      "snapshot_utc": "2026-11-04T06:10:28Z",
+      "team_minutes": {
+        "DET": 240.0,
+        "PHI": 240.0
+      }
+    },
+    {
+      "game_id": "401909923",
+      "snapshot_utc": "2026-11-04T06:10:28Z",
+      "team_minutes": {
+        "WAS": 240.0,
+        "ATL": 240.0
+      }
+    },
+    {
+      "game_id": "401909924",
+      "snapshot_utc": "2026-11-04T06:10:28Z",
+      "team_minutes": {
+        "BOS": 240.0,
+        "MIL": 240.0
+      }
+    },
+    {
+      "game_id": "401909925",
+      "snapshot_utc": "2026-11-04T06:10:28Z",
+      "team_minutes": {
+        "BKN": 240.0,
+        "CHA": 240.0
+      }
+    },
+    {
+      "game_id": "401909926",
+      "snapshot_utc": "2026-11-04T06:10:28Z",
+      "team_minutes": {
+        "NYK": 240.0,
+        "CHI": 240.0
+      }
+    },
+    {
+      "game_id": "401909927",
+      "snapshot_utc": "2026-11-04T06:10:28Z",
+      "team_minutes": {
+        "MEM": 240.0,
+        "IND": 240.0
+      }
+    },
+    {
+      "game_id": "401909928",
+      "snapshot_utc": "2026-11-04T06:10:28Z",
+      "team_minutes": {
+        "NOP": 240.0,
+        "UTA": 240.0
+      }
+    },
+    {
+      "game_id": "401909929",
+      "snapshot_utc": "2026-11-04T06:10:28Z",
+      "team_minutes": {
+        "OKC": 240.0,
+        "CLE": 240.0
+      }
+    },
+    {
+      "game_id": "401909930",
+      "snapshot_utc": "2026-11-04T06:10:28Z",
+      "team_minutes": {
+        "HOU": 240.0,
+        "MIN": 240.0
+      }
+    },
+    {
+      "game_id": "401909931",
+      "snapshot_utc": "2026-11-04T06:10:28Z",
+      "team_minutes": {
+        "DEN": 240.0,
+        "TOR": 240.0
+      }
+    },
+    {
+      "game_id": "401909932",
+      "snapshot_utc": "2026-11-04T06:10:28Z",
+      "team_minutes": {
+        "PHX": 240.0,
+        "POR": 240.0
+      }
+    },
+    {
+      "game_id": "401909933",
+      "snapshot_utc": "2026-11-04T06:10:28Z",
+      "team_minutes": {
+        "SAS": 240.0,
+        "DAL": 240.0
+      }
+    },
+    {
+      "game_id": "401909934",
+      "snapshot_utc": "2026-11-04T06:10:28Z",
+      "team_minutes": {
+        "SAC": 240.0,
+        "LAL": 240.0
+      }
+    },
+    {
+      "game_id": "401909935",
+      "snapshot_utc": "2026-11-04T06:10:28Z",
+      "team_minutes": {
+        "LAC": 240.0,
+        "MIA": 249.0
+      }
+    },
+    {
+      "game_id": "401909936",
+      "snapshot_utc": "2026-11-05T05:46:20Z",
+      "team_minutes": {
+        "PHX": 240.0,
+        "ORL": 240.0
+      }
+    },
+    {
+      "game_id": "401909937",
+      "snapshot_utc": "2026-11-05T05:46:20Z",
+      "team_minutes": {
+        "GSW": 240.0,
+        "MIA": 240.0
+      }
+    },
+    {
+      "game_id": "401909287",
+      "snapshot_utc": "2026-11-06T06:34:33Z",
+      "team_minutes": {
+        "ATL": 240.0,
+        "WAS": 240.0
+      }
+    },
+    {
+      "game_id": "401909288",
+      "snapshot_utc": "2026-11-06T06:34:33Z",
+      "team_minutes": {
+        "CHA": 240.0,
+        "BOS": 240.0
+      }
+    },
+    {
+      "game_id": "401909289",
+      "snapshot_utc": "2026-11-06T06:34:33Z",
+      "team_minutes": {
+        "CLE": 226.0,
+        "PHI": 240.0
+      }
+    },
+    {
+      "game_id": "401909290",
+      "snapshot_utc": "2026-11-06T06:34:33Z",
+      "team_minutes": {
+        "DAL": 240.0,
+        "UTA": 240.0
+      }
+    },
+    {
+      "game_id": "401909291",
+      "snapshot_utc": "2026-11-06T06:34:33Z",
+      "team_minutes": {
+        "MEM": 240.0,
+        "OKC": 240.0
+      }
+    },
+    {
+      "game_id": "401909292",
+      "snapshot_utc": "2026-11-06T06:34:33Z",
+      "team_minutes": {
+        "MIL": 240.0,
+        "TOR": 240.0
+      }
+    },
+    {
+      "game_id": "401909293",
+      "snapshot_utc": "2026-11-06T06:34:33Z",
+      "team_minutes": {
+        "NOP": 240.0,
+        "MIN": 240.0
+      }
+    },
+    {
+      "game_id": "401909294",
+      "snapshot_utc": "2026-11-06T06:34:33Z",
+      "team_minutes": {
+        "LAL": 240.0,
+        "POR": 240.0
+      }
+    },
+    {
+      "game_id": "401909295",
+      "snapshot_utc": "2026-11-06T06:34:33Z",
+      "team_minutes": {
+        "SAC": 240.0,
+        "SAS": 240.0
+      }
+    },
+    {
+      "game_id": "401909994",
+      "snapshot_utc": "2026-11-16T05:55:56Z",
+      "team_minutes": {
+        "BOS": 248.0,
+        "ORL": 240.0
+      }
+    },
+    {
+      "game_id": "401909995",
+      "snapshot_utc": "2026-11-16T05:55:56Z",
+      "team_minutes": {
+        "CLE": 240.0,
+        "CHI": 240.0
+      }
+    },
+    {
+      "game_id": "401909996",
+      "snapshot_utc": "2026-11-16T05:55:56Z",
+      "team_minutes": {
+        "WAS": 240.0,
+        "MEM": 240.0
+      }
+    },
+    {
+      "game_id": "401909997",
+      "snapshot_utc": "2026-11-16T05:55:56Z",
+      "team_minutes": {
+        "BKN": 240.0,
+        "PHI": 240.0
+      }
+    },
+    {
+      "game_id": "401909998",
+      "snapshot_utc": "2026-11-16T05:55:56Z",
+      "team_minutes": {
+        "MIA": 240.0,
+        "HOU": 248.0
+      }
+    },
+    {
+      "game_id": "401909999",
+      "snapshot_utc": "2026-11-16T05:55:56Z",
+      "team_minutes": {
+        "MIN": 240.0,
+        "POR": 215.0
+      }
+    },
+    {
+      "game_id": "401910000",
+      "snapshot_utc": "2026-11-16T05:55:56Z",
+      "team_minutes": {
+        "NOP": 240.0,
+        "GSW": 240.0
+      }
+    },
+    {
+      "game_id": "401910001",
+      "snapshot_utc": "2026-11-16T05:55:56Z",
+      "team_minutes": {
+        "DEN": 240.0,
+        "PHX": 240.0
+      }
+    }
+  ],
+  "sha256": "3f6b5926457190812a510c4d144843a471374c82c30631087eb83b1b298dea77"
+}
