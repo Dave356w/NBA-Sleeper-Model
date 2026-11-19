@@ -1,19 +1,19 @@
 # Sleeper-Only NBA Prediction Model
 
-Implementation specification · v1.27 · 19 November 2026
+Implementation specification · v1.28 · 19 November 2026
 
 Suggested repository: `sleeper-nba-model`  
 Runtime: Python 3.12  
 Deployment: GitHub Actions and GitHub Pages  
 Status: Build specification for a new, independent model. No existing production repository is to be changed.
 
-## Current model at a glance (v1.27, as of 19 November 2026)
+## Current model at a glance (v1.28, as of 19 November 2026)
 
-Documentation only: this section restates the rules in force for new forecasts tagged `sleeper_only_v1_27`, in processing order, with the live `config.yaml` values. It changes nothing. Where it and a dated section below differ, the dated section governs and this summary is corrected. The sections below are the append-only history: each version's section overrides earlier ones, and the numbered base specification (§1–23) applies where nothing later overrides it.
+Documentation only: this section restates the rules in force for new forecasts tagged `sleeper_only_v1_28`, in processing order, with the live `config.yaml` values. It changes nothing. Where it and a dated section below differ, the dated section governs and this summary is corrected. The sections below are the append-only history: each version's section overrides earlier ones, and the numbered base specification (§1–23) applies where nothing later overrides it.
 
 1. **Capture.** Sleeper's game-specific player projections (company `rotowire`), the ESPN schedule and ESPN's DraftKings odds, each timestamped at fetch (§3; capture policy v1.21.1). The `watch.yml` job captures on its own schedule and `watchdog.yml` restarts it; no other writer.
 2. **Raw scores.** `H` and `A` are the sums of the projected points of every valid projected player; each team's projected minutes must be 200–280 (§4–5). `M = H − A`, `T = H + A`. Raw scores are never changed and never include home-court, pace or injury terms. The fixed control scores them with a = 10, ATS SD 14 and totals SD 19 (§9).
-3. **Team adjustment** (v1.20, timing from v1.23, offense and priors from v1.25). After each fully graded slate, a weighted ridge regression fits `actual − raw team points = global + venue + offense_control(team) + defense(opponent)`, with weights halving every 25 calendar days from tip. The zero-centered priors are defense 20 games, offense 20, global 100 and venue 100; coefficients are bounded at ±30. The fit starts from the first graded game (`minimum_games: 1`). Its history is the pinned 117-game legacy-first seed, the pinned 17 November outage backfill (from its creation) and graded native first snapshots, a native game superseding a seeded one. Applied to scores:
+3. **Team adjustment** (v1.20, timing from v1.23, offense and priors from v1.25). After each fully graded slate, a weighted ridge regression fits `actual − raw team points = global + venue + offense_control(team) + defense(opponent)`, with weights halving every 25 calendar days from tip. The zero-centered priors are defense 20 games, offense 20, global 100 and venue 100; coefficients are bounded at ±30. The fit starts from the first graded game (`minimum_games: 1`). Its history is the pinned 117-game legacy-first seed, the pinned 17 November outage backfill (from its creation) and graded native first snapshots, a native game superseding a seeded one; a game with first snapshots under several tags uses its latest one (v1.28, `history_snapshot: latest`). Applied to scores:
    ```text
    H_adj = H + global + venue/2 + offense(home) + defense(away)
    A_adj = A + global − venue/2 + offense(away) + defense(home)
@@ -24,10 +24,18 @@ Documentation only: this section restates the rules in force for new forecasts t
 6. **Picks** (v1.22; value series retired in v1.27). Only the moneyline creates selections, and from v1.27 only the directional series (`selection_series: [directional]`): the predicted winner at the saved price. The value series (either side at least 0.05 above the no-vig probability with positive expected value, §12) no longer registers; edges and expected values stay on each market record as context. Quotes must be DraftKings, paired with the capture within 5 minutes and no more than 15 minutes old. Spread and total quotes are kept as context only.
 7. **Timing** (§11; first snapshot from v1.27). The first snapshot is the earliest valid pregame capture on the game's Eastern calendar date that carries a qualifying DraftKings moneyline; if none has by the lock target (T−5h), it freezes unpriced at the first capture from then (`first_policy: game_day_priced_et_v1`). The lock is the first valid capture in the 15 minutes after T−5h (`five_hours_15min_v2`). A missed window is recorded as missed and never backfilled. Nothing is captured at or after tip.
 8. **Grading** (§13). Graded against ESPN finals including overtime. Score corrections are re-checked for 7 days after tip and graded as new revisions. Units are one per pick: payout on a win, −1 on a loss.
-9. **Public record** (v1.22, 11 November reporting update). Results and Performance show one pooled first-snapshot record: live v1.27 forecasts plus the season's earlier games replayed under v1.27 from results known before each game. Where a game's frozen snapshot has no price, its moneyline, spread and total are the DraftKings close from the pinned ESPN file (`closing_backfill`, v1.27); `price_basis` records which. The replay writes nothing to the ledger. Pages show the model-pick moneyline series and a rolling ROI chart; the value series and all parts of the record stay in `data.json` and the ledger (17 November update).
+9. **Public record** (v1.22, 11 November reporting update). Results and Performance show one pooled first-snapshot record: live v1.28 forecasts plus the season's earlier games replayed under v1.28 from results known before each game. Where a game's frozen snapshot has no price, its moneyline, spread and total are the DraftKings close from the pinned ESPN file (`closing_backfill`, v1.27); `price_basis` records which. The replay writes nothing to the ledger. Pages show the model-pick moneyline series and a rolling ROI chart; the value series and all parts of the record stay in `data.json` and the ledger (17 November update).
 10. **Integrity.** The ledger in `data/transactions` is append-only and hash-verified. Accepted forecasts, grades and fits are never rewritten, and every methodology change is prospective and versioned (`AGENTS.md`).
 
-## Active methodology — v1.27 priced first snapshot, closing-price backfill, value series retired
+## Active methodology — v1.28 latest native snapshot in the team-fit history
+
+Owner update, 19 November 2026. One change; everything else is unchanged from v1.27. New forecasts are tagged `sleeper_only_v1_28`; frozen records of every earlier version, and their grades and fits, are never rewritten.
+
+**What changed.** When a game has native first snapshots under several methodology tags, the team fit (`matchup.eligible_observations`) now trains on the latest of them (`matchup.history_snapshot: latest`; ordered by capture time, then record id). All first snapshots are pregame and game-day snapshots are always captured after earlier-day ones, so this is the snapshot nearest tip, and the game-day one whenever it exists. Until now the fit kept whichever snapshot came last in the ledger's hash-named file order, which is effectively arbitrary, while the season replay already used the latest snapshot (v1.25). Configurations frozen without the key keep their ledger-order choice; recorded fits keep their stored manifests.
+
+**Effect at adoption.** In the team fit, 14 of 207 games change snapshot, from a median 27.6 hours before tip to 7.0 hours; snapshots under 24 hours rise from 143 to 153 games, the same set the season replay uses. Team terms move by at most 0.15 points (global −0.97 to −0.91) and tonight's margins by at most 0.2. The season record is unchanged (147–60, log loss 0.5934, +7.78 units), because the replay already used these snapshots. The remaining 54 games with only an earlier-day snapshot are kept; dropping them was considered and rejected because it would remove about 30% of the history.
+
+## v1.27 methodology — priced first snapshot, closing-price backfill, value series retired (still current)
 
 Owner update, 19 November 2026. Three changes, all prospective; everything else is unchanged from v1.26, including scoring (applied offense, defense prior 20), the T−5h lock policy, calibration and moneyline-only selections. New forecasts are tagged `sleeper_only_v1_27`; frozen records of every earlier version, and their grades, are never rewritten.
 
