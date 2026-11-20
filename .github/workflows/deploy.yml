@@ -22,7 +22,7 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: github-pages
-      url: ${{ steps.deploy.outputs.page_url }}
+      url: ${{ steps.deploy.outputs.page_url || steps.deploy_retry.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -37,6 +37,19 @@ jobs:
       - uses: actions/upload-pages-artifact@v3
         with:
           path: site
+      # deploy-pages can look up the just-uploaded artifact before GitHub lists it
+      # ("No artifacts named github-pages"), as on 20 November 2026. Give the upload
+      # time to register, and retry the deploy once after a longer wait.
+      - name: Wait for the Pages artifact to register
+        run: sleep 20
       - name: Deploy
         id: deploy
+        continue-on-error: true
+        uses: actions/deploy-pages@v4
+      - name: Wait before retrying the deploy
+        if: steps.deploy.outcome == 'failure'
+        run: sleep 60
+      - name: Deploy (retry)
+        id: deploy_retry
+        if: steps.deploy.outcome == 'failure'
         uses: actions/deploy-pages@v4
