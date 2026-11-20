@@ -1,6 +1,9 @@
-methodology: sleeper_only_v1_32
+methodology: sleeper_only_v1_33
 sleeper_company: rotowire
-wp_initial: 10.0
+wp_initial: 13.3
+# v1.33 (owner update, 20 November 2026): the adaptive win-probability scale starts at 13.3 and is
+# shrunk toward 13.3 instead of 10 (NBA Matchups' fitted margin sigma). Without the key it is 10.
+wp_prior_centre: 13.3
 ats_bias_initial: 0.0
 ats_sigma_initial: 14.0
 totals_bias_initial: 0.0

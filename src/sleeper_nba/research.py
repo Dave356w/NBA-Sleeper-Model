@@ -7,7 +7,7 @@ from collections import defaultdict
 
 from .common import dt
 from .evaluation import binary_scores, latest_grades
-from .models import DEFAULTS, fit_parameters, probabilities, training_observations
+from .models import DEFAULTS, adaptive_defaults, fit_parameters, probabilities, training_observations
 from .storage import Ledger
 
 
@@ -15,7 +15,7 @@ def walk_forward(root, config):
     records = Ledger(root).records()
     grades = latest_grades(records)
     results = []
-    params = {"first": dict(DEFAULTS), "lock": dict(DEFAULTS)}
+    params = {"first": adaptive_defaults(config), "lock": adaptive_defaults(config)}
     last_day, manifests = {}, {}
     for f in sorted((r for r in records if r["kind"] == "forecast"), key=lambda r: dt(r["captured_at"])):
         stage = f["stage"]

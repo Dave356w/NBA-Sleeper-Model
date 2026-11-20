@@ -24,7 +24,7 @@ from scipy.special import ndtr
 from . import matchup
 from .common import ET, digest, dt, iso
 from .markets import expected_value, freshness, no_vig, payout, valid_odds
-from .models import DEFAULTS, fit_parameters
+from .models import adaptive_defaults, fit_parameters
 
 QUOTES_FILE = "research/inputs/v1_20_market_quotes_2026-11-09.json"
 # v1.30 (owner update, 19 November 2026): replay only snapshots captured on the game's Eastern date.
@@ -294,7 +294,7 @@ def replay_rows(observations, config):
     """Score each replay game from earlier usable games only."""
     settings = config["matchup"]
     versions, params_at, rows = {}, {}, []
-    params, last_version = dict(DEFAULTS), matchup.fit([], settings, iso())
+    params, last_version = adaptive_defaults(config), matchup.fit([], settings, iso())
     for o in observations:
         captured = dt(o["snapshot_utc"])
         cutoff = _noon_cutoff(captured)

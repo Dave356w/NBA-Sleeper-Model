@@ -9,6 +9,22 @@ from scipy.special import log_ndtr, ndtr
 from .common import digest, dt
 
 DEFAULTS = {"wp_a": 10.0, "ats_bias": 0.0, "ats_sigma": 14.0, "totals_bias": 0.0, "totals_sigma": 19.0}
+LEGACY_WP_CENTRE = 10.0
+
+
+def wp_prior_centre(config=None):
+    """The value the adaptive win-probability scale starts at and is shrunk toward.
+
+    v1.33 (owner update, 20 November 2026): `wp_prior_centre` (13.3). Configurations frozen
+    without the key keep 10, so every earlier calibration and forecast reproduces unchanged.
+    """
+    value = (config or {}).get("wp_prior_centre")
+    return LEGACY_WP_CENTRE if value is None else float(value)
+
+
+def adaptive_defaults(config=None):
+    """Adaptive-variant parameters before any accepted calibration. The fixed control keeps DEFAULTS."""
+    return {**DEFAULTS, "wp_a": wp_prior_centre(config)}
 
 
 def probabilities(raw, params):
@@ -35,7 +51,7 @@ def fit_parameters(observations, previous, config):
     accepted = dict(previous)
     diagnostics = {}
     if n < config["minimum_games"]:
-        return dict(DEFAULTS), {"all": "insufficient_history"}, {"n": n, "n_eff": weights(n)[1]}
+        return adaptive_defaults(config), {"all": "insufficient_history"}, {"n": n, "n_eff": weights(n)[1]}
     w, neff = weights(n, config["half_life"])
     alpha = neff / (neff + config["prior_strength"])
     margins = np.array([o["margin"] for o in observations], dtype=float)
@@ -68,7 +84,8 @@ def fit_parameters(observations, previous, config):
     elif min(fitted - bounds[0], bounds[1] - fitted) <= 0.001:
         statuses["wp"] = "rejected_boundary"
     else:
-        target = math.exp((1 - alpha) * math.log(10) + alpha * math.log(fitted))
+        centre = wp_prior_centre(config)
+        target = math.exp((1 - alpha) * math.log(centre) + alpha * math.log(fitted))
         move = config["daily_scale_movement"]
         accepted["wp_a"] = float(
             np.clip(target, previous["wp_a"] * (1 - move), previous["wp_a"] * (1 + move))
@@ -187,7 +204,7 @@ def active_calibration(records, stage, at, methodology=None, config=None):
         if eligible
         else {
             "id": "defaults:" + stage,
-            "params": dict(DEFAULTS),
+            "params": adaptive_defaults(config),
             "training_count": 0,
             "training_cutoff": None,
             "n_eff": 0.0,

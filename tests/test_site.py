@@ -176,7 +176,8 @@ def test_season_record_replays_earlier_versions_and_adds_live_games_once(root, r
     observations = replay_observations(ledger.records(), root, config, 2026)
     scored = replay_rows(observations, config)
     first = min(scored, key=lambda r: r["slate_date"])
-    assert first["wp_a"] == 10 and first["segment"] == "replay_legacy"
+    # v1.33: the replay's scale starts at the configured prior centre (13.3).
+    assert first["wp_a"] == config["wp_prior_centre"] and first["segment"] == "replay_legacy"
     assert scored[0]["margin"] == pytest.approx(
         observations[0]["projected_home_score"] - observations[0]["projected_away_score"]
     )
@@ -209,7 +210,7 @@ def test_export_and_reporting_expose_lead_time_minutes_and_lock_coverage(root, r
     grade(root, config, http=http)
     build_site(root)
     data = json.loads((root / "site" / "data.json").read_text())
-    assert data["methodology_version"] == "1.32"
+    assert data["methodology_version"] == "1.33"
     assert data["selection_markets"] == ["moneyline"]
     assert data["sample_gates"] == {"forecast_games": 100, "settled_bets": 250}
     assert (
