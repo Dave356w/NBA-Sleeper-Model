@@ -17,7 +17,14 @@ from sleeper_nba.markets import (
     payout,
     settle,
 )
-from sleeper_nba.models import DEFAULTS, fit_parameters, probabilities, training_observations, weights
+from sleeper_nba.models import (
+    DEFAULTS,
+    adaptive_defaults,
+    fit_parameters,
+    probabilities,
+    training_observations,
+    weights,
+)
 from sleeper_nba.projections import InvalidProjection, aggregate, eligible_stages, public_player_snapshot
 from sleeper_nba.storage import Ledger
 
@@ -285,7 +292,7 @@ def test_regularization_caps_and_independent_components(config):
 
 
 def test_insufficient_history_and_flat_objective(config):
-    assert fit_parameters(observations(29), DEFAULTS, config)[0] == DEFAULTS
+    assert fit_parameters(observations(29), DEFAULTS, config)[0] == adaptive_defaults(config)
     obs = observations(40)
     for o in obs:
         o["margin"] = 0
@@ -490,3 +497,26 @@ def test_v1_29_late_lock_window_and_timing_labels(game, config):
     v2 = {**config, "lock_policy": "five_hours_15min_v2"}
     assert lock_timing(game, v2, "2026-11-07T17:10:00+00:00") is None
     assert lock_window_end(game, v2) == dt("2026-11-07T17:15:00+00:00")
+
+
+def test_v1_33_scale_starts_at_and_shrinks_toward_its_prior_centre(config):
+    assert config["methodology"] == "sleeper_only_v1_33"
+    assert config["wp_prior_centre"] == config["wp_initial"] == 13.3
+    assert adaptive_defaults(config) == {**DEFAULTS, "wp_a": 13.3}
+    assert adaptive_defaults(None) == DEFAULTS  # The fixed control and legacy configs keep 10.
+    obs = observations(200)
+    legacy = {k: v for k, v in config.items() if k != "wp_prior_centre"}
+    uncapped = {**config, "daily_scale_movement": 10.0}
+    legacy_uncapped = {**legacy, "daily_scale_movement": 10.0}
+    new, status, diag = fit_parameters(obs, adaptive_defaults(config), uncapped)
+    old, old_status, old_diag = fit_parameters(obs, DEFAULTS, legacy_uncapped)
+    assert status["wp"] == old_status["wp"] == "accepted"
+    assert diag["wp_fit"] == pytest.approx(old_diag["wp_fit"])  # The data fit is unchanged.
+    alpha, fitted = diag["alpha"], diag["wp_fit"]
+    assert new["wp_a"] == pytest.approx(math.exp((1 - alpha) * math.log(13.3) + alpha * math.log(fitted)))
+    assert old["wp_a"] == pytest.approx(math.exp((1 - alpha) * math.log(10.0) + alpha * math.log(fitted)))
+    # Configurations frozen without the key keep the v1.32 rule exactly.
+    assert (
+        fit_parameters(obs, DEFAULTS, legacy)[0]
+        == fit_parameters(obs, DEFAULTS, {**legacy, "wp_prior_centre": None})[0]
+    )

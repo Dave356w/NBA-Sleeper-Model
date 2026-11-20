@@ -26,7 +26,7 @@ import numpy as np
 
 from .common import ET, TEAMS, digest, dt, iso
 
-METHOD = "sleeper_only_v1_32"
+METHOD = "sleeper_only_v1_33"
 # v1.31 (owner update, 19 November 2026): the team fit trains on game-day snapshots only.
 GAME_DAY_HISTORY = "game_day_latest"
 # A slate stops holding back a refit once its ungraded games are this old.

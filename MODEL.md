@@ -1,15 +1,15 @@
 # Sleeper-Only NBA Prediction Model
 
-Implementation specification · v1.32 · 19 November 2026
+Implementation specification · v1.33 · 20 November 2026
 
 Suggested repository: `sleeper-nba-model`  
 Runtime: Python 3.12  
 Deployment: GitHub Actions and GitHub Pages  
 Status: Build specification for a new, independent model. No existing production repository is to be changed.
 
-## Current model at a glance (v1.32, as of 19 November 2026)
+## Current model at a glance (v1.33, as of 20 November 2026)
 
-Documentation only: this section restates the rules in force for new forecasts tagged `sleeper_only_v1_32`, in processing order, with the live `config.yaml` values. It changes nothing. Where it and a dated section below differ, the dated section governs and this summary is corrected. The sections below are the append-only history: each version's section overrides earlier ones, and the numbered base specification (§1–23) applies where nothing later overrides it.
+Documentation only: this section restates the rules in force for new forecasts tagged `sleeper_only_v1_33`, in processing order, with the live `config.yaml` values. It changes nothing. Where it and a dated section below differ, the dated section governs and this summary is corrected. The sections below are the append-only history: each version's section overrides earlier ones, and the numbered base specification (§1–23) applies where nothing later overrides it.
 
 1. **Capture.** Sleeper's game-specific player projections (company `rotowire`), the ESPN schedule and ESPN's DraftKings odds, each timestamped at fetch (§3; capture policy v1.21.1). The `watch.yml` job captures on its own schedule and `watchdog.yml` restarts it; no other writer.
 2. **Raw scores.** `H` and `A` are the sums of the projected points of every valid projected player; each team's projected minutes must be 200–280 (§4–5). `M = H − A`, `T = H + A`. Raw scores are never changed and never include home-court, pace or injury terms. The fixed control scores them with a = 10, ATS SD 14 and totals SD 19 (§9).
@@ -21,14 +21,30 @@ Documentation only: this section restates the rules in force for new forecasts t
    ```
    From v1.25 (`apply_offense: true`) each team's offense term is added to its own score; through v1.24 it was an estimation control only. `venue` is the model's home-court term, learned from results and shrunk toward zero. Locks use this same first-stage fit.
 4. **Win probability.** `P(home) = Φ(M_adj / a)`; the predicted winner is the sign of `M_adj`, with no winner at zero (§6). Spread and total biases are held at 0 (`learn_scalar_biases: false`) because `global` and `venue` already correct the mean.
-5. **Confidence calibration** (v1.24). The scale `a`, ATS SD and totals SD are refit at most once per UTC day, only from fully resolved slates. The history is the season's earlier games replayed walk-forward under the current method (`season.calibration_observations`; game-day snapshots only from v1.30), followed by native games of this tag. Weights halve every 75 games, at least 30 games are needed, the fit for `a` is bounded to 6–20 and shrunk toward 10 with prior strength 100, and each refit moves at most 10% from the last accepted value. Locks use the first-stage calibration.
+5. **Confidence calibration** (v1.24). The scale `a`, ATS SD and totals SD are refit at most once per UTC day, only from fully resolved slates. The history is the season's earlier games replayed walk-forward under the current method (`season.calibration_observations`; game-day snapshots only from v1.30), followed by native games of this tag. Weights halve every 75 games, at least 30 games are needed, the fit for `a` is bounded to 6–20 and shrunk toward 13.3 with prior strength 100 (v1.33; 10 through v1.32), `a` starts at 13.3 before the first accepted fit, and each refit moves at most 10% from the last accepted value. Locks use the first-stage calibration.
 6. **Picks** (v1.22; value series retired in v1.27). Only the moneyline creates selections, and from v1.27 only the directional series (`selection_series: [directional]`): the predicted winner at the saved price. The value series (either side at least 0.05 above the no-vig probability with positive expected value, §12) no longer registers; edges and expected values stay on each market record as context. Quotes must be DraftKings, paired with the capture within 5 minutes and no more than 15 minutes old. Spread and total quotes are kept as context only.
 7. **Timing** (§11; first snapshot from v1.27). The first snapshot is the earliest valid pregame capture on the game's Eastern calendar date that carries a qualifying DraftKings moneyline; if none has by the lock target (T−5h), it freezes unpriced at the first capture from then (`first_policy: game_day_priced_et_v1`). The lock is the first valid capture in the 15 minutes after T−5h; if that window passes with no valid capture, the first valid capture until T−2h is a late lock, labelled `lock_timing: late` with its real lead time (`five_hours_late_v3`, v1.29). A game with no valid capture by T−2h is recorded as missed and never backfilled. Nothing is captured at or after tip.
 8. **Grading** (§13). Graded against ESPN finals including overtime. Score corrections are re-checked for 7 days after tip and graded as new revisions. Units are one per pick: payout on a win, −1 on a loss.
-9. **Public record** (v1.22, 11 November reporting update). Results and Performance show one pooled first-snapshot record: live v1.32 forecasts plus the season's earlier games replayed under v1.32 from results known before each game. From v1.30 (`replay_snapshot: game_day_et_v1`) every replayed snapshot was captured on the game's Eastern date: an earlier-version first snapshot from an earlier day is replaced by that game's game-day native lock, and a game with no game-day capture is left out and listed in `season.replay_excluded`. Where a game's frozen snapshot has no price, its moneyline, spread and total are the DraftKings close from the pinned ESPN file (`closing_backfill`, v1.27); `price_basis` records which. The replay writes nothing to the ledger. Pages show the model-pick moneyline series and a rolling ROI chart; the value series and all parts of the record stay in `data.json` and the ledger (17 November update).
+9. **Public record** (v1.22, 11 November reporting update). Results and Performance show one pooled first-snapshot record: live v1.33 forecasts plus the season's earlier games replayed under v1.33 from results known before each game. From v1.30 (`replay_snapshot: game_day_et_v1`) every replayed snapshot was captured on the game's Eastern date: an earlier-version first snapshot from an earlier day is replaced by that game's game-day native lock, and a game with no game-day capture is left out and listed in `season.replay_excluded`. Where a game's frozen snapshot has no price, its moneyline, spread and total are the DraftKings close from the pinned ESPN file (`closing_backfill`, v1.27); `price_basis` records which. The replay writes nothing to the ledger. Pages show the model-pick moneyline series and a rolling ROI chart; the value series and all parts of the record stay in `data.json` and the ledger (17 November update).
 10. **Integrity.** The ledger in `data/transactions` is append-only and hash-verified. Accepted forecasts, grades and fits are never rewritten, and every methodology change is prospective and versioned (`AGENTS.md`).
 
-## Active methodology — v1.32 240-minute cap (scale down only)
+## Active methodology — v1.33 win-probability scale centred at 13.3
+
+Owner update, 20 November 2026. One change; everything else is unchanged from v1.32. New forecasts are tagged `sleeper_only_v1_33`; frozen records of every earlier version, and their grades, fits and calibrations, are never rewritten.
+
+**What changed.** This section overrides §6's `Initial a = 10.0` and the `log(10)` in `a_target`, for the adaptive variant only. The adaptive scale starts at `wp_initial: 13.3` and is shrunk toward `wp_prior_centre: 13.3`:
+
+```text
+a_target = exp((1-alpha)*log(13.3) + alpha*log(a_fit))
+```
+
+The weights, prior strength 100, 30-game minimum, bounds 6–20, daily 10% movement cap, rejection rules and refit timing are unchanged. A configuration without `wp_prior_centre` keeps 10, so every earlier calibration and forecast re-validates unchanged. The fixed control keeps a = 10. The scale never changes the predicted winner, so picks, margins and totals are unaffected.
+
+**Why.** Opening week (22–28 October, 54 games) rewarded a sharp scale (best fit 6.7), while games since 29 October support a softer one (12.4; 13.1 on the 127 also forecast by NBA Matchups). Anchored at 10, the v1.32 replay used a scale of 8.1–11.0 into November, and stated win chances ran too confident: calibration slope 0.86 ± 0.16 over the season (1 SE; 1.0 is calibrated), 0.68 ± 0.17 on those 127 games. 13.3 is the fitted margin sigma of the separate NBA Matchups model (`model/logit.json`, 11,687 games of earlier seasons), a number set before this season rather than chosen on these games.
+
+**Evidence (retrospective, previously inspected games).** The pooled season record under v1.33 is the same 189 games with the same picks: 69.8% winners, margin error 11.48, model-pick ROI +3.1%. Log loss is 0.5998 against 0.5986 under v1.32 (paired +0.0012 ± 0.0053); Brier 0.2059 against 0.2053. Calibration slope is 1.01 ± 0.19 against 0.86 ± 0.16. By period: opening week +0.019 ± 0.010, from 29 October −0.006 ± 0.006. The replayed scale runs 9.2–13.3, ending at 12.8. The change is adopted for calibration, not for an expected gain in log loss, which the replay does not show.
+
+## v1.32 methodology — 240-minute cap (scale down only, still current)
 
 Owner update, 19 November 2026. One change; everything else is unchanged from v1.31. New forecasts are tagged `sleeper_only_v1_32`; frozen records of every earlier version, and their grades, fits and calibrations, are never rewritten.
 

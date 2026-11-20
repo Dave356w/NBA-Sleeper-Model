@@ -709,7 +709,7 @@ def refit(root, config, now=None):
         if calibration_stage(config, stage) != stage:
             continue  # v1.24: this stage is scored with another stage's calibration.
         observations = confidence_history(records, root, config, stage, iso(now))
-        previous = active_calibration(records, stage, iso(now), config.get("methodology"))
+        previous = active_calibration(records, stage, iso(now), config.get("methodology"), config)
         manifest_hash = digest(observations)
         if previous.get("manifest_hash") == manifest_hash:
             continue

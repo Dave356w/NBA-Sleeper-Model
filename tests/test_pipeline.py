@@ -9,7 +9,7 @@ import pytest
 
 from sleeper_nba.common import dt, iso
 from sleeper_nba.evaluation import latest_grades, summarize
-from sleeper_nba.models import DEFAULTS
+from sleeper_nba.models import DEFAULTS, adaptive_defaults
 from sleeper_nba.pipeline import assign_instance, capture, grade, next_wake, refit, validate
 from sleeper_nba.research import walk_forward
 from sleeper_nba.site import build_site
@@ -403,17 +403,19 @@ def test_v1_24_calibration_starts_from_the_season_replay_and_scores_locks(root, 
     cal = ledger.records("calibration")[0]
     assert cal["stage"] == "first" and cal["training_count"] == len(replayed)
     assert cal["statuses"]["wp"] == "accepted"
-    # The registered daily cap still applies: one step of at most 10% from the default.
-    assert 9.0 <= cal["params"]["wp_a"] <= 11.0 and cal["params"]["wp_a"] != DEFAULTS["wp_a"]
+    # The registered daily cap still applies: one step of at most 10% from the default,
+    # which from v1.33 is the configured prior centre (13.3), not 10.
+    start = adaptive_defaults(config)["wp_a"]
+    assert start == config["wp_prior_centre"] == 13.3
+    assert 0.9 * start <= cal["params"]["wp_a"] <= 1.1 * start and cal["params"]["wp_a"] != start
     records = ledger.records()
     method = config["methodology"]
     # Locks are scored with the first-stage calibration; no lock-only version is created.
     assert active_calibration(records, "lock", iso(now), method, config)["id"] == cal["id"]
     assert active_calibration(records, "lock", iso(now), method)["params"] == DEFAULTS
-    assert (
-        active_calibration(records, "first", iso(now - timedelta(seconds=1)), method, config)["params"]
-        == DEFAULTS
-    )
+    assert active_calibration(records, "first", iso(now - timedelta(seconds=1)), method, config)[
+        "params"
+    ] == adaptive_defaults(config)
     assert refit(root, config, now=now)["calibration_versions"] == 0
     assert validate(root)["status"] == "valid"
 
