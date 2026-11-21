@@ -132,7 +132,7 @@
           "bucket": "6\u201324h",
           "n": 30,
           "accuracy": 0.7333333333333333,
-          "log_loss": 0.489467195321062,
+          "log_loss": 0.48946719532106203,
           "brier": 0.16539564973808082
         },
         {
@@ -1744,7 +1744,7 @@
     "first": {
       "n": 148,
       "slates": 12,
-      "adaptive_minus_fixed_log_loss": 0.009921709228709047,
+      "adaptive_minus_fixed_log_loss": 0.009921709228709058,
       "confidence_interval_95": [
         -0.020406826902809296,
         0.04299877869426577
@@ -1754,10 +1754,10 @@
     "lock": {
       "n": 71,
       "slates": 10,
-      "adaptive_minus_fixed_log_loss": 0.013081863281013758,
+      "adaptive_minus_fixed_log_loss": 0.013081863281013777,
       "confidence_interval_95": [
-        -0.01663465677082928,
-        0.05787771083188203
+        -0.01663465677082924,
+        0.05787771083188205
       ],
       "exploratory": true
     }
