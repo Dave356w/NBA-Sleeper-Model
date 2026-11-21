@@ -270,7 +270,7 @@
           "bucket": "3\u20136h",
           "n": 24,
           "accuracy": 0.75,
-          "log_loss": 0.5208628708444076,
+          "log_loss": 0.5208628708444077,
           "brier": 0.1736582155456705
         },
         {
@@ -301,7 +301,7 @@
       "winner_count": 84,
       "correct": 60,
       "accuracy": 0.7142857142857143,
-      "log_loss": 0.6084156706389222,
+      "log_loss": 0.6084156706389221,
       "brier": 0.20785143800710917,
       "expected_home_wins": 46.308041542186636,
       "actual_home_wins": 42,
@@ -435,7 +435,7 @@
       "monthly": {
         "2026-11": {
           "n": 84,
-          "log_loss": 0.6084156706389222,
+          "log_loss": 0.6084156706389221,
           "brier": 0.20785143800710917
         }
       }
@@ -1806,20 +1806,20 @@
     "first": {
       "n": 184,
       "slates": 13,
-      "adaptive_minus_fixed_log_loss": 0.013270744075105298,
+      "adaptive_minus_fixed_log_loss": 0.01327074407510529,
       "confidence_interval_95": [
-        -0.015085796636770545,
-        0.04065799493820621
+        -0.015085796636770553,
+        0.0406579949382062
       ],
       "exploratory": true
     },
     "lock": {
       "n": 84,
       "slates": 11,
-      "adaptive_minus_fixed_log_loss": 0.017547929600386914,
+      "adaptive_minus_fixed_log_loss": 0.0175479296003869,
       "confidence_interval_95": [
-        -0.011344565748729666,
-        0.055081928497314005
+        -0.011344565748729689,
+        0.05508192849731399
       ],
       "exploratory": true
     }
