@@ -1,0 +1,488 @@
+{
+  "question": "Redistributing small projected minutes to the rotation (research only, owner request 22 November 2026).",
+  "methodology": "sleeper_only_v1_33",
+  "box_sha256": "d2581cf13049ff751d10cbd232d9c04d8a62c36666dd7b9c93ea03f0f2ced088",
+  "scored_native_games": 73,
+  "cap_minutes": 38.0,
+  "diagnostic": [
+    {
+      "projected_minutes": [
+        0,
+        3
+      ],
+      "players": 68,
+      "did_not_play": 0.45588235294117646,
+      "projected_minutes_mean": 2.264705882352941,
+      "actual_minutes_mean": 5.6911764705882355,
+      "projected_points_mean": 0.8873529411764706,
+      "actual_points_mean": 1.338235294117647,
+      "points_bias": 0.45088235294117657
+    },
+    {
+      "projected_minutes": [
+        3,
+        5
+      ],
+      "players": 63,
+      "did_not_play": 0.4126984126984127,
+      "projected_minutes_mean": 4.714285714285714,
+      "actual_minutes_mean": 6.714285714285714,
+      "projected_points_mean": 1.7001587301587302,
+      "actual_points_mean": 1.9523809523809523,
+      "points_bias": 0.2522222222222221
+    },
+    {
+      "projected_minutes": [
+        5,
+        8
+      ],
+      "players": 44,
+      "did_not_play": 0.22727272727272727,
+      "projected_minutes_mean": 7.318181818181818,
+      "actual_minutes_mean": 8.181818181818182,
+      "projected_points_mean": 2.690909090909091,
+      "actual_points_mean": 2.8181818181818183,
+      "points_bias": 0.12727272727272732
+    },
+    {
+      "projected_minutes": [
+        8,
+        10
+      ],
+      "players": 98,
+      "did_not_play": 0.19387755102040816,
+      "projected_minutes_mean": 9.928571428571429,
+      "actual_minutes_mean": 11.26530612244898,
+      "projected_points_mean": 3.820816326530612,
+      "actual_points_mean": 3.7551020408163267,
+      "points_bias": -0.06571428571428563
+    },
+    {
+      "projected_minutes": [
+        10,
+        12
+      ],
+      "players": 58,
+      "did_not_play": 0.1724137931034483,
+      "projected_minutes_mean": 11.844827586206897,
+      "actual_minutes_mean": 11.241379310344827,
+      "projected_points_mean": 4.682068965517241,
+      "actual_points_mean": 4.120689655172414,
+      "points_bias": -0.5613793103448276
+    },
+    {
+      "projected_minutes": [
+        12,
+        15
+      ],
+      "players": 98,
+      "did_not_play": 0.09183673469387756,
+      "projected_minutes_mean": 14.571428571428571,
+      "actual_minutes_mean": 14.39795918367347,
+      "projected_points_mean": 5.630714285714285,
+      "actual_points_mean": 5.571428571428571,
+      "points_bias": -0.059285714285714275
+    },
+    {
+      "projected_minutes": [
+        15,
+        20
+      ],
+      "players": 267,
+      "did_not_play": 0.04119850187265917,
+      "projected_minutes_mean": 18.588014981273407,
+      "actual_minutes_mean": 18.352059925093634,
+      "projected_points_mean": 7.545505617977528,
+      "actual_points_mean": 7.142322097378277,
+      "points_bias": -0.40318352059925083
+    },
+    {
+      "projected_minutes": [
+        20,
+        30
+      ],
+      "players": 513,
+      "did_not_play": 0.04873294346978557,
+      "projected_minutes_mean": 26.118908382066277,
+      "actual_minutes_mean": 24.489278752436647,
+      "projected_points_mean": 11.511384015594542,
+      "actual_points_mean": 10.922027290448343,
+      "points_bias": -0.5893567251461989
+    },
+    {
+      "projected_minutes": [
+        30,
+        99
+      ],
+      "players": 386,
+      "did_not_play": 0.038860103626943004,
+      "projected_minutes_mean": 33.24611398963731,
+      "actual_minutes_mean": 31.0440414507772,
+      "projected_points_mean": 18.665388601036266,
+      "actual_points_mean": 18.181347150259068,
+      "points_bias": -0.484041450777202
+    }
+  ],
+  "variants": {
+    "below_3": {
+      "players_dropped": 37,
+      "minutes_moved": 61.0,
+      "unplaced_minutes": 0.0,
+      "players_hitting_cap": 0,
+      "raw_team_points_mae": {
+        "baseline": 9.315529456297822,
+        "variant": 9.316155831091056
+      },
+      "replay": {
+        "games": 73,
+        "slates": 11,
+        "abs_error": {
+          "baseline": 11.921050570952227,
+          "variant": 11.928025632584017,
+          "difference": 0.006975061631790094,
+          "ci95_slate_bootstrap": [
+            -0.04254014046142776,
+            0.07176904666885735
+          ]
+        },
+        "total_abs_error": {
+          "baseline": 13.98755677678402,
+          "variant": 13.975081776379701,
+          "difference": -0.012475000404317474,
+          "ci95_slate_bootstrap": [
+            -0.06403414858017042,
+            0.03210196258019868
+          ]
+        },
+        "correct": {
+          "baseline": 0.6986301369863014,
+          "variant": 0.6986301369863014,
+          "difference": 0.0,
+          "ci95_slate_bootstrap": [
+            0.0,
+            0.0
+          ]
+        },
+        "log_loss": {
+          "baseline": 0.6093863168486702,
+          "variant": 0.6095168244243632,
+          "difference": 0.00013050757569309322,
+          "ci95_slate_bootstrap": [
+            -0.0022945536064262317,
+            0.0034802180191135573
+          ]
+        },
+        "log_loss_a10": {
+          "baseline": 0.6135396018161065,
+          "variant": 0.6138988725549344,
+          "difference": 0.0003592707388279197,
+          "ci95_slate_bootstrap": [
+            -0.001862483191957703,
+            0.0032948499494910304
+          ]
+        }
+      }
+    },
+    "below_5": {
+      "players_dropped": 86,
+      "minutes_moved": 226.0,
+      "unplaced_minutes": 0.0,
+      "players_hitting_cap": 0,
+      "raw_team_points_mae": {
+        "baseline": 9.315529456297822,
+        "variant": 9.320789874897649
+      },
+      "replay": {
+        "games": 73,
+        "slates": 11,
+        "abs_error": {
+          "baseline": 11.921050570952227,
+          "variant": 11.92630071800636,
+          "difference": 0.00525014705413411,
+          "ci95_slate_bootstrap": [
+            -0.12211588658019548,
+            0.12973962656738333
+          ]
+        },
+        "total_abs_error": {
+          "baseline": 13.98755677678402,
+          "variant": 13.959539851063196,
+          "difference": -0.028016925720824908,
+          "ci95_slate_bootstrap": [
+            -0.11740772590564785,
+            0.06091423906248004
+          ]
+        },
+        "correct": {
+          "baseline": 0.6986301369863014,
+          "variant": 0.6986301369863014,
+          "difference": 0.0,
+          "ci95_slate_bootstrap": [
+            0.0,
+            0.0
+          ]
+        },
+        "log_loss": {
+          "baseline": 0.6093863168486702,
+          "variant": 0.6144594214189366,
+          "difference": 0.005073104570266569,
+          "ci95_slate_bootstrap": [
+            -0.00011266952628098934,
+            0.01137202286291011
+          ]
+        },
+        "log_loss_a10": {
+          "baseline": 0.6135396018161065,
+          "variant": 0.6195851496369635,
+          "difference": 0.006045547820857196,
+          "ci95_slate_bootstrap": [
+            0.0016682751114778626,
+            0.011567556334514591
+          ]
+        }
+      }
+    },
+    "below_8": {
+      "players_dropped": 151,
+      "minutes_moved": 581.0,
+      "unplaced_minutes": 0.0,
+      "players_hitting_cap": 2,
+      "raw_team_points_mae": {
+        "baseline": 9.315529456297822,
+        "variant": 9.336342676405053
+      },
+      "replay": {
+        "games": 73,
+        "slates": 11,
+        "abs_error": {
+          "baseline": 11.921050570952227,
+          "variant": 12.06624123636924,
+          "difference": 0.1451906654170135,
+          "ci95_slate_bootstrap": [
+            -0.14257780527195785,
+            0.41114756142605235
+          ]
+        },
+        "total_abs_error": {
+          "baseline": 13.98755677678402,
+          "variant": 13.862652469559793,
+          "difference": -0.12490430722422691,
+          "ci95_slate_bootstrap": [
+            -0.23610101167336806,
+            0.021119640367135477
+          ]
+        },
+        "correct": {
+          "baseline": 0.6986301369863014,
+          "variant": 0.6986301369863014,
+          "difference": 0.0,
+          "ci95_slate_bootstrap": [
+            0.0,
+            0.0
+          ]
+        },
+        "log_loss": {
+          "baseline": 0.6093863168486702,
+          "variant": 0.6218841148975979,
+          "difference": 0.01249779804892766,
+          "ci95_slate_bootstrap": [
+            0.0016388126840278913,
+            0.02173355071929541
+          ]
+        },
+        "log_loss_a10": {
+          "baseline": 0.6135396018161065,
+          "variant": 0.6288833968898824,
+          "difference": 0.015343795073776015,
+          "ci95_slate_bootstrap": [
+            0.004262915372704412,
+            0.024957447805031747
+          ]
+        }
+      }
+    },
+    "below_10": {
+      "players_dropped": 182,
+      "minutes_moved": 836.0,
+      "unplaced_minutes": 0.0,
+      "players_hitting_cap": 8,
+      "raw_team_points_mae": {
+        "baseline": 9.315529456297822,
+        "variant": 9.321110200287023
+      },
+      "replay": {
+        "games": 73,
+        "slates": 11,
+        "abs_error": {
+          "baseline": 11.921050570952227,
+          "variant": 12.078675238016427,
+          "difference": 0.1576246670641998,
+          "ci95_slate_bootstrap": [
+            -0.12425159562623436,
+            0.4358864210511668
+          ]
+        },
+        "total_abs_error": {
+          "baseline": 13.98755677678402,
+          "variant": 13.90208274567779,
+          "difference": -0.08547403110622931,
+          "ci95_slate_bootstrap": [
+            -0.2696992152629157,
+            0.1076740698042774
+          ]
+        },
+        "correct": {
+          "baseline": 0.6986301369863014,
+          "variant": 0.684931506849315,
+          "difference": -0.0136986301369863,
+          "ci95_slate_bootstrap": [
+            -0.0379746835443038,
+            0.0
+          ]
+        },
+        "log_loss": {
+          "baseline": 0.6093863168486702,
+          "variant": 0.6265361941913129,
+          "difference": 0.01714987734264278,
+          "ci95_slate_bootstrap": [
+            0.004092744548579438,
+            0.030129669164760488
+          ]
+        },
+        "log_loss_a10": {
+          "baseline": 0.6135396018161065,
+          "variant": 0.6342718101953663,
+          "difference": 0.020732208379259816,
+          "ci95_slate_bootstrap": [
+            0.0063505953174504024,
+            0.03518032289409098
+          ]
+        }
+      }
+    },
+    "below_12": {
+      "players_dropped": 282,
+      "minutes_moved": 1845.0,
+      "unplaced_minutes": 0.0,
+      "players_hitting_cap": 48,
+      "raw_team_points_mae": {
+        "baseline": 9.315529456297822,
+        "variant": 9.4455739802867
+      },
+      "replay": {
+        "games": 73,
+        "slates": 11,
+        "abs_error": {
+          "baseline": 11.921050570952227,
+          "variant": 12.257026767224543,
+          "difference": 0.33597619627231656,
+          "ci95_slate_bootstrap": [
+            -0.01993313892868344,
+            0.6569519316496681
+          ]
+        },
+        "total_abs_error": {
+          "baseline": 13.98755677678402,
+          "variant": 13.927639204210331,
+          "difference": -0.0599175725736872,
+          "ci95_slate_bootstrap": [
+            -0.4460165132745477,
+            0.3551043604244371
+          ]
+        },
+        "correct": {
+          "baseline": 0.6986301369863014,
+          "variant": 0.6986301369863014,
+          "difference": 0.0,
+          "ci95_slate_bootstrap": [
+            -0.06329113924050633,
+            0.06452660242982808
+          ]
+        },
+        "log_loss": {
+          "baseline": 0.6093863168486702,
+          "variant": 0.6412779463411513,
+          "difference": 0.03189162949248127,
+          "ci95_slate_bootstrap": [
+            0.005308165761103974,
+            0.05885568223351539
+          ]
+        },
+        "log_loss_a10": {
+          "baseline": 0.6135396018161065,
+          "variant": 0.6509743695227149,
+          "difference": 0.0374347677066086,
+          "ci95_slate_bootstrap": [
+            0.005220437204638003,
+            0.0718630390913036
+          ]
+        }
+      }
+    },
+    "below_15": {
+      "players_dropped": 363,
+      "minutes_moved": 2871.0,
+      "unplaced_minutes": 12.0,
+      "players_hitting_cap": 104,
+      "raw_team_points_mae": {
+        "baseline": 9.315529456297822,
+        "variant": 9.454478922636913
+      },
+      "replay": {
+        "games": 73,
+        "slates": 11,
+        "abs_error": {
+          "baseline": 11.921050570952227,
+          "variant": 12.267694750309975,
+          "difference": 0.34664417935774816,
+          "ci95_slate_bootstrap": [
+            -0.1676191009866383,
+            0.8563547556285044
+          ]
+        },
+        "total_abs_error": {
+          "baseline": 13.98755677678402,
+          "variant": 14.272248876241958,
+          "difference": 0.28469209945793855,
+          "ci95_slate_bootstrap": [
+            -0.49563376491028377,
+            0.8975822973506314
+          ]
+        },
+        "correct": {
+          "baseline": 0.6986301369863014,
+          "variant": 0.7123287671232876,
+          "difference": 0.0136986301369863,
+          "ci95_slate_bootstrap": [
+            -0.027777777777777776,
+            0.06557377049180328
+          ]
+        },
+        "log_loss": {
+          "baseline": 0.6093863168486702,
+          "variant": 0.6358876675588585,
+          "difference": 0.02650135071018842,
+          "ci95_slate_bootstrap": [
+            -0.031150798056246612,
+            0.0790855624199216
+          ]
+        },
+        "log_loss_a10": {
+          "baseline": 0.6135396018161065,
+          "variant": 0.6501565362378983,
+          "difference": 0.0366169344217918,
+          "ci95_slate_bootstrap": [
+            -0.028630035125670694,
+            0.10092611760014956
+          ]
+        }
+      }
+    }
+  },
+  "notes": [
+    "Differences are variant minus baseline over the native games only: negative abs_error, total_abs_error or log_loss means the redistribution forecast better; positive correct means more winners.",
+    "raw_team_points_mae compares unadjusted Sleeper team points with the final score.",
+    "Seed and backfill games (no player rows here) stay unadjusted in training and are not scored.",
+    "Retrospective; several thresholds compared on previously inspected games."
+  ]
+}
