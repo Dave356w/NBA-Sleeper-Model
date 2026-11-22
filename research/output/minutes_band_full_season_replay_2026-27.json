@@ -1,0 +1,180 @@
+{
+  "question": "Full-season confirmation of the team minutes-band correction (owner request 22 November 2026).",
+  "methodology": "sleeper_only_v1_33",
+  "box_sha256": "d2581cf13049ff751d10cbd232d9c04d8a62c36666dd7b9c93ea03f0f2ced088",
+  "sleeper_csv_sha256": "9e0035862cfc80609dfe86de53471130af8b1522f1c936969deba10a7304f971",
+  "candidate": "team_raw (k = 0) on the v1.33 model with team terms",
+  "history_games": 226,
+  "history_player_rows": 4953,
+  "games": {
+    "all": 198,
+    "seed_and_backfill": 125,
+    "native": 73
+  },
+  "results": {
+    "all": {
+      "games": 198,
+      "slates": 27,
+      "abs_error": {
+        "baseline": 11.240441074795257,
+        "variant": 11.146283683089184,
+        "difference": -0.09415739170606927,
+        "ci95_slate_bootstrap": [
+          -0.3344343506757338,
+          0.12287913867843393
+        ]
+      },
+      "total_abs_error": {
+        "baseline": 14.452268273017081,
+        "variant": 14.428937900103675,
+        "difference": -0.023330372913409177,
+        "ci95_slate_bootstrap": [
+          -0.2642522056123437,
+          0.2270618185200912
+        ]
+      },
+      "correct": {
+        "baseline": 0.702020202020202,
+        "variant": 0.7424242424242424,
+        "difference": 0.04040404040404041,
+        "ci95_slate_bootstrap": [
+          0.010415317357512954,
+          0.07281633768404808
+        ]
+      },
+      "log_loss": {
+        "baseline": 0.596133210921417,
+        "variant": 0.5876969984993513,
+        "difference": -0.008436212422065608,
+        "ci95_slate_bootstrap": [
+          -0.0260556341738373,
+          0.0072489458731463926
+        ]
+      },
+      "log_loss_a10": {
+        "baseline": 0.5916484736019547,
+        "variant": 0.5845875146366779,
+        "difference": -0.007060958965276778,
+        "ci95_slate_bootstrap": [
+          -0.02659322273202702,
+          0.010680345862393616
+        ]
+      }
+    },
+    "seed_and_backfill": {
+      "games": 125,
+      "slates": 16,
+      "abs_error": {
+        "baseline": 10.842965129039586,
+        "variant": 10.867973578606128,
+        "difference": 0.025008449566543845,
+        "ci95_slate_bootstrap": [
+          -0.17046405107131488,
+          0.2104725728292972
+        ]
+      },
+      "total_abs_error": {
+        "baseline": 14.72365978681719,
+        "variant": 14.48296745314017,
+        "difference": -0.24069233367702167,
+        "ci95_slate_bootstrap": [
+          -0.5139547874805854,
+          0.04524265684158031
+        ]
+      },
+      "correct": {
+        "baseline": 0.704,
+        "variant": 0.744,
+        "difference": 0.04,
+        "ci95_slate_bootstrap": [
+          0.0,
+          0.08889438943894382
+        ]
+      },
+      "log_loss": {
+        "baseline": 0.5883933970599012,
+        "variant": 0.5926101303048725,
+        "difference": 0.004216733244971332,
+        "ci95_slate_bootstrap": [
+          -0.011101091753301585,
+          0.01926117531490564
+        ]
+      },
+      "log_loss_a10": {
+        "baseline": 0.5788640547248901,
+        "variant": 0.5866250540210936,
+        "difference": 0.007760999296203342,
+        "ci95_slate_bootstrap": [
+          -0.00988525248362507,
+          0.02501104069170545
+        ]
+      }
+    },
+    "native": {
+      "games": 73,
+      "slates": 11,
+      "abs_error": {
+        "baseline": 11.921050570952227,
+        "variant": 11.622842081176614,
+        "difference": -0.29820848977561226,
+        "ci95_slate_bootstrap": [
+          -0.7723328435936329,
+          0.19768203426654687
+        ]
+      },
+      "total_abs_error": {
+        "baseline": 13.98755677678402,
+        "variant": 14.336421542164466,
+        "difference": 0.34886476538044786,
+        "ci95_slate_bootstrap": [
+          0.0009833039257432204,
+          0.6632501945915797
+        ]
+      },
+      "correct": {
+        "baseline": 0.6986301369863014,
+        "variant": 0.7397260273972602,
+        "difference": 0.0410958904109589,
+        "ci95_slate_bootstrap": [
+          0.0,
+          0.07936507936507936
+        ]
+      },
+      "log_loss": {
+        "baseline": 0.6093863168486702,
+        "variant": 0.5792841015720891,
+        "difference": -0.03010221527658092,
+        "ci95_slate_bootstrap": [
+          -0.05998133292146809,
+          -0.0017153473506068431
+        ]
+      },
+      "log_loss_a10": {
+        "baseline": 0.6135396018161065,
+        "variant": 0.5810985773345965,
+        "difference": -0.03244102448150986,
+        "ci95_slate_bootstrap": [
+          -0.0641071925438728,
+          -0.003503410023282946
+        ]
+      }
+    }
+  },
+  "placebo": {
+    "runs": 50,
+    "abs_error_mean": 0.04671161963534796,
+    "log_loss_mean": 0.003323685446466505,
+    "runs_at_least_as_good_abs_error": 3,
+    "runs_at_least_as_good_log_loss": 2
+  },
+  "decision_rule": {
+    "log_loss_interval_below_zero": false,
+    "margin_mae_not_worse": true,
+    "seed_and_backfill_same_direction": false,
+    "adopt": false
+  },
+  "notes": [
+    "Differences are candidate minus v1.33: negative abs_error, total_abs_error or log_loss is better.",
+    "Decision rule pre-registered before the first run; see module docstring."
+  ]
+}
