@@ -270,7 +270,7 @@
           "bucket": "3\u20136h",
           "n": 24,
           "accuracy": 0.75,
-          "log_loss": 0.5208628708444076,
+          "log_loss": 0.5208628708444077,
           "brier": 0.1736582155456705
         },
         {
@@ -428,7 +428,7 @@
           "bucket": "3\u20136h",
           "n": 80,
           "accuracy": 0.7,
-          "log_loss": 0.6190317715688687,
+          "log_loss": 0.6190317715688686,
           "brier": 0.21208250357865888
         }
       ],
@@ -605,7 +605,7 @@
     },
     "lock:adaptive:totals": {
       "n": 89,
-      "log_loss": 0.7131231497000567,
+      "log_loss": 0.7131231497000566,
       "brier": 0.2596837988038423
     },
     "lock:fixed:ats": {
@@ -1826,20 +1826,20 @@
     "first": {
       "n": 189,
       "slates": 14,
-      "adaptive_minus_fixed_log_loss": 0.013290137240737226,
+      "adaptive_minus_fixed_log_loss": 0.013290137240737219,
       "confidence_interval_95": [
-        -0.012674030125935801,
-        0.03947115594693926
+        -0.012674030125935808,
+        0.03947115594693925
       ],
       "exploratory": true
     },
     "lock": {
       "n": 89,
       "slates": 12,
-      "adaptive_minus_fixed_log_loss": 0.017164427033714832,
+      "adaptive_minus_fixed_log_loss": 0.017164427033714815,
       "confidence_interval_95": [
-        -0.010582004959332833,
-        0.052148673312493767
+        -0.010582004959332852,
+        0.05214867331249375
       ],
       "exploratory": true
     }
