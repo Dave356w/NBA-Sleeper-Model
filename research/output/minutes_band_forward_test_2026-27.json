@@ -4,7 +4,7 @@
   "freeze": "2026-11-22T12:00:00+00:00",
   "pre_registered_freeze": "2026-11-22T12:00:00+00:00",
   "box_sha256": "d2581cf13049ff751d10cbd232d9c04d8a62c36666dd7b9c93ea03f0f2ced088",
-  "sleeper_csv_sha256": "9e0035862cfc80609dfe86de53471130af8b1522f1c936969deba10a7304f971",
+  "sleeper_csv_sha256": "a7d6ac91d8732a3b45f4f86854d241583cfe6bb33028e4af5e9c5b91428ee818",
   "games": 0,
   "minimum_games": 100,
   "rows": [],

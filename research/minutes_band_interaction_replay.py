@@ -19,7 +19,7 @@ import json
 from pathlib import Path
 
 import numpy as np
-from minutes_common import band, corrected_points, load_box, snapshot_players
+from minutes_common import available, band, corrected_points, load_box, snapshot_players
 from minutes_reallocation_replay import compare, per_game
 
 from sleeper_nba.common import dt, load_config
@@ -77,7 +77,7 @@ def main(argv=None):
     for o in observations:
         if o["segment"] == "replay_native":
             f = chosen[o["game_id"]]
-            past = [x for x in history if x[1] < dt(o["snapshot_utc"])]
+            past = [x for x in history if available(x[1]) <= dt(o["snapshot_utc"])]
             scores = {
                 side: corrected_points(snapshot_players(f, o[side]), o[side], past, 0, config["matchup"])
                 for side in ("home", "away")

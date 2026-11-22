@@ -7,7 +7,8 @@ projected-minutes band, league-wide or for his own team, does the model forecast
 History: every native game in this ledger with an ESPN box score (one snapshot per game: the replay
 snapshot where the game is replayed, otherwise its latest pregame native snapshot). A player
 projected above 0 minutes gives one observation, actual minus projected minutes, in his band
-(``BANDS``). For a target snapshot only games tipped before its capture are used.
+(``BANDS``). For a target snapshot only games finished before its capture are used
+(``minutes_common.available``: tip + 4 hours).
 
 Correction for a player in band b of team t, from the history before the snapshot:
 
@@ -47,7 +48,7 @@ import json
 from pathlib import Path
 
 import numpy as np
-from minutes_common import BANDS, K_LEAGUE, band, corrected_points, load_box, snapshot_players
+from minutes_common import BANDS, K_LEAGUE, available, band, corrected_points, load_box, snapshot_players
 from minutes_reallocation_replay import compare, per_game
 
 from sleeper_nba.common import dt, load_config
@@ -113,7 +114,7 @@ def main(argv=None):
         by_team_game[(code, tip, b)].append(e)
     pairs = collections.defaultdict(list)
     for (code, tip, b), errs in by_team_game.items():
-        past = [x for x in history if x[1] < tip]
+        past = [x for x in history if available(x[1]) <= tip]
         team_past = [e for t, _, bb, e in past if t == code and bb == b]
         league_past = [e for _, _, bb, e in past if bb == b]
         if len(team_past) >= 5 and league_past:
@@ -165,7 +166,7 @@ def main(argv=None):
             if o["segment"] == "replay_native":
                 f = chosen[o["game_id"]]
                 before = dt(o["snapshot_utc"])
-                past = [x for x in hist if x[1] < before]
+                past = [x for x in hist if available(x[1]) <= before]
                 scores = {}
                 for side in ("home", "away"):
                     code = o[side]

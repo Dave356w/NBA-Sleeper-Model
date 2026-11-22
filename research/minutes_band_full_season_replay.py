@@ -19,7 +19,7 @@ Player rows: native games from this ledger's frozen snapshot; seed and backfill 
 nba-matchups' ``data/nba_sleeper.csv`` (their source; SHA-256 recorded, every team total checked
 against the replay's frozen score). History: every replayed game at its replay snapshot plus native
 games outside the replay at their latest pregame snapshot, each matched to the ESPN box score; a
-target snapshot only uses games tipped before its capture. Paired differences are bootstrapped by
+target snapshot only uses games finished (tip + 4 hours) before its capture. Paired differences are bootstrapped by
 slate; ``placebo`` relabels team histories across teams. Nothing is written to the ledger.
 
     python research/minutes_band_full_season_replay.py --root . \\
@@ -35,7 +35,7 @@ import json
 from pathlib import Path
 
 import numpy as np
-from minutes_common import band, corrected_points, csv_snapshots, load_box, snapshot_players
+from minutes_common import available, band, corrected_points, csv_snapshots, load_box, snapshot_players
 from minutes_reallocation_replay import compare, per_game
 
 from sleeper_nba.common import dt, load_config
@@ -113,7 +113,7 @@ def main(argv=None):
     def corrected(hist, k_team):
         out = []
         for o in observations:
-            past = [x for x in hist if x[1] < dt(o["snapshot_utc"])]
+            past = [x for x in hist if available(x[1]) <= dt(o["snapshot_utc"])]
             scores = {
                 side: corrected_points(players[(o["game_id"], side)], o[side], past, k_team, settings)
                 for side in ("home", "away")

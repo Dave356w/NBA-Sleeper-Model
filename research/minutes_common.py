@@ -12,9 +12,20 @@ import collections
 import csv
 import re
 import unicodedata
+from datetime import timedelta
 
 from sleeper_nba.common import dt, team
 from sleeper_nba.matchup import minutes_scale
+
+# A game's box score enters history only once the game is surely over. NBA games, overtime
+# included, finish well inside four hours of tip; a forecast never uses a game in progress.
+GAME_HOURS = 4
+
+
+def available(tip):
+    """When a game tipped at `tip` may enter a forecast's history."""
+    return tip + timedelta(hours=GAME_HOURS)
+
 
 BANDS = ((0, 15), (15, 24), (24, 30), (30, 99))
 K_LEAGUE = 50

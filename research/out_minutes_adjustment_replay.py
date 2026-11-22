@@ -6,7 +6,7 @@ listed Out, divided by k (k = 10, 8 or 5). Does the model forecast better?
 For every native game in the v1.33 season replay (the game's frozen snapshot), each team's Out list
 is every player in the frozen Sleeper rows whose injury status is Out, IR or suspended, whether or
 not Sleeper projected him. Each listed player's recent minutes come from ESPN box scores of games
-tipped before the snapshot, matched within team on a normalized name, in two readings:
+finished before the snapshot (tip + 4 hours), matched within team on a normalized name, in two readings:
 
 - ``team5``: his average over the team's last 5 games, a game he missed counting 0. A player out
   for weeks has already left the team's recent results, so he is charged little or nothing.
@@ -34,7 +34,7 @@ import json
 from pathlib import Path
 
 import numpy as np
-from minutes_common import load_box_history, norm
+from minutes_common import available, load_box_history, norm
 from minutes_reallocation_replay import compare, per_game
 
 from sleeper_nba.common import dt, load_config, team
@@ -49,12 +49,12 @@ WINDOW = 5
 
 def recent_minutes(name, side, before, schedule, minutes, by_player, mode):
     if mode == "team5":
-        past = [g for tip, g in schedule[side] if tip < before][-WINDOW:]
+        past = [g for tip, g in schedule[side] if available(tip) <= before][-WINDOW:]
         if not past:
             return 0.0, False
         values = [minutes[(side, g)].get(name, 0.0) for g in past]
         return float(np.mean(values)), any(name in minutes[(side, g)] for g in past)
-    past = [m for tip, m in by_player.get(name, []) if tip < before][-WINDOW:]
+    past = [m for tip, m in by_player.get(name, []) if available(tip) <= before][-WINDOW:]
     return (float(np.mean(past)), True) if past else (0.0, False)
 
 

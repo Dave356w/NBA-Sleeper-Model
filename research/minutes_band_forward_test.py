@@ -15,10 +15,18 @@ asked for a forward test on games it was never fitted on before deciding anythin
   where the team has no history; team rescaled to Sleeper's projected minutes; points at each
   player's projected rate; 240-minute cap). Its point change on each team is added to the frozen
   adaptive score, which keeps the frozen team terms, and the win probability uses the forecast's own
-  frozen scale. Only games tipped before a forecast's capture enter its history.
-- Judged once at least ``MIN_GAMES`` (100) test games are graded. Recommend a version update only if
-  log loss improves with its 95% slate-bootstrap interval entirely below 0 **and** margin MAE is not
-  worse. Anything else: no change. Interim runs are reported but decide nothing.
+  frozen scale. Only games finished before a forecast's capture (tip + 4 hours,
+  ``minutes_common.available``) enter its history. Forecasts of retired (rescheduled, postponed or
+  cancelled) instances are skipped, as in the public record, so a replacement instance counts.
+- The decision cohort is fixed: the first ``MIN_GAMES`` (100) test games in tip order (then game
+  ID). It is judged once all 100 are graded, and only on those 100. Recommend a version update only
+  if log loss improves with its 95% slate-bootstrap interval entirely below 0 **and** margin MAE is
+  not worse. Anything else: no change. Earlier runs are interim and decide nothing; games after the
+  100th are reported separately and never change the decision.
+
+Amended before the window opened, after an automated review of the first draft: history admission
+moved from tip time to tip + 4 hours, the cohort was fixed at the first 100 games, and retired
+instances were excluded.
 
 History rows: every graded game before the window or test game, from the frozen native snapshots in
 this ledger (latest pregame snapshot per game) and, for games without one, nba-matchups' first
@@ -39,7 +47,7 @@ import math
 from pathlib import Path
 
 import numpy as np
-from minutes_common import band, corrected_points, csv_snapshots, load_box, snapshot_players
+from minutes_common import available, band, corrected_points, csv_snapshots, load_box, snapshot_players
 from scipy.special import ndtr
 
 from sleeper_nba.common import dt, load_config
@@ -123,23 +131,28 @@ def main(argv=None):
                 actual = box[(g, p["team"])].get(p["name"], (0.0, 0.0))[0]
                 history.append((p["team"], tips[g], band(p["minutes"]), actual - p["minutes"]))
 
-    # Test games: earliest first-stage forecast of the methodology in force, tipped after the freeze.
+    # Test games: earliest first-stage forecast of the methodology in force, tipped after the
+    # freeze, on an instance that was never retired.
+    retired = {r["instance_id"] for r in records if r["kind"] == "retired"}
     test = {}
     for f in pregame:
         if (
             f["stage"] == "first"
             and f["config"].get("methodology") == config["methodology"]
             and dt(f["game"]["tip_utc"]) > freeze
+            and f["instance_id"] not in retired
             and f["game"]["game_id"] not in test
         ):
             test[f["game"]["game_id"]] = f
+    ordered = sorted(test.items(), key=lambda kv: (dt(kv[1]["game"]["tip_utc"]), kv[0]))
+    cohort = {g for g, _ in ordered[:MIN_GAMES]}
     rows = []
-    for g, f in sorted(test.items(), key=lambda kv: dt(kv[1]["game"]["tip_utc"])):
+    for g, f in ordered:
         result = results.get(f["instance_id"])
         if result is None:
             continue
         adaptive = f["variants"]["adaptive"]
-        past = [x for x in history if x[1] < dt(f["captured_at"])]
+        past = [x for x in history if available(x[1]) <= dt(f["captured_at"])]
         delta = {}
         for side in ("home", "away"):
             code = f["game"][side]
@@ -161,6 +174,7 @@ def main(argv=None):
             {
                 "game_id": g,
                 "slate": f["game"]["slate_date"],
+                "decision_cohort": g in cohort,
                 "model_margin": margin,
                 "shadow_margin": shadow_margin,
                 "actual_margin": actual,
@@ -186,23 +200,32 @@ def main(argv=None):
         "minimum_games": MIN_GAMES,
         "rows": rows,
     }
-    if rows:
-        slates = sorted({r["slate"] for r in rows})
-        by_slate = {s: [r for r in rows if r["slate"] == s] for s in slates}
+
+    def summarize(chosen):
+        slates = sorted({r["slate"] for r in chosen})
+        by_slate = {s: [r for r in chosen if r["slate"] == s] for s in slates}
         rng = np.random.default_rng(20261122)
         draws = [rng.choice(len(slates), len(slates)) for _ in range(BOOTSTRAP)]
-        summary = {"slates": len(slates)}
+        summary = {"games": len(chosen), "slates": len(slates)}
         for metric in ("abs_error", "total_abs_error", "correct", "log_loss"):
             diff = {s: [r[f"shadow_{metric}"] - r[f"model_{metric}"] for r in by_slate[s]] for s in slates}
             boot = [float(np.mean([v for i in idx for v in diff[slates[i]]])) for idx in draws]
             summary[metric] = {
-                "model": float(np.mean([r[f"model_{metric}"] for r in rows])),
-                "shadow": float(np.mean([r[f"shadow_{metric}"] for r in rows])),
-                "difference": float(np.mean([r[f"shadow_{metric}"] - r[f"model_{metric}"] for r in rows])),
+                "model": float(np.mean([r[f"model_{metric}"] for r in chosen])),
+                "shadow": float(np.mean([r[f"shadow_{metric}"] for r in chosen])),
+                "difference": float(np.mean([r[f"shadow_{metric}"] - r[f"model_{metric}"] for r in chosen])),
                 "ci95_slate_bootstrap": [float(np.percentile(boot, 2.5)), float(np.percentile(boot, 97.5))],
             }
+        return summary
+
+    in_cohort = [r for r in rows if r["decision_cohort"]]
+    after = [r for r in rows if not r["decision_cohort"]]
+    if in_cohort:
+        summary = summarize(in_cohort)
         report["summary"] = summary
-        decided = len(rows) >= MIN_GAMES and args.freeze == FREEZE
+        if after:
+            report["after_endpoint"] = summarize(after)
+        decided = len(cohort) == MIN_GAMES and len(in_cohort) == MIN_GAMES and args.freeze == FREEZE
         passes = (
             summary["log_loss"]["ci95_slate_bootstrap"][1] < 0 and summary["abs_error"]["difference"] <= 0
         )
@@ -218,10 +241,13 @@ def main(argv=None):
         out = root / OUTPUT
         out.parent.mkdir(parents=True, exist_ok=True)
         out.write_text(json.dumps(report, indent=2) + "\n")
-    print(f"history {len(history)} player rows; test games graded {len(rows)} (minimum {MIN_GAMES})")
+    print(
+        f"history {len(history)} player rows; decision cohort graded {len(in_cohort)} of {MIN_GAMES}; "
+        f"after the endpoint {len(after)}"
+    )
     for metric, x in report.get("summary", {}).items():
-        if metric == "slates":
-            print(f"slates {x}")
+        if metric in ("games", "slates"):
+            print(f"{metric} {x}")
             continue
         lo, hi = x["ci95_slate_bootstrap"]
         print(
