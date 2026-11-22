@@ -101,6 +101,21 @@ def minutes_scale(minutes, settings):
     return cap / minutes
 
 
+def capped_raw(raw, game, settings):
+    """A forecast's raw scores minutes-capped before the team terms (v1.32), with the scales applied.
+
+    Returns the raw record itself when the configuration has no cap, so callers can tell whether
+    the cap applied. Used both when a forecast is scored and when it is validated.
+    """
+    if (settings or {}).get("team_minutes_cap") is None:
+        return raw, None
+    minutes = raw.get("team_minutes", {})
+    home = minutes_scale(minutes.get(game["home"]), settings)
+    away = minutes_scale(minutes.get(game["away"]), settings)
+    source = {**raw, "home_score": raw["home_score"] * home, "away_score": raw["away_score"] * away}
+    return source, {"home_minutes_scale": home, "away_minutes_scale": away}
+
+
 def capped(observation, home_minutes, away_minutes, settings):
     """A copy of a scoring observation with its projected scores minutes-capped (v1.32)."""
     home, away = minutes_scale(home_minutes, settings), minutes_scale(away_minutes, settings)

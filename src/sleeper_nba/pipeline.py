@@ -195,20 +195,12 @@ def build_variants(raw, game, records, config, captured_at, stage, quotes, previ
         if variant == "adaptive" and matchup.enabled(config):
             defense = matchup.active(records, stage, captured_at, matchup.season_of(game), config)
             settings = config["matchup"]
-            source = raw
-            if settings.get("team_minutes_cap") is not None:
-                # v1.32: a team projected above a full game's minutes is scaled down to it before
-                # the team terms. Raw scores and the fixed control stay as Sleeper projected them.
-                minutes = raw.get("team_minutes", {})
-                home = raw["home_score"] * matchup.minutes_scale(minutes.get(game["home"]), settings)
-                away = raw["away_score"] * matchup.minutes_scale(minutes.get(game["away"]), settings)
-                source = {**raw, "home_score": home, "away_score": away}
+            # v1.32: a team projected above a full game's minutes is scaled down to it before
+            # the team terms. Raw scores and the fixed control stay as Sleeper projected them.
+            source, scales = matchup.capped_raw(raw, game, settings)
             scoring, adjustment = matchup.apply(source, game, defense, settings)
-            if source is not raw:
-                adjustment |= {
-                    "home_minutes_scale": matchup.minutes_scale(minutes.get(game["home"]), settings),
-                    "away_minutes_scale": matchup.minutes_scale(minutes.get(game["away"]), settings),
-                }
+            if scales is not None:
+                adjustment |= scales
         output = probabilities(scoring, params)
         markets, selections = evaluate(output, params, quotes, captured_at, game, config, stage)
         variants[variant] = {
@@ -803,7 +795,9 @@ def validate(root):
                             r["config"], r["stage"]
                         ):
                             raise ValueError("Matchup chronology or stage mismatch")
-                        reproduced, _ = matchup.apply(r["raw"], r["game"], v)
+                        settings = r["config"].get("matchup")
+                        source, _ = matchup.capped_raw(r["raw"], r["game"], settings)
+                        reproduced, _ = matchup.apply(source, r["game"], v, settings)
                         if reproduced != scoring:
                             raise ValueError("Matchup score not reproducible")
                     elif not output["matchup_id"].startswith("matchup-defaults:"):
