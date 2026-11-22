@@ -39,9 +39,7 @@ import math
 from pathlib import Path
 
 import numpy as np
-from low_minutes_redistribution_replay import load_box, snapshot_players
-from minutes_band_bias_replay import band, corrected_points
-from minutes_band_full_season_replay import csv_snapshots
+from minutes_common import band, corrected_points, csv_snapshots, load_box, snapshot_players
 from scipy.special import ndtr
 
 from sleeper_nba.common import dt, load_config

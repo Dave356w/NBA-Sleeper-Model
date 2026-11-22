@@ -19,8 +19,7 @@ import json
 from pathlib import Path
 
 import numpy as np
-from low_minutes_redistribution_replay import load_box, snapshot_players
-from minutes_band_bias_replay import band, corrected_points
+from minutes_common import band, corrected_points, load_box, snapshot_players
 from minutes_reallocation_replay import compare, per_game
 
 from sleeper_nba.common import dt, load_config

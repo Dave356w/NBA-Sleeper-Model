@@ -29,15 +29,12 @@ row per player listed in each completed regular-season game's ESPN summary box s
 from __future__ import annotations
 
 import argparse
-import collections
-import csv
 import hashlib
 import json
-import re
-import unicodedata
 from pathlib import Path
 
 import numpy as np
+from minutes_common import load_box_history, norm
 from minutes_reallocation_replay import compare, per_game
 
 from sleeper_nba.common import dt, load_config, team
@@ -48,36 +45,6 @@ OUTPUT = "research/output/out_minutes_adjustment_replay_2026-27.json"
 OUT = {"out", "ir", "sus", "suspended"}
 DIVISORS = (10, 8, 5)
 WINDOW = 5
-
-
-def norm(name):
-    name = unicodedata.normalize("NFKD", name).encode("ascii", "ignore").decode().lower()
-    name = re.sub(r"[.'\-]", " ", name)
-    name = re.sub(r"\b(jr|sr|ii|iii|iv)\b", "", name)
-    return " ".join(name.split())
-
-
-def load_box(path):
-    games = {}  # (team, game_id) -> tip
-    minutes = collections.defaultdict(dict)  # (team, game_id) -> name -> minutes
-    by_player = collections.defaultdict(list)  # name -> [(tip, minutes)] games played
-    with open(path, newline="") as handle:
-        for r in csv.DictReader(handle):
-            key = (team(r["team"]), r["game_id"])
-            tip = dt(r["tip_utc"])
-            games[key] = tip
-            m = float(r["minutes"])
-            minutes[key][norm(r["name"])] = m
-            if m > 0:
-                by_player[norm(r["name"])].append((tip, m))
-    schedule = collections.defaultdict(list)
-    for (t, g), tip in games.items():
-        schedule[t].append((tip, g))
-    for t in schedule:
-        schedule[t].sort()
-    for n in by_player:
-        by_player[n].sort()
-    return schedule, minutes, by_player
 
 
 def recent_minutes(name, side, before, schedule, minutes, by_player, mode):
@@ -100,7 +67,7 @@ def main(argv=None):
     config = load_config(root)
     records = Ledger(root).records()
     observations, _ = _replay(records, root, config, config["matchup"]["seed_season"])
-    schedule, minutes, by_player = load_box(args.box)
+    schedule, minutes, by_player = load_box_history(args.box)
 
     natives = {
         (f["game"]["game_id"], f["stage"], dt(f["captured_at"])): f

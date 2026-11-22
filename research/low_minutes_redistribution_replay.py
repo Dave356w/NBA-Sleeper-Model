@@ -37,10 +37,10 @@ import json
 from pathlib import Path
 
 import numpy as np
+from minutes_common import load_box, snapshot_players
 from minutes_reallocation_replay import compare, per_game, reallocate
-from out_minutes_adjustment_replay import norm
 
-from sleeper_nba.common import dt, load_config, team
+from sleeper_nba.common import dt, load_config
 from sleeper_nba.matchup import minutes_scale
 from sleeper_nba.season import _replay, replay_rows
 from sleeper_nba.storage import Ledger
@@ -49,32 +49,6 @@ OUTPUT = "research/output/low_minutes_redistribution_replay_2026-27.json"
 THRESHOLDS = (3, 5, 8, 10, 12, 15)
 BUCKETS = ((0, 3), (3, 5), (5, 8), (8, 10), (10, 12), (12, 15), (15, 20), (20, 30), (30, 99))
 LOW = "__below_threshold__"
-
-
-def load_box(path):
-    import csv
-
-    box = collections.defaultdict(dict)
-    with open(path, newline="") as handle:
-        for r in csv.DictReader(handle):
-            box[(r["game_id"], team(r["team"]))][norm(r["name"])] = (float(r["minutes"]), float(r["points"]))
-    return box
-
-
-def snapshot_players(forecast, code):
-    out = []
-    for p in forecast["raw"]["players"]:
-        if team(p["team"]) != code or p.get("minutes") is None:
-            continue
-        out.append(
-            {
-                "name": norm(p["name"]),
-                "minutes": float(p["minutes"]),
-                "points": float(p["points"] or 0),
-                "status": (p.get("injury_status") or "").strip().lower(),
-            }
-        )
-    return out
 
 
 def main(argv=None):

@@ -47,51 +47,19 @@ import json
 from pathlib import Path
 
 import numpy as np
-from low_minutes_redistribution_replay import load_box, snapshot_players
+from minutes_common import BANDS, K_LEAGUE, band, corrected_points, load_box, snapshot_players
 from minutes_reallocation_replay import compare, per_game
 
 from sleeper_nba.common import dt, load_config
-from sleeper_nba.matchup import minutes_scale
 from sleeper_nba.season import _replay, replay_rows
 from sleeper_nba.storage import Ledger
 
 OUTPUT = "research/output/minutes_band_bias_replay_2026-27.json"
-BANDS = ((0, 15), (15, 24), (24, 30), (30, 99))
-K_LEAGUE = 50
 K_TEAM = 20
 K_TEAM_LOOSE = 5
 VARIANTS = {"league": None, "team": K_TEAM, "team_loose": K_TEAM_LOOSE, "team_raw": 0}
 PLACEBO_RUNS = 50
 SPLIT = "2026-11-14"
-
-
-def band(minutes):
-    return next(
-        i for i, (lo, hi) in enumerate(BANDS) if lo < minutes <= hi or (lo == 0 and 0 < minutes <= hi)
-    )
-
-
-def shrunk(values, k, centre):
-    if k == 0 and not values:
-        return centre  # no pull: a team with no history in the band uses the league value
-    return (sum(values) + k * centre) / (len(values) + k)
-
-
-def correction(history, code, b, k_team):
-    league = shrunk([e for _, _, bb, e in history if bb == b], K_LEAGUE, 0.0)
-    if k_team is None:
-        return league
-    return shrunk([e for t, _, bb, e in history if t == code and bb == b], k_team, league)
-
-
-def corrected_points(players, code, history, k_team, settings):
-    rows = [p for p in players if p["minutes"] > 0]
-    fixed = sum(p["points"] for p in players if p["minutes"] <= 0)
-    total = sum(p["minutes"] for p in rows)
-    raw = [max(p["minutes"] + correction(history, code, band(p["minutes"]), k_team), 0.0) for p in rows]
-    ratio = total / sum(raw) if sum(raw) > 0 else 1.0
-    points = fixed + sum(p["points"] * (m * ratio) / p["minutes"] for p, m in zip(rows, raw))
-    return points * minutes_scale(total, settings)
 
 
 def main(argv=None):

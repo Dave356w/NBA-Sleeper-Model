@@ -30,43 +30,21 @@ slate; ``placebo`` relabels team histories across teams. Nothing is written to t
 from __future__ import annotations
 
 import argparse
-import collections
-import csv
 import hashlib
 import json
 from pathlib import Path
 
 import numpy as np
-from low_minutes_redistribution_replay import load_box, snapshot_players
-from minutes_band_bias_replay import band, corrected_points
+from minutes_common import band, corrected_points, csv_snapshots, load_box, snapshot_players
 from minutes_reallocation_replay import compare, per_game
-from out_minutes_adjustment_replay import norm
 
-from sleeper_nba.common import dt, load_config, team
+from sleeper_nba.common import dt, load_config
 from sleeper_nba.season import _replay, replay_rows
 from sleeper_nba.storage import Ledger
 
 OUTPUT = "research/output/minutes_band_full_season_replay_2026-27.json"
 CANDIDATE_K = 0
 PLACEBO_RUNS = 50
-
-
-def csv_snapshots(path):
-    out = collections.defaultdict(list)
-    with open(path, newline="") as handle:
-        for r in csv.DictReader(handle):
-            if r["kind"] != "first":
-                continue
-            out[(r["game_id"], dt(r["snapshot_utc"]))].append(
-                {
-                    "team": team(r["team"]),
-                    "name": norm(r["name"]),
-                    "minutes": float(r["minutes"] or 0),
-                    "points": float(r["pts"] or 0),
-                    "status": (r["injury_status"] or "").strip().lower(),
-                }
-            )
-    return out
 
 
 def main(argv=None):
