@@ -256,6 +256,22 @@ def test_v1_32_scales_an_over_240_team_down_before_the_team_terms(root, rows, co
     assert validate(root)["status"] == "valid"
 
 
+def test_v1_32_capped_score_validates_against_a_fitted_team_version(root, rows, config, monkeypatch):
+    # Regression (22 November 2026): validation reproduced fitted-team scores without the
+    # 240-minute cap, so a team projected above 240 minutes failed "Matchup score not reproducible".
+    extra = {**rows[0], "player_id": "BOS-extra", "player": {"full_name": "Fixture BOS extra"}}
+    http = FixtureHTTP([*rows, extra])  # BOS: 270 minutes.
+    http.at = "2026-11-07T21:40:00Z"
+    monkeypatch.setattr("sleeper_nba.common.utcnow", lambda: dt(http.at))
+    monkeypatch.setattr("sleeper_nba.pipeline.utcnow", lambda: dt(http.at))
+    refit(root, config, now=dt(http.at))
+    assert capture(root, config, http=http, now=dt(http.at))["forecasts"] == 1
+    adaptive = Ledger(root).records("forecast")[0]["variants"]["adaptive"]
+    assert not adaptive["matchup_id"].startswith("matchup-defaults:")
+    assert adaptive["matchup_adjustment"]["home_minutes_scale"] == pytest.approx(240 / 270)
+    assert validate(root)["status"] == "valid"
+
+
 def test_postponement_voids_research_selections(root, rows, config):
     http = FixtureHTTP(rows)
     capture(root, config, http=http, now=dt(AT))
