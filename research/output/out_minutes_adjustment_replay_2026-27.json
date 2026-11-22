@@ -1,0 +1,334 @@
+{
+  "question": "Team point adjustment for Out players, from recent minutes (research only, owner request 22 November 2026).",
+  "methodology": "sleeper_only_v1_33",
+  "box_sha256": "d2581cf13049ff751d10cbd232d9c04d8a62c36666dd7b9c93ea03f0f2ced088",
+  "scored_native_games": 73,
+  "out_players_listed": 358,
+  "out_players_unmatched_in_box": 124,
+  "implied_points_per_out_minute": {
+    "team5": {
+      "team_games": 146,
+      "mean_out_minutes": 11.805479452054794,
+      "share_with_out_minutes": 0.4726027397260274,
+      "slope_points_per_minute": -0.03526120562041468,
+      "slope_ci95": [
+        -0.14223928656878515,
+        0.08436691781126748
+      ],
+      "intercept": 0.9552281496373242
+    },
+    "played5": {
+      "team_games": 146,
+      "mean_out_minutes": 34.44668949771689,
+      "share_with_out_minutes": 0.7123287671232876,
+      "slope_points_per_minute": -0.02740467929987363,
+      "slope_ci95": [
+        -0.07954650368975398,
+        0.030532897410043447
+      ],
+      "intercept": 1.4829531898580954
+    }
+  },
+  "variants": {
+    "team5_k10": {
+      "games": 73,
+      "slates": 11,
+      "abs_error": {
+        "baseline": 11.921050570952227,
+        "variant": 12.087184087766653,
+        "difference": 0.16613351681442545,
+        "ci95_slate_bootstrap": [
+          -0.415372550733452,
+          0.7365861276724768
+        ]
+      },
+      "total_abs_error": {
+        "baseline": 13.98755677678402,
+        "variant": 14.218112648949152,
+        "difference": 0.23055587216513285,
+        "ci95_slate_bootstrap": [
+          -0.4258666320366868,
+          0.8465716398839791
+        ]
+      },
+      "correct": {
+        "baseline": 0.6986301369863014,
+        "variant": 0.6575342465753424,
+        "difference": -0.0410958904109589,
+        "ci95_slate_bootstrap": [
+          -0.12,
+          0.029850746268656716
+        ]
+      },
+      "log_loss": {
+        "baseline": 0.6093863168486702,
+        "variant": 0.6326858254929639,
+        "difference": 0.023299508644293913,
+        "ci95_slate_bootstrap": [
+          -0.011609989630290918,
+          0.06925970295167166
+        ]
+      },
+      "log_loss_a10": {
+        "baseline": 0.6135396018161065,
+        "variant": 0.6410751450447407,
+        "difference": 0.02753554322863432,
+        "ci95_slate_bootstrap": [
+          -0.01134793013330143,
+          0.07721604536701758
+        ]
+      }
+    },
+    "team5_k8": {
+      "games": 73,
+      "slates": 11,
+      "abs_error": {
+        "baseline": 11.921050570952227,
+        "variant": 12.152269726769596,
+        "difference": 0.2312191558173689,
+        "ci95_slate_bootstrap": [
+          -0.47373979836899255,
+          0.9285355850808114
+        ]
+      },
+      "total_abs_error": {
+        "baseline": 13.98755677678402,
+        "variant": 14.408955116111574,
+        "difference": 0.421398339327556,
+        "ci95_slate_bootstrap": [
+          -0.3347676246089892,
+          1.1488017157690373
+        ]
+      },
+      "correct": {
+        "baseline": 0.6986301369863014,
+        "variant": 0.6575342465753424,
+        "difference": -0.0410958904109589,
+        "ci95_slate_bootstrap": [
+          -0.12,
+          0.029850746268656716
+        ]
+      },
+      "log_loss": {
+        "baseline": 0.6093863168486702,
+        "variant": 0.6410366744763448,
+        "difference": 0.03165035762767476,
+        "ci95_slate_bootstrap": [
+          -0.012301755047897888,
+          0.09001920882287014
+        ]
+      },
+      "log_loss_a10": {
+        "baseline": 0.6135396018161065,
+        "variant": 0.6514046421412335,
+        "difference": 0.03786504032512714,
+        "ci95_slate_bootstrap": [
+          -0.011549797306650924,
+          0.10157095189058116
+        ]
+      }
+    },
+    "team5_k5": {
+      "games": 73,
+      "slates": 11,
+      "abs_error": {
+        "baseline": 11.921050570952227,
+        "variant": 12.433230805660585,
+        "difference": 0.51218023470836,
+        "ci95_slate_bootstrap": [
+          -0.5139874565234451,
+          1.584250990662617
+        ]
+      },
+      "total_abs_error": {
+        "baseline": 13.98755677678402,
+        "variant": 15.24844715032464,
+        "difference": 1.2608903735406205,
+        "ci95_slate_bootstrap": [
+          0.18023453020125754,
+          2.330092970798152
+        ]
+      },
+      "correct": {
+        "baseline": 0.6986301369863014,
+        "variant": 0.6438356164383562,
+        "difference": -0.0547945205479452,
+        "ci95_slate_bootstrap": [
+          -0.13846153846153847,
+          0.016129032258064516
+        ]
+      },
+      "log_loss": {
+        "baseline": 0.6093863168486702,
+        "variant": 0.6717834738875201,
+        "difference": 0.06239715703885007,
+        "ci95_slate_bootstrap": [
+          -0.00920716239048736,
+          0.15974577962935216
+        ]
+      },
+      "log_loss_a10": {
+        "baseline": 0.6135396018161065,
+        "variant": 0.6904415038788905,
+        "difference": 0.07690190206278409,
+        "ci95_slate_bootstrap": [
+          -0.00659689884277724,
+          0.18640878717624265
+        ]
+      }
+    },
+    "played5_k10": {
+      "games": 73,
+      "slates": 11,
+      "abs_error": {
+        "baseline": 11.921050570952227,
+        "variant": 12.078574926706324,
+        "difference": 0.15752435575409657,
+        "ci95_slate_bootstrap": [
+          -0.518360247338986,
+          0.9145553899455782
+        ]
+      },
+      "total_abs_error": {
+        "baseline": 13.98755677678402,
+        "variant": 15.561781437195416,
+        "difference": 1.5742246604113983,
+        "ci95_slate_bootstrap": [
+          0.49903989007806887,
+          2.5142211540810564
+        ]
+      },
+      "correct": {
+        "baseline": 0.6986301369863014,
+        "variant": 0.7123287671232876,
+        "difference": 0.0136986301369863,
+        "ci95_slate_bootstrap": [
+          -0.08989044943820224,
+          0.11940298507462686
+        ]
+      },
+      "log_loss": {
+        "baseline": 0.6093863168486702,
+        "variant": 0.6163985927365144,
+        "difference": 0.0070122758878444205,
+        "ci95_slate_bootstrap": [
+          -0.045476496358572725,
+          0.09768459749814669
+        ]
+      },
+      "log_loss_a10": {
+        "baseline": 0.6135396018161065,
+        "variant": 0.6216240759543766,
+        "difference": 0.008084474138270114,
+        "ci95_slate_bootstrap": [
+          -0.04809342017346867,
+          0.10349736874229444
+        ]
+      }
+    },
+    "played5_k8": {
+      "games": 73,
+      "slates": 11,
+      "abs_error": {
+        "baseline": 11.921050570952227,
+        "variant": 12.223824359785862,
+        "difference": 0.3027737888336348,
+        "ci95_slate_bootstrap": [
+          -0.5250596355907121,
+          1.2157294160803933
+        ]
+      },
+      "total_abs_error": {
+        "baseline": 13.98755677678402,
+        "variant": 16.21860052952113,
+        "difference": 2.2310437527371088,
+        "ci95_slate_bootstrap": [
+          0.8868088901343747,
+          3.3848590539341386
+        ]
+      },
+      "correct": {
+        "baseline": 0.6986301369863014,
+        "variant": 0.7123287671232876,
+        "difference": 0.0136986301369863,
+        "ci95_slate_bootstrap": [
+          -0.08989044943820224,
+          0.11940298507462686
+        ]
+      },
+      "log_loss": {
+        "baseline": 0.6093863168486702,
+        "variant": 0.62649783584032,
+        "difference": 0.01711151899165004,
+        "ci95_slate_bootstrap": [
+          -0.045870197034483175,
+          0.13118856759655778
+        ]
+      },
+      "log_loss_a10": {
+        "baseline": 0.6135396018161065,
+        "variant": 0.6350787362114855,
+        "difference": 0.021539134395379144,
+        "ci95_slate_bootstrap": [
+          -0.04865319309200995,
+          0.14588540342712383
+        ]
+      }
+    },
+    "played5_k5": {
+      "games": 73,
+      "slates": 11,
+      "abs_error": {
+        "baseline": 11.921050570952227,
+        "variant": 12.947111816101767,
+        "difference": 1.0260612451495394,
+        "ci95_slate_bootstrap": [
+          -0.05250899257877444,
+          2.28690364954507
+        ]
+      },
+      "total_abs_error": {
+        "baseline": 13.98755677678402,
+        "variant": 18.543547840965786,
+        "difference": 4.555991064181766,
+        "ci95_slate_bootstrap": [
+          2.56696095568855,
+          6.227221573808045
+        ]
+      },
+      "correct": {
+        "baseline": 0.6986301369863014,
+        "variant": 0.684931506849315,
+        "difference": -0.0136986301369863,
+        "ci95_slate_bootstrap": [
+          -0.11842105263157894,
+          0.10344827586206896
+        ]
+      },
+      "log_loss": {
+        "baseline": 0.6093863168486702,
+        "variant": 0.666547259765433,
+        "difference": 0.057160942916762957,
+        "ci95_slate_bootstrap": [
+          -0.033802501365544586,
+          0.2335757530604539
+        ]
+      },
+      "log_loss_a10": {
+        "baseline": 0.6135396018161065,
+        "variant": 0.7004602741103996,
+        "difference": 0.08692067229429318,
+        "ci95_slate_bootstrap": [
+          -0.03229524945225333,
+          0.3084666844830391
+        ]
+      }
+    }
+  },
+  "notes": [
+    "Differences are variant minus baseline over the native games only: negative abs_error, total_abs_error or log_loss means the adjustment forecast better; positive correct means more winners.",
+    "Seed and backfill games (no player rows here) stay unadjusted in training and are not scored.",
+    "Implied slope: walk-forward replay residual (actual - predicted team points) regressed on Out minutes; a divisor k corresponds to a slope of -1/k. Team-game bootstrap.",
+    "Retrospective analysis on previously inspected data; the divisors 10, 8 and 5 were set by the owner."
+  ]
+}
