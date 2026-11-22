@@ -15,6 +15,8 @@ Correction for a player in band b of team t, from the history before the snapsho
 - ``team``: the team's own band mean error, shrunk toward the league value with ``K_TEAM``
   pseudo-observations (league value as above).
 - ``team_loose``: as ``team`` with weaker shrinkage (``K_TEAM_LOOSE``).
+- ``team_raw`` (added after the first run, owner request): the team's own band mean with no
+  shrinkage, the league value only where the team has no history in the band.
 
 Corrected minutes are floored at 0 and then rescaled so the team keeps Sleeper's projected total
 (the correction moves minutes between roles, it does not add any). Each player's points scale with
@@ -23,8 +25,8 @@ variant re-scores the v1.33 season replay walk-forward on its native games throu
 ``season.replay_rows``; the 125 seed and backfill games have no player rows here and stay
 unadjusted (training only, not scored). Paired differences are bootstrapped by slate.
 
-``placebo_team_loose`` relabels each team's history as another team's (``PLACEBO_RUNS`` fixed
-permutations) and re-runs ``team_loose``: if the gain comes from team-specific errors, the shuffled
+``placebo_team_raw`` relabels each team's history as another team's (``PLACEBO_RUNS`` fixed
+permutations) and re-runs ``team_raw``: if the gain comes from team-specific errors, the shuffled
 runs should do worse. ``halves`` splits the scored games at 14 November.
 
 ``persistence`` asks the prior question directly: for each team, band and game, is the team's
@@ -58,7 +60,7 @@ BANDS = ((0, 15), (15, 24), (24, 30), (30, 99))
 K_LEAGUE = 50
 K_TEAM = 20
 K_TEAM_LOOSE = 5
-VARIANTS = {"league": None, "team": K_TEAM, "team_loose": K_TEAM_LOOSE}
+VARIANTS = {"league": None, "team": K_TEAM, "team_loose": K_TEAM_LOOSE, "team_raw": 0}
 PLACEBO_RUNS = 50
 SPLIT = "2026-11-14"
 
@@ -70,6 +72,8 @@ def band(minutes):
 
 
 def shrunk(values, k, centre):
+    if k == 0 and not values:
+        return centre  # no pull: a team with no history in the band uses the league value
     return (sum(values) + k * centre) / (len(values) + k)
 
 
@@ -169,7 +173,7 @@ def main(argv=None):
         "methodology": config["methodology"],
         "box_sha256": hashlib.sha256(Path(args.box).read_bytes()).hexdigest(),
         "bands": [list(b) for b in BANDS],
-        "shrinkage": {"league": K_LEAGUE, "team": K_TEAM, "team_loose": K_TEAM_LOOSE},
+        "shrinkage": {"league": K_LEAGUE, "team": K_TEAM, "team_loose": K_TEAM_LOOSE, "team_raw": 0},
         "history_games": len(chosen),
         "history_player_rows": len(history),
         "scored_native_games": len(native_ids),
@@ -232,14 +236,14 @@ def main(argv=None):
 
     # Placebo: each team's history is relabelled as another team's (fixed random permutations).
     if PLACEBO_RUNS:
-        real = report["variants"]["team_loose"]["replay"]
+        real = report["variants"]["team_raw"]["replay"]
         teams = sorted({x[0] for x in history})
         draws = []
         for seed in range(PLACEBO_RUNS):
             relabel = dict(zip(teams, np.random.default_rng(seed).permutation(teams)))
-            rows, _, _ = run(K_TEAM_LOOSE, [(relabel[t], tip, b, e) for t, tip, b, e in history])
+            rows, _, _ = run(0, [(relabel[t], tip, b, e) for t, tip, b, e in history])
             draws.append(compare(baseline, rows, native_ids))
-        report["placebo_team_loose"] = {
+        report["placebo_team_raw"] = {
             "runs": PLACEBO_RUNS,
             "abs_error": [d["abs_error"]["difference"] for d in draws],
             "log_loss": [d["log_loss"]["difference"] for d in draws],
@@ -271,10 +275,10 @@ def main(argv=None):
             )
 
         print("  halves", json.dumps(v["halves"]))
-    if "placebo_team_loose" in report:
-        pl = report["placebo_team_loose"]
+    if "placebo_team_raw" in report:
+        pl = report["placebo_team_raw"]
         print(
-            f"\nplacebo ({pl['runs']} runs): at least as good as team_loose on margin "
+            f"\nplacebo ({pl['runs']} runs): at least as good as team_raw on margin "
             f"{pl['runs_at_least_as_good_abs_error']}, on log loss {pl['runs_at_least_as_good_log_loss']}"
         )
 
