@@ -111,6 +111,37 @@ Output: `research/output/slope_walk_forward_2026-27.json`.
 
 Neither market passes, so slope 1 stays. As context, the unchanged model went 50.9% against the spread (230 bets) and 48.9% on totals (229) against snapshot or closing lines. At an assumed −110 that is −2.9% and −6.6% per bet, which supports keeping spread and total quotes as context only (v1.22).
 
+### Spread and totals iteration, 26 November 2026 (owner request; no methodology change)
+
+Research only. Market lines may not enter the score, so the candidates use only the model's own inputs.
+
+- **Exploration (pooled record, before any candidate was fixed).**
+  - The market beat the model on margin MAE (10.64 against 10.97) and on total MAE (14.77 against 15.14).
+  - Actual totals ran 1.0 point below the model on average. The gap was −3.1 in opening week, then +0.4 and −0.6 in the two November halves, and the model's overs hit 44.7%.
+  - Hit rates against the line did not rise with the model's distance from it. ATS hit rates were 47%, 57%, 45% and 80% for disagreements of under 2, 2–4, 4–7 and 7+ points (the last on 10 games). Over/under hit rates were 50%, 51%, 45% and 38%.
+- **Team-fit settings (`research/spread_totals_iteration.py`; output `research/output/spread_totals_iteration_2026-27.json`).**
+  - Setup:
+    - All 230 game-day replay games, with the current version's native games replayed under a research label. Baseline and variants are walk-forward and paired.
+    - The variants and the rule were fixed in the script before the first run. A pass needs the MAE interval, Bonferroni-widened for 12 tests, below 0, the hit rate not lower, and log loss not higher.
+  - Results (differences against the baseline):
+
+    | Variant | Change from baseline | Margin MAE | Total MAE | Log loss |
+    |---|---|---|---|---|
+    | `half_12` | half-life 12.5 days (25) | −0.01 | −0.01 | +0.001 |
+    | `half_50` | half-life 50 days (25) | +0.01 | +0.02 | −0.001 |
+    | `prior_10` | offense and defense priors 10 (20) | +0.11 | +0.08 | 0.000 |
+    | `prior_40` | offense and defense priors 40 (20) | −0.03 | +0.00 | +0.001 |
+    | `global_25` | global prior 25 (100) | — | +0.06 | — |
+    | `total_level` | totals only: walk-forward mean total residual added, shrunk with 40 pseudo-games | — | +0.09 | — |
+
+  - No variant passes. The team-fit settings move spreads and totals by hundredths of a point.
+- **Rest (`research/rest_residual_diagnostic.py`; output `research/output/rest_residual_diagnostic_2026-27.json`).**
+  - Back-to-backs are taken from the ESPN box-score extract: 228 games, 86 back-to-back team-games. Rest is not a model input; the test only checks the residuals.
+  - Team residual on a back-to-back: −0.16 points (−2.8 to +2.5); against a team on a back-to-back: +0.03 (−2.5 to +2.8).
+  - Total residual per back-to-back team: −0.13 (−3.9 to +3.6). Sleeper's projections already carry rest.
+
+Conclusion: nothing in the model's own data improves spreads or totals measurably. The market's edge of about 0.3–0.4 points of MAE on each comes from information the Sleeper projections do not contain. Spread and total quotes stay context only.
+
 ## v1.31 methodology — game-day snapshots in the team fit (still current)
 
 Owner update, 19 November 2026. One change; everything else is unchanged from v1.30. New forecasts are tagged `sleeper_only_v1_31`; frozen records of every earlier version, and their grades, fits and calibrations, are never rewritten.
