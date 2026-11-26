@@ -1,0 +1,194 @@
+{
+ "generated_for": "position residual diagnostic (owner request, 26 November 2026); retrospective, research only",
+ "methodology": "sleeper_only_v1_33",
+ "inputs": {
+  "box_file": "research/inputs/espn_box_2026-27_2026-11-26.csv",
+  "box_sha256": "a64f3a00f1605dcc59c408536b0336dc209bb43012e589ba96e887d456b60d90",
+  "ledger_records": 2043
+ },
+ "games": 105,
+ "team_games": 210,
+ "slates": 16,
+ "unmatched_team_games": 0,
+ "box_vs_result_max_gap": 0.0,
+ "actual_points_with_known_position": 0.9948796072955016,
+ "bias": {
+  "G": {
+   "projected_per_team_game": 49.35926314950281,
+   "actual_per_team_game": 48.857142857142854,
+   "error_per_team_game": {
+    "estimate": -0.5021202923599476,
+    "ci95": [
+     -2.4409254865096535,
+     1.3623668927125492
+    ]
+   },
+   "error_per_projected_point": {
+    "estimate": -0.010172767183316552,
+    "ci95": [
+     -0.049035952417664626,
+     0.0313067488628475
+    ]
+   }
+  },
+  "F": {
+   "projected_per_team_game": 41.94271389781218,
+   "actual_per_team_game": 41.58571428571429,
+   "error_per_team_game": {
+    "estimate": -0.3569996120979003,
+    "ci95": [
+     -2.1662028948412275,
+     1.2783461695811151
+    ]
+   },
+   "error_per_projected_point": {
+    "estimate": -0.00851160020230644,
+    "ci95": [
+     -0.04945733678788867,
+     0.03192288095692364
+    ]
+   }
+  },
+  "C": {
+   "projected_per_team_game": 22.128280581345138,
+   "actual_per_team_game": 21.50952380952381,
+   "error_per_team_game": {
+    "estimate": -0.6187567718213288,
+    "ci95": [
+     -1.8440162423327213,
+     0.44644551492957396
+    ]
+   },
+   "error_per_projected_point": {
+    "estimate": -0.027962261665416488,
+    "ci95": [
+     -0.08310593949482242,
+     0.020972264882015503
+    ]
+   }
+  },
+  "U": {
+   "projected_per_team_game": 0.0,
+   "actual_per_team_game": 0.5761904761904761,
+   "error_per_team_game": {
+    "estimate": 0.5761904761904761,
+    "ci95": [
+     0.20469479478781966,
+     0.9918749999999988
+    ]
+   }
+  },
+  "G_minus_C_rate": {
+   "estimate": 0.017789494482099936,
+   "ci95": [
+    -0.05817635223138619,
+    0.09469711835177425
+   ]
+  },
+  "F_minus_C_rate": {
+   "estimate": 0.019450661463110048,
+   "ci95": [
+    -0.0405608620944304,
+    0.09487029360430327
+   ]
+  },
+  "share_of_projection": {
+   "G": 0.4351507629568438,
+   "F": 0.36976654002780496,
+   "C": 0.19508269701535122
+  }
+ },
+ "mix": {
+  "model": "team residual = b0 + bG * guard share + bC * center share (forward share is the baseline)",
+  "slopes_points_per_unit_share": {
+   "guard_share": -3.9133720359277713,
+   "center_share": 1.4266560565856896
+  },
+  "ci95": {
+   "guard_share": [
+    -14.217466575081362,
+    6.035530863347801
+   ],
+   "center_share": [
+    -25.938594823381184,
+    29.26513759120838
+   ]
+  },
+  "share_sd": {
+   "guard": 0.12904870393330825,
+   "center": 0.06527447477724557
+  }
+ },
+ "reliability": {
+  "opponents": 30,
+  "team_games_per_opponent": [
+   5,
+   9
+  ],
+  "split_half_correlation_mean": -0.027278993267717436,
+  "split_half_correlation_range95": [
+   -0.16550470691577637,
+   0.14239422622826292
+  ],
+  "relabelled_null_mean": -0.008542772666808498,
+  "relabelled_null_range95": [
+   -0.25978272737207786,
+   0.2219074245520676
+  ],
+  "share_of_null_at_or_above_mean": 0.525
+ },
+ "walk_forward": {
+  "shrink_5": {
+   "team_games": 196,
+   "group_level_slope": {
+    "estimate": -0.001141769242410207,
+    "ci95": [
+     -0.557965105600117,
+     0.4799951273634269
+    ]
+   },
+   "team_level_slope": {
+    "estimate": 0.3063453573752059,
+    "ci95": [
+     -0.7976977972363194,
+     0.9606000897096816
+    ]
+   },
+   "team_mae_change_points": {
+    "estimate": 0.042638601140299194,
+    "ci95": [
+     -0.11418539273894787,
+     0.1969763460334231
+    ]
+   },
+   "added_points_sd": 1.4886288080485854,
+   "note": "slope 1 = the position history is fully predictive; 0 = no signal. MAE change is the team absolute error with the position interaction added minus without (negative = better)."
+  },
+  "shrink_20": {
+   "team_games": 196,
+   "group_level_slope": {
+    "estimate": -0.05113983757850463,
+    "ci95": [
+     -1.6223806940686762,
+     1.223587056004089
+    ]
+   },
+   "team_level_slope": {
+    "estimate": 0.6256974136483924,
+    "ci95": [
+     -1.9693935922764019,
+     2.2377650634278714
+    ]
+   },
+   "team_mae_change_points": {
+    "estimate": 0.02348541956281342,
+    "ci95": [
+     -0.026913877221870944,
+     0.07501979483502054
+    ]
+   },
+   "added_points_sd": 0.5457053995308956,
+   "note": "slope 1 = the position history is fully predictive; 0 = no signal. MAE change is the team absolute error with the position interaction added minus without (negative = better)."
+  }
+ }
+}

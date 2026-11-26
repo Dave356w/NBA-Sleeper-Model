@@ -74,6 +74,80 @@ Research only: nothing here writes a ledger record or changes a forecast, select
 - **Rolling minutes-band correction** (`minutes_band_bias_replay.py`, `minutes_band_interaction_replay.py`): each player's projected minutes corrected by the walk-forward mean error of his projected-minutes band (0–15, 15–24, 24–30, 30+; league-wide errors +1.4, −0.3, −2.2, −3.0 minutes), league-wide or per team with decreasing shrinkage, the team rescaled to Sleeper's minutes. On the 73 native games the per-team versions looked strong, the unshrunk `team_raw` best (margin MAE −0.80, −1.40 to −0.27; log loss −0.056), the same with or without the team offense/defense terms, and no relabelled placebo matched it. Four settings were tried on those games, and the gain came almost entirely from 15–21 November.
 - **Full-season decision** (`minutes_band_full_season_replay.py --sleeper-csv <nba-matchups>/data/nba_sleeper.csv`; seed and backfill player rows from nba-matchups, each team total checked). Rule fixed before the run: adopt `team_raw` only if log loss over all 198 games improves with its interval below 0, margin MAE is not worse, and the 125 seed and backfill games point the same way. Result: margin MAE −0.09 (−0.33 to +0.13), log loss −0.008 (−0.026 to +0.008), 147 winners against 139; seed and backfill margin +0.04, log loss +0.005. **Not adopted; no version created.** The native-only gain was largely an artefact of the short history window.
 - **Forward test** (`minutes_band_forward_test.py`, pre-registered 22 November): week by week the correction was flat for four weeks and better only in 17–20 November, so it is judged on games tipping after 2026-11-22 12:00 UTC, each from its earliest first-stage forecast under the methodology in force, with the `team_raw` point change added to the frozen adaptive score and its frozen win-probability scale; forecasts of retired instances are skipped. The decision cohort is the first 100 test games in tip order, judged once all 100 are graded and only on them: a version update is recommended only if log loss improves with its interval below 0 and margin MAE is not worse; otherwise nothing changes. Earlier runs decide nothing, and later games are reported separately and never change the decision.
+  - **Interim, 26 November 2026 (decides nothing).** 27 of the 100 cohort games are graded, over 4 slates (22–25 November). The run used box scores to 25 November (`research/inputs/espn_box_2026-27_2026-11-26.csv`) and nba-matchups' `data/nba_sleeper.csv` at commit `b3c1f62` (SHA-256 `75538281…`), with 5,638 history player rows. Correction minus model, with 95% slate-bootstrap intervals:
+    - margin MAE +0.10 (−0.55 to +1.20), from 9.60;
+    - total MAE +0.32 (−1.06 to +1.44), from 16.85;
+    - winners +11.1 points (0.0 to +18.2), 19 of 27 against 16;
+    - log loss −0.020 (−0.052 to +0.034), from 0.628.
+
+    The adoption rule, log loss improving with its interval below 0 and margin MAE not worse, is not met at this point. Four slates are too few for the intervals to be reliable. At 7–8 games a night, the 100th cohort game should be graded around 5–7 December. Output: `research/output/minutes_band_forward_test_2026-27.json`.
+
+### Position research, 26 November 2026 (owner request; no methodology change)
+
+Research only: nothing here writes a ledger record or changes a forecast, selection, grade or the public record. The question was whether corrections should be fitted by player position (guards, forwards, centers) instead of, or as well as, the team-points fit. `research/position_residual_diagnostic.py` takes the 105 native games (210 team-games, 16 slates) of the live v1.33 team fit (game-day rule, minutes-capped). Positions come from Sleeper's primary `position` in each forecast's raw rows, and actual points from `research/inputs/espn_box_2026-27_2026-11-26.csv`. That file was built by `research/build_espn_box.py` through 25 November and reproduces the 22 November extract exactly. Its box totals match every graded score, and 99.5% of actual points get a position. Seed and backfill games have no player rows and are not used. Output: `research/output/position_residual_diagnostic_2026-27.json`. All intervals are 95% slate-bootstrap intervals.
+
+- **Position bias:** Sleeper's error per projected point is −1.0% for guards, −0.9% for forwards and −2.8% for centers. Every interval includes 0, and the guard-minus-center gap is +1.8% (−5.8% to +9.5%).
+- **Position mix:** a team's share of projected points from guards or centers does not predict its team residual. Guard share: −3.9 points per unit share (−14.2 to +6.0). Center share: +1.4 (−25.9 to +29.3).
+- **Stability of opponent position effects:** after removing each opponent's overall rate, the position split of what an opponent allows does not repeat between random halves of its games. The split-half correlation is −0.03, against −0.01 with team-games relabelled to random opponents.
+- **Walk-forward test:** opponent position deviations from games finished before each snapshot, shrunk by 5 or 20 opponent games, predict nothing:
+  - group-level slope −0.00 (−0.56 to +0.48) and −0.05 (−1.62 to +1.22);
+  - team MAE change from adding the position term +0.04 (−0.11 to +0.20) and +0.02 (−0.03 to +0.08) points.
+
+  An additive position defense sums to the existing team defense term. A position split can change team scores only through an opponent's position rates interacting with the current team's projected mix, and that interaction moves team scores by an SD of only 0.5–1.5 points.
+
+There is no position signal to fit, and no position term or version is proposed. This agrees with the 19 November player review: errors below team level cancel inside the team total.
+
+### Margin and total slope, 26 November 2026 (owner request; no methodology change)
+
+Research only. The model uses Sleeper's projection with slope 1, because the team fit learns actual − projected. An in-sample check on the 230 games of the live team fit found slopes of actual on projected of 0.97 (0.71–1.25) for margin and 1.07 (0.65–1.48) for total. `research/slope_walk_forward.py` then tested a fitted slope walk-forward on the 230 games of the pooled v1.33 season record:
+
+- 125 legacy replay games, 64 native replay games and 41 live games;
+- spread lines from the snapshot for 227 games and from the pinned close for 3;
+- total lines from the snapshot for 172 games and from the close for 57.
+
+The rule was set in the script before its first run:
+
+- Margin is scaled through the origin. Total is scaled about the history's mean predicted total.
+- Each slope is fitted only on earlier slates finished before tip, needs 30 games, and is shrunk toward 1 with k = 0 or k = 100 pseudo-games.
+- A slope is recommended only if MAE improves with its 95% slate-bootstrap interval below 0 and the hit rate against the line is not lower.
+
+Output: `research/output/slope_walk_forward_2026-27.json`.
+
+- **Margin:** fitted slopes ran 0.87–1.40 (k = 0) and 0.91–1.23 (k = 100). MAE changed +0.09 (−0.07 to +0.27) and +0.04 (−0.05 to +0.15) from 10.97. ATS hit rate changed +0.4 and +0.9 points, both well inside the noise.
+- **Total:** fitted slopes ran 0.74–1.23 and 0.93–1.09. MAE changed +0.04 (−0.03 to +0.10) and +0.02 (−0.02 to +0.05) from 15.10. Over/under hit rate fell 2.2 points in both, with the interval below 0 at k = 100 (−4.4 to −0.4).
+
+Neither market passes, so slope 1 stays. As context, the unchanged model went 50.9% against the spread (230 bets) and 48.9% on totals (229) against snapshot or closing lines. At an assumed −110 that is −2.9% and −6.6% per bet, which supports keeping spread and total quotes as context only (v1.22).
+
+### Spread and totals iteration, 26 November 2026 (owner request; no methodology change)
+
+Research only. Market lines may not enter the score, so the candidates use only the model's own inputs.
+
+- **Exploration (pooled record, before any candidate was fixed).**
+  - The market beat the model on margin MAE (10.64 against 10.97) and on total MAE (14.77 against 15.14).
+  - Actual totals ran 1.0 point below the model on average. The gap was −3.1 in opening week, then +0.4 and −0.6 in the two November halves, and the model's overs hit 44.7%.
+  - Hit rates against the line did not rise with the model's distance from it. ATS hit rates were 47%, 57%, 45% and 80% for disagreements of under 2, 2–4, 4–7 and 7+ points (the last on 10 games). Over/under hit rates were 50%, 51%, 45% and 38%.
+- **Team-fit settings (`research/spread_totals_iteration.py`; output `research/output/spread_totals_iteration_2026-27.json`).**
+  - Setup:
+    - All 230 game-day replay games, with the current version's native games replayed under a research label. Baseline and variants are walk-forward and paired.
+    - The variants and the rule were fixed in the script before the first run. A pass needs the MAE interval, Bonferroni-widened for 12 tests, below 0, the hit rate not lower, and log loss not higher.
+  - Results (differences against the baseline):
+
+    | Variant | Change from baseline | Margin MAE | Total MAE | Log loss |
+    |---|---|---|---|---|
+    | `half_12` | half-life 12.5 days (25) | −0.01 | −0.01 | +0.001 |
+    | `half_50` | half-life 50 days (25) | +0.01 | +0.02 | −0.001 |
+    | `prior_10` | offense and defense priors 10 (20) | +0.11 | +0.08 | 0.000 |
+    | `prior_40` | offense and defense priors 40 (20) | −0.03 | +0.00 | +0.001 |
+    | `global_25` | global prior 25 (100) | — | +0.06 | — |
+    | `total_level` | totals only: walk-forward mean total residual added, shrunk with 40 pseudo-games | — | +0.09 | — |
+
+  - No variant passes. The team-fit settings move spreads and totals by hundredths of a point.
+- **Rest (`research/rest_residual_diagnostic.py`; output `research/output/rest_residual_diagnostic_2026-27.json`).**
+  - Back-to-backs are taken from the ESPN box-score extract: 228 games, 86 back-to-back team-games. Rest is not a model input; the test only checks the residuals.
+  - Team residual on a back-to-back: −0.16 points (−2.8 to +2.5); against a team on a back-to-back: +0.03 (−2.5 to +2.8).
+  - Total residual per back-to-back team: −0.13 (−3.9 to +3.6). Sleeper's projections already carry rest.
+
+Conclusion: nothing in the model's own data improves spreads or totals measurably. The market's edge of about 0.3–0.4 points of MAE on each comes from information the Sleeper projections do not contain. Spread and total quotes stay context only.
 
 ## v1.31 methodology — game-day snapshots in the team fit (still current)
 

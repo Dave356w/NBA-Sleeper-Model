@@ -1,0 +1,69 @@
+{
+ "generated_for": "rest residual diagnostic (owner request, 26 November 2026); research only",
+ "methodology": "sleeper_only_v1_33",
+ "box_file": "research/inputs/espn_box_2026-27_2026-11-26.csv",
+ "box_sha256": "a64f3a00f1605dcc59c408536b0336dc209bb43012e589ba96e887d456b60d90",
+ "games_with_rest": 228,
+ "games_total": 230,
+ "back_to_back_team_games": 86,
+ "margin_residual_on_b2b": {
+  "terms": [
+   "home_b2b",
+   "away_b2b"
+  ],
+  "estimate": [
+   1.1796636992914094,
+   1.804278966976651
+  ],
+  "ci95": [
+   [
+    -3.6031237252399477,
+    -2.4253962294958273
+   ],
+   [
+    5.927401627482548,
+    6.764266881942797
+   ]
+  ]
+ },
+ "total_residual_on_b2b_count": {
+  "terms": [
+   "b2b_teams"
+  ],
+  "estimate": [
+   -0.12762736742277586
+  ],
+  "ci95": [
+   [
+    -3.8685199891730884
+   ],
+   [
+    3.6050777997454544
+   ]
+  ]
+ },
+ "team_residual_on_b2b": {
+  "terms": [
+   "own_b2b",
+   "opp_b2b"
+  ],
+  "estimate": [
+   -0.15896470707430424,
+   0.031337339651528684
+  ],
+  "ci95": [
+   [
+    -2.7998179536499603,
+    -2.4862144581003776
+   ],
+   [
+    2.472646315107311,
+    2.7584306978541826
+   ]
+  ]
+ },
+ "mean_team_residual": {
+  "own_b2b": -0.4835687533509749,
+  "rested": -0.3316908940495304
+ }
+}

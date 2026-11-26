@@ -1,0 +1,177 @@
+{
+ "generated_for": "walk-forward slope test on margin and total (owner request, 26 November 2026); research only",
+ "methodology": "sleeper_only_v1_33",
+ "ledger_records": 2043,
+ "games": 230,
+ "segments": {
+  "live": 41,
+  "replay_legacy": 125,
+  "replay_native": 64
+ },
+ "line_basis": {
+  "spread": {
+   "snapshot": 227,
+   "closing": 3
+  },
+  "total": {
+   "snapshot": 172,
+   "closing": 57
+  }
+ },
+ "variants": {
+  "shrink_0": {
+   "games": 230,
+   "slates": 32,
+   "margin_abs_error": {
+    "difference": 0.08645368011867521,
+    "ci95_slate_bootstrap": [
+     -0.06863357635170472,
+     0.26755884707419136
+    ],
+    "baseline": 10.966063266038438
+   },
+   "total_abs_error": {
+    "difference": 0.039482116313041,
+    "ci95_slate_bootstrap": [
+     -0.025132260650615138,
+     0.1003881846874698
+    ],
+    "baseline": 15.09928721529502
+   },
+   "ats_hit": {
+    "difference": 0.004347826086956608,
+    "ci95_slate_bootstrap": [
+     -0.045272166105499397,
+     0.053098413919883736
+    ]
+   },
+   "ats_units": {
+    "difference": 0.008300395256916986,
+    "ci95_slate_bootstrap": [
+     -0.08642868074686257,
+     0.10136969930159616
+    ]
+   },
+   "ou_hit": {
+    "difference": -0.021834061135371174,
+    "ci95_slate_bootstrap": [
+     -0.05045871559633025,
+     0.003984863757820117
+    ]
+   },
+   "ou_units": {
+    "difference": -0.04168320762207227,
+    "ci95_slate_bootstrap": [
+     -0.09633027522935779,
+     0.007607467174020276
+    ]
+   },
+   "ats_baseline": {
+    "bets": 230,
+    "hit": 0.508695652173913,
+    "units_per_bet_at_minus_110": -0.02885375494071148
+   },
+   "ats_picks_flipped": 35,
+   "ou_baseline": {
+    "bets": 229,
+    "hit": 0.4890829694323144,
+    "units_per_bet_at_minus_110": -0.0662961492655816
+   },
+   "ou_picks_flipped": 11,
+   "beta_margin_range": [
+    0.8678193885662372,
+    1.3958225681713314
+   ],
+   "beta_total_range": [
+    0.739095672247273,
+    1.227958565364191
+   ],
+   "beta_final": {
+    "margin": 0.8678193885662372,
+    "total": 0.9230659526070146
+   },
+   "games_with_fitted_beta": 192,
+   "recommend": {
+    "spread": false,
+    "total": false
+   }
+  },
+  "shrink_100": {
+   "games": 230,
+   "slates": 32,
+   "margin_abs_error": {
+    "difference": 0.04028603705597549,
+    "ci95_slate_bootstrap": [
+     -0.04649151371014969,
+     0.14531080755764456
+    ],
+    "baseline": 10.966063266038438
+   },
+   "total_abs_error": {
+    "difference": 0.02137886829383952,
+    "ci95_slate_bootstrap": [
+     -0.01691419708982011,
+     0.05453048083080304
+    ],
+    "baseline": 15.09928721529502
+   },
+   "ats_hit": {
+    "difference": 0.008695652173913104,
+    "ci95_slate_bootstrap": [
+     -0.031134947915757882,
+     0.05349977954144629
+    ]
+   },
+   "ats_units": {
+    "difference": 0.016600790513833973,
+    "ci95_slate_bootstrap": [
+     -0.05943944602099229,
+     0.10213594276094272
+    ]
+   },
+   "ou_hit": {
+    "difference": -0.021834061135371174,
+    "ci95_slate_bootstrap": [
+     -0.04420728297582034,
+     -0.004166666666666652
+    ]
+   },
+   "ou_units": {
+    "difference": -0.04168320762207227,
+    "ci95_slate_bootstrap": [
+     -0.08439572204474796,
+     -0.00795454545454545
+    ]
+   },
+   "ats_baseline": {
+    "bets": 230,
+    "hit": 0.508695652173913,
+    "units_per_bet_at_minus_110": -0.02885375494071148
+   },
+   "ats_picks_flipped": 20,
+   "ou_baseline": {
+    "bets": 229,
+    "hit": 0.4890829694323144,
+    "units_per_bet_at_minus_110": -0.0662961492655816
+   },
+   "ou_picks_flipped": 5,
+   "beta_margin_range": [
+    0.9086158735766579,
+    1.2252093922354128
+   ],
+   "beta_total_range": [
+    0.9281567793144666,
+    1.0914564304155736
+   ],
+   "beta_final": {
+    "margin": 0.9086158735766579,
+    "total": 0.9468110289628744
+   },
+   "games_with_fitted_beta": 192,
+   "recommend": {
+    "spread": false,
+    "total": false
+   }
+  }
+ }
+}
