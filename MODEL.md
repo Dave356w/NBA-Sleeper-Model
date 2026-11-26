@@ -90,6 +90,27 @@ Research only: nothing here writes a ledger record or changes a forecast, select
 
 There is no position signal to fit, and no position term or version is proposed. This agrees with the 19 November player review: errors below team level cancel inside the team total.
 
+### Margin and total slope, 26 November 2026 (owner request; no methodology change)
+
+Research only. The model uses Sleeper's projection with slope 1, because the team fit learns actual − projected. An in-sample check on the 230 games of the live team fit found slopes of actual on projected of 0.97 (0.71–1.25) for margin and 1.07 (0.65–1.48) for total. `research/slope_walk_forward.py` then tested a fitted slope walk-forward on the 230 games of the pooled v1.33 season record:
+
+- 125 legacy replay games, 64 native replay games and 41 live games;
+- spread lines from the snapshot for 227 games and from the pinned close for 3;
+- total lines from the snapshot for 172 games and from the close for 57.
+
+The rule was set in the script before its first run:
+
+- Margin is scaled through the origin. Total is scaled about the history's mean predicted total.
+- Each slope is fitted only on earlier slates finished before tip, needs 30 games, and is shrunk toward 1 with k = 0 or k = 100 pseudo-games.
+- A slope is recommended only if MAE improves with its 95% slate-bootstrap interval below 0 and the hit rate against the line is not lower.
+
+Output: `research/output/slope_walk_forward_2026-27.json`.
+
+- **Margin:** fitted slopes ran 0.87–1.40 (k = 0) and 0.91–1.23 (k = 100). MAE changed +0.09 (−0.07 to +0.27) and +0.04 (−0.05 to +0.15) from 10.97. ATS hit rate changed +0.4 and +0.9 points, both well inside the noise.
+- **Total:** fitted slopes ran 0.74–1.23 and 0.93–1.09. MAE changed +0.04 (−0.03 to +0.10) and +0.02 (−0.02 to +0.05) from 15.10. Over/under hit rate fell 2.2 points in both, with the interval below 0 at k = 100 (−4.4 to −0.4).
+
+Neither market passes, so slope 1 stays. As context, the unchanged model went 50.9% against the spread (230 bets) and 48.9% on totals (229) against snapshot or closing lines. At an assumed −110 that is −2.9% and −6.6% per bet, which supports keeping spread and total quotes as context only (v1.22).
+
 ## v1.31 methodology — game-day snapshots in the team fit (still current)
 
 Owner update, 19 November 2026. One change; everything else is unchanged from v1.30. New forecasts are tagged `sleeper_only_v1_31`; frozen records of every earlier version, and their grades, fits and calibrations, are never rewritten.
