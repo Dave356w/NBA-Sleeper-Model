@@ -5,7 +5,7 @@
       "winner_count": 219,
       "correct": 152,
       "accuracy": 0.6940639269406392,
-      "log_loss": 0.5790401682777723,
+      "log_loss": 0.5790401682777724,
       "brier": 0.19859595824575246,
       "expected_home_wins": 116.52126285635617,
       "actual_home_wins": 111,
@@ -146,7 +146,7 @@
       "monthly": {
         "2026-11": {
           "n": 219,
-          "log_loss": 0.5790401682777723,
+          "log_loss": 0.5790401682777724,
           "brier": 0.19859595824575246
         }
       }
@@ -276,14 +276,14 @@
           "bucket": "3\u20136h",
           "n": 24,
           "accuracy": 0.75,
-          "log_loss": 0.5208628708444077,
+          "log_loss": 0.5208628708444076,
           "brier": 0.1736582155456705
         },
         {
           "bucket": "6\u201324h",
           "n": 77,
           "accuracy": 0.6623376623376623,
-          "log_loss": 0.5885968284215874,
+          "log_loss": 0.5885968284215876,
           "brier": 0.20526440499342663
         },
         {
@@ -597,7 +597,7 @@
     },
     "first:adaptive:totals": {
       "n": 113,
-      "log_loss": 0.7528571362527418,
+      "log_loss": 0.7528571362527419,
       "brier": 0.27889123796655907
     },
     "first:fixed:ats": {
@@ -1958,9 +1958,9 @@
     "first": {
       "n": 219,
       "slates": 18,
-      "adaptive_minus_fixed_log_loss": 4.6888018836850525e-05,
+      "adaptive_minus_fixed_log_loss": 4.6888018836858636e-05,
       "confidence_interval_95": [
-        -0.028012111468683022,
+        -0.02801211146868302,
         0.02466553989091839
       ],
       "exploratory": true
@@ -1968,10 +1968,10 @@
     "lock": {
       "n": 119,
       "slates": 16,
-      "adaptive_minus_fixed_log_loss": -0.008217378811577608,
+      "adaptive_minus_fixed_log_loss": -0.0082173788115776,
       "confidence_interval_95": [
-        -0.03728166663755226,
-        0.02435564971580111
+        -0.037281666637552245,
+        0.024355649715801113
       ],
       "exploratory": true
     }
